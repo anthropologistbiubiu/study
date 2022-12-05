@@ -13,5 +13,5 @@ func join(strs string)(string,error){
 			result += value	
 		}
 	} 
-	return result
+	return result,nil
 }
