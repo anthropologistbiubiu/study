@@ -1,8 +1,8 @@
-package main
+package cmd
 
-import(
+import (
+	"math"
 	"fmt"
 )
-func main(){
-	fmt.Println("hello world")
-}
+
+
