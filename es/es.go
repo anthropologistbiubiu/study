@@ -163,7 +163,6 @@ func query() {
 	//分析 interests
 	aggs := elastic.NewTermsAggregation().Field("interests")
 	fmt.Println(aggs)
-	fmt.Println("___________________________________________________________________________")
 	res, err = client.Search("megacorp").Type("employee").Aggregation("all_interests", aggs).Do(context.Background())
 	printEmployee(res, err)
 
