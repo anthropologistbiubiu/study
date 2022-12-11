@@ -319,9 +319,9 @@ func hsetDemo(ctx context.Context) {
 func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 500*time.Millisecond)
 	defer cancel()
-	//listDemo(ctx)
-	//zsetDeomo(ctx)
-	//stringDemo(ctx)
+	listDemo(ctx)
+	zsetDeomo(ctx)
+	stringDemo(ctx)
 	hsetDemo(ctx)
-	//Keys(ctx)
+	Keys(ctx)
 }
