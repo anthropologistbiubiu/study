@@ -273,11 +273,55 @@ func getAll(ctx context.Context) {
 	}
 	fmt.Println(keys)
 }
+func hsetDemo(ctx context.Context) {
+	//添加元素
+	result, err := redis_client.HSet(ctx, "use", "key1", "value1").Result()
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
+	result, err = redis_client.HSet(ctx, "use", "key2", "value2").Result()
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
+
+	key1Result, err := redis_client.HGet(ctx, "use", "key1").Result()
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(key1Result)
+	//删除某个元素
+	delResult, err := redis_client.HDel(ctx, "use", "key1").Result()
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("HDel :%+v\n ", delResult)
+	//获取某个元素
+	allResult, err := redis_client.HGetAll(ctx, "use").Result()
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("HGetAll :%+v\n ", allResult)
+	//判断某个元素是否存在
+	existResult, err := redis_client.HExists(ctx, "use", "key1").Result()
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("HExists :%+v\n ", existResult)
+	//获取hset 的长度
+	length, err := redis_client.HLen(ctx, "use").Result()
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("HElen :%+v\n ", length)
+}
 func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 500*time.Millisecond)
 	defer cancel()
 	//listDemo(ctx)
 	//zsetDeomo(ctx)
-	stringDemo(ctx)
-	Keys(ctx)
+	//stringDemo(ctx)
+	hsetDemo(ctx)
+	//Keys(ctx)
 }
