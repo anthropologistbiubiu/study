@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"math"
+	"strconv"
 )
 
 func Max(a, b int) int {
@@ -63,6 +64,78 @@ func rob(nums []int) int {
 	return dp[length-1]
 }
 
+// 把数字翻译成字符串
+func stingTonumber(a, b string) int {
+	c := a + b
+	d, _ := strconv.Atoi(c)
+	return d
+
+}
+func stringTranslate(nums string) int {
+	// write code here
+	var length int = len(nums)
+	var dp []int = make([]int, length)
+	dp[0] = 1
+	for i := 1; i < length; i++ {
+		if i == 1 {
+			cur := stingtonumber(string(nums[i-1]), string(nums[i]))
+			if cur < 26 && cur >= 10 {
+				dp[i] = dp[i-1] + 1
+			} else {
+				dp[i] = dp[i-1]
+			}
+		} else {
+			cur := stingtonumber(string(nums[i-1]), string(nums[i]))
+			if cur <= 26 && cur >= 10 {
+				dp[i] = dp[i-1] + dp[i-2]
+			} else {
+				dp[i] = dp[i-1]
+			}
+		}
+	}
+	return dp[length-1]
+}
+func stingtonumber(a, b string) int {
+	c := a + b
+	d, _ := strconv.Atoi(c)
+	return d
+
+}
+
+// 把数字翻译为字符串 牛客网
+func solve(nums string) int {
+	// write code here
+	if string(nums[0]) == "0" {
+		return 0
+	}
+	var length int = len(nums)
+	var dp []int = make([]int, length)
+	dp[0] = 1
+	for i := 1; i < length; i++ {
+		if i == 1 {
+			cur := stingtonumber(string(nums[i-1]), string(nums[i]))
+			if cur <= 26 && cur > 10 {
+				dp[i] = dp[i-1] + 1
+			} else {
+				dp[i] = dp[i-1]
+			}
+		} else {
+			cur := stingtonumber(string(nums[i-1]), string(nums[i]))
+			if cur == 0 {
+				return 0
+			} else if cur == 10 || cur == 20 {
+				dp[i] = dp[i-1]
+			} else if cur > 26 && cur%10 == 0 {
+				return 0
+			} else if cur > 10 && cur <= 26 {
+				dp[i] = dp[i-1] + dp[i-2]
+			} else {
+				dp[i] = dp[i-1]
+			}
+		}
+	}
+	return dp[length-1]
+}
 func main() {
 	//var cost = []int{10, 15, 20}
 	//var cost1 = []int{1, 100, 1, 1, 1, 100, 1, 1, 100, 1}
@@ -70,10 +143,12 @@ func main() {
 	//fmt.Println(res)
 	//result := minCostClimbingStairs(cost1)
 	//fmt.Println(result)
-	var rooms []int = []int{1, 2, 3, 4}
-	rs := rob(rooms)
-	fmt.Println(rs)
-	var rooms1 = []int{1, 3, 6}
-	fmt.Println(rob(rooms1))
-
+	//var rooms []int = []int{1, 2, 3, 4}
+	//rs := rob(rooms)
+	//fmt.Println(rs)
+	//var rooms1 = []int{1, 3, 6}
+	//fmt.Println(rob(rooms1))
+	var nums string = "31717126241541717"
+	fmt.Println(solve(nums))
+	fmt.Println(stingtonumber("0", "1"))
 }
