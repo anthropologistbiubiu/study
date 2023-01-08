@@ -71,6 +71,8 @@ func stingTonumber(a, b string) int {
 	return d
 
 }
+
+// 力扣版本
 func stringTranslate(nums string) int {
 	// write code here
 	var length int = len(nums)
@@ -136,6 +138,77 @@ func solve(nums string) int {
 	}
 	return dp[length-1]
 }
+
+// 打家劫舍2
+func rob2(nums []int) int {
+	// write code here
+	res1 := rob2core(0, nums)
+	res2 := rob2core(1, nums)
+	var maximum int
+	if res1 > res2 {
+		maximum = res1
+	} else {
+		maximum = res2
+	}
+	return maximum
+}
+
+func rob2core(start int, nums []int) int {
+	// write code here
+	var length int = len(nums)
+	if length == 0 {
+		return 0
+	}
+	if length == 1 {
+		return nums[0]
+	}
+	if length == 2 {
+		return int(math.Max(float64(nums[0]), float64(nums[1])))
+	}
+	if length == 3 {
+		var maxVal int
+		if nums[0] > nums[1] {
+			maxVal = nums[0]
+		} else {
+			maxVal = nums[1]
+		}
+		if maxVal < nums[2] {
+			maxVal = nums[2]
+		}
+		return maxVal
+	}
+	var dp []int = make([]int, length)
+	var end int
+	if start == 0 {
+		end = length - 1
+	} else if start == 1 {
+		end = length
+	}
+	for i := start; i < end; i++ {
+		if i == 0 {
+			dp[i] = nums[i]
+		} else if i == 1 {
+			if start == 1 {
+				dp[i] = nums[i]
+			} else {
+				dp[i] = int(math.Max(float64(dp[i-1]), float64(nums[i])))
+			}
+		} else {
+			if start == 1 {
+				if i == 2 {
+					dp[i] = int(math.Max(float64(dp[i-1]), float64(nums[i])))
+				} else {
+					dp[i] = int(math.Max(float64(dp[i-1]), float64(nums[i]+dp[i-2])))
+				}
+			} else {
+				dp[i] = int(math.Max(float64(dp[i-1]), float64(nums[i]+dp[i-2])))
+
+			}
+		}
+	}
+	return dp[end-1]
+}
+
 func main() {
 	//var cost = []int{10, 15, 20}
 	//var cost1 = []int{1, 100, 1, 1, 1, 100, 1, 1, 100, 1}
@@ -148,7 +221,11 @@ func main() {
 	//fmt.Println(rs)
 	//var rooms1 = []int{1, 3, 6}
 	//fmt.Println(rob(rooms1))
-	var nums string = "31717126241541717"
-	fmt.Println(solve(nums))
-	fmt.Println(stingtonumber("0", "1"))
+	//var nums string = "31717126241541717"
+	//fmt.Println(solve(nums))
+	//fmt.Println(stingtonumber("0", "1"))
+	//var nums []int = []int{1, 2, 3, 4}
+	var nums []int = []int{19, 43, 94, 4, 34, 33, 91, 75, 38, 79}
+	fmt.Println(rob2(nums))
+
 }
