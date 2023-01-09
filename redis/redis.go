@@ -215,6 +215,9 @@ func stringDemo(ctx context.Context) {
 	}
 	fmt.Println(res)
 
+	result10, _ := redis_client.MGet(ctx, "a", "b").Result()
+	fmt.Println("result10", result10)
+
 	result := redis_client.Get(ctx, "a")
 	result_str, err := result.Bytes()
 	if err != nil {
@@ -273,6 +276,7 @@ func getAll(ctx context.Context) {
 	}
 	fmt.Println(keys)
 }
+
 func hsetDemo(ctx context.Context) {
 	//添加元素
 	result, err := redis_client.HSet(ctx, "use", "key1", "value1").Result()
@@ -319,9 +323,9 @@ func hsetDemo(ctx context.Context) {
 func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 500*time.Millisecond)
 	defer cancel()
-	listDemo(ctx)
-	zsetDeomo(ctx)
+	//listDemo(ctx)
+	//zsetDeomo(ctx)
 	stringDemo(ctx)
-	hsetDemo(ctx)
-	Keys(ctx)
+	//hsetDemo(ctx)
+	//Keys(ctx)
 }
