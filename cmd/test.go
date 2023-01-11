@@ -11,17 +11,21 @@ func maxProfit(prices []int) int {
 	for i := 1; i < length; i++ {
 		if prices[i] > minPrice {
 			totalRevenu += (prices[i] - prices[i-1])
-			minPrice = prices[i]
+			minPrice += prices[i]
 		} else {
-			minPrice = prices[i]
+			minPrice += prices[i]
 		}
 	}
 	return totalRevenu
 }
 
 func main() {
-	var arrTest []int = []int{7, 1, 5, 3, 6, 4}
-	fmt.Println(maxProfit(arrTest))
+	var arrTest1 []int = []int{1, 83, 74, 26, 63, 37, 25, 63, 28}
+	fmt.Println(maxProfit(arrTest1))
+	var arrTest2 []int = []int{1, 2, 3, 4, 5}
+	fmt.Println(maxProfit(arrTest2))
+	var arrTest3 []int = []int{5, 4, 3, 2, 1}
+	fmt.Println(maxProfit(arrTest3))
 }
 
 //func spiralOrder(matrix [][]int) []int {
