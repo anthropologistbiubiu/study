@@ -18,14 +18,39 @@ func maxProfit(prices []int) int {
 	}
 	return totalRevenu
 }
-
+func minValue(a, b int) int {
+	if a > b {
+		return b
+	} else {
+		return a
+	}
+}
+func minPathSum(matrix [][]int) int {
+	// write code here
+	var dp [][]int = make([][]int, len(matrix))
+	var width int = len(matrix)
+	var length int = len(matrix[0])
+	for k := 0; k < width; k++ {
+		dp[k] = make([]int, len(matrix[0]))
+	}
+	for i := 0; i < width; i++ {
+		for j := 0; j < length; j++ {
+			if i == 0 && j != 0 {
+				dp[i][j] = dp[0][j-1] + matrix[0][j]
+			} else if i != 0 && j == 0 {
+				dp[i][j] = dp[i-1][0] + matrix[i][0]
+			} else if i == 0 && j == 0 {
+				dp[i][j] = matrix[i][j]
+			} else {
+				dp[i][j] = minValue(dp[i-1][j], dp[i][j-1]) + matrix[i][j]
+			}
+		}
+	}
+	return dp[width-1][length-1]
+}
 func main() {
-	var arrTest1 []int = []int{1, 83, 74, 26, 63, 37, 25, 63, 28}
-	fmt.Println(maxProfit(arrTest1))
-	var arrTest2 []int = []int{1, 2, 3, 4, 5}
-	fmt.Println(maxProfit(arrTest2))
-	var arrTest3 []int = []int{5, 4, 3, 2, 1}
-	fmt.Println(maxProfit(arrTest3))
+	var matrix [][]int = [][]int{{1, 2, 3}, {1, 2, 3}}
+	fmt.Println(minPathSum(matrix))
 }
 
 //func spiralOrder(matrix [][]int) []int {
