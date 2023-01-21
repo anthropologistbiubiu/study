@@ -1,7 +1,5 @@
 package main
 
-import "fmt"
-
 // 买卖股票的最好时机
 func maxProfit(prices []int) int {
 	// write code here
@@ -25,6 +23,8 @@ func minValue(a, b int) int {
 		return a
 	}
 }
+
+// 矩阵的最小路径和
 func minPathSum(matrix [][]int) int {
 	// write code here
 	var dp [][]int = make([][]int, len(matrix))
@@ -48,9 +48,25 @@ func minPathSum(matrix [][]int) int {
 	}
 	return dp[width-1][length-1]
 }
+
+// 数字字符串转化成IP地址
+func restoreIpAddresses(s string) []string {
+	// write code here
+
+	return nil
+}
+
+// 最长公共子序列2
+func LCS(s1 string, s2 string) string {
+	// write code here
+
+	return ""
+}
+func trans(s string, n int) string {
+	return ""
+}
 func main() {
-	var matrix [][]int = [][]int{{1, 2, 3}, {1, 2, 3}}
-	fmt.Println(minPathSum(matrix))
+
 }
 
 //func spiralOrder(matrix [][]int) []int {
