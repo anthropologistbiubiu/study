@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<a:peoples version="0.9">
+    <people id="888">
+        <name>上海</name>
+        <address>中国上海</address>
+    </people>
+    <people id="998">
+        <name>香港</name>
+        <address>中国香港</address>
+    </people>
+</a:peoples>
