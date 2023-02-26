@@ -76,13 +76,3 @@ func main() {
 	}
 	fmt.Println("tar.gz ok")
 }
-
-//golang网络IO
-
-//golang mysql
-
-//golang reddis
-
-//golang rpc
-
-//golang websocket
