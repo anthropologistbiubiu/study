@@ -1,4 +1,4 @@
-package main
+package golang_practice
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 	"unsafe"
 )
 
-func main0() {
+func f1() {
 	i := 101
 	go func(i int) {
 		for ; i > 0; i++ {
@@ -16,7 +16,7 @@ func main0() {
 	<-time.After(time.Microsecond * 5)
 }
 
-func main1() {
+func f2() {
 	defer func() {
 		r := recover()
 		fmt.Println("defer 1", r)
@@ -28,7 +28,7 @@ func main1() {
 	panic("Panic to the reconver function in the second defer function")
 }
 
-func main2() {
+func f3() {
 	mp := make(map[string]int)
 	mp["key1"] = 1
 	mp["key2"] = 2
@@ -36,39 +36,15 @@ func main2() {
 	fmt.Println(count)
 }
 
-/*
-
 type ST struct{}
 
-func (st ST)String()string{
-	return fmt.Sprintf("%s",st.String())
+func (st ST) String() string {
+	return fmt.Sprintf("%s", st.String())
 }
 
-func main3(){
+func f4() {
 	var st = ST{}
 	fmt.Println(st.String())
 }
 
-func Add(a,b int) int{return a + b}
-
-func main4(){
-	v := reflect.ValueOf(Add)
-	if v.Kind() !=reflect.Func{
-		return
-	}
-	t := v.Type()
-	argv := make([]reflect.Value(),t.NumIn())
-	for i:= range argv{
-		if t.In(i).Kind() != reflect.Int{
-			return
-		}
-		argv[i] = reflect.ValueOf(i)
-	}
-	result := v.Call(argv)
-	if len(result) != 1 || resrult[0].Kind() != reflect.Int{
-		return
-	}
-	fmt.Println(result[0].Int())
-}
-
-*/
+func Add(a, b int) int { return a + b }
