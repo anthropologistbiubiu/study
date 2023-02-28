@@ -164,10 +164,14 @@ func context_value_control() {
 	time.Sleep(2 * time.Second)
 }
 func main() {
-	//Goroutine_simple_many_order()
-	//Goroutine_simple_many_who()
-	//context_signal_control()
-	//context_control()
-	context_value_control()
-	//time.Sleep(10 * time.Second)
+	t := time.Tick(time.Second)
+	fmt.Println(t)
+	fmt.Printf("%+v", t)
+	for {
+		select {
+		case meg := <-t:
+			fmt.Println(meg)
+
+		}
+	}
 }
