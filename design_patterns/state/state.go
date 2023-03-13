@@ -157,7 +157,7 @@ func (this *noItemState) dispenseItem() error {
 	return fmt.Errorf("item out of stock")
 }
 func main() {
-	v := NewVendingMatchine(0, 10)
+	v := NewVendingMatchine(10, 0)
 	err := v.requestItem()
 	if err != nil {
 		fmt.Println(err.Error())
