@@ -34,8 +34,19 @@ type CareTaker struct {
 	mementorArray []mementor
 }
 
-func (this *CareTaker) NewCareTaker() CareTaker {
+func (this *CareTaker) NewCareTaker() *CareTaker {
 	return &CareTaker{
-		mementorArray: make(mementor, 0, 10),
+		mementorArray: make([]mementor, 0, 10),
 	}
+}
+func (this *CareTaker) addMementor(m mementor) {
+	this.mementorArray = append(this.mementorArray, m)
+
+}
+func (this *CareTaker) restorState(index int) mementor {
+	return this.mementorArray[index]
+}
+
+func main() {
+
 }
