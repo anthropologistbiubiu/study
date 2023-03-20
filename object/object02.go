@@ -77,4 +77,4 @@ func main() {
 	fmt.Println(web.generateUrl())
 
 	check(web)
-}
+
