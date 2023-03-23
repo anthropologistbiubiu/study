@@ -1,4 +1,4 @@
-module go_code
+module main
 
 go 1.19
 
