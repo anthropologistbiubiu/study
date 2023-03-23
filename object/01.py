@@ -41,7 +41,7 @@ print(p1.nationnality)
 
 p1.nationnality = "JP"
 
-
+print(p1.nationnality) # 相当于给p1 实例创建了新的实例属性
     
 
 
