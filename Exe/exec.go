@@ -219,5 +219,4 @@ func main() {
 		log.Fatalf("failed to call Run(): %v", err)
 	}
 	log.Printf("out:\n%s\nerr:\n%s", stdout.String(), stderr.String())
-
 }
