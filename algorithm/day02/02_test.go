@@ -1,4 +1,4 @@
-package main
+package day02
 
 import (
 	"reflect"
@@ -22,19 +22,6 @@ func Test_intersect(t *testing.T) {
 			if got := intersect(tt.args.arr1, tt.args.arr2); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("intersect() = %v, want %v", got, tt.want)
 			}
-		})
-	}
-}
-
-func Test_main(t *testing.T) {
-	tests := []struct {
-		name string
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			main()
 		})
 	}
 }

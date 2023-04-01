@@ -1,6 +1,4 @@
-package main
-
-import "fmt"
+package day02
 
 // 两个数组的交集
 func intersect(arr1 []int, arr2 []int) []int {
@@ -18,10 +16,4 @@ func intersect(arr1 []int, arr2 []int) []int {
 		}
 	}
 	return arr
-}
-
-func main() {
-	var arr1 = []int{1, 2, 3, 5, 6, 9}
-	var arr2 = []int{1, 1, 4, 6, 8}
-	fmt.Println(intersect(arr1, arr2))
 }
