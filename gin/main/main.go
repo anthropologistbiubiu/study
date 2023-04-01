@@ -40,7 +40,7 @@ func main2() {
 	})
 	router.LoadHTMLFiles("gin/html/temp/index.tmpl")
 	router.GET("/index", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index.tmpl", "<a href='https://liwenzhou.com'>李文周的博客</a>")
+		c.HTML(http.StatusOK, "index.tmpl", "")
 	})
 	router.Run(":8080")
 }
