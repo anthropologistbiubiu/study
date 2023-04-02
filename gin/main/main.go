@@ -115,34 +115,41 @@ func (g *GContext) Next() {
 	}
 }
 
+func (g *GContext) Use(handlers ...Handler) {
+	g.Handlers = append(g.Handlers, handlers...)
+}
+
 func (g *GContext) Handle(hs ...Handler) {
 	g.Handlers = append(g.Handlers, hs...)
 }
 func (g *GContext) Start() {
 	g.Next()
 }
-
+func one(gc *GContext) {
+	fmt.Println("one")
+	gc.Next()
+	fmt.Println("one-afer")
+}
+func two(gc *GContext) {
+	fmt.Println("two")
+	gc.Next()
+	fmt.Println("two-afer")
+}
+func three(gc *GContext) {
+	fmt.Println("three")
+	gc.Next()
+	fmt.Println("three-afer")
+}
+func four(gc *GContext) {
+	fmt.Println("four")
+	gc.Next()
+	fmt.Println("four-afer")
+}
 func main() {
 	gc := &GContext{
 		index:    -1,
 		Handlers: HanclerChain{},
 	}
-	gc.Handle(func(gc *GContext) {
-		fmt.Println("one")
-		gc.Next()
-		fmt.Println("one-back")
-	}, func(gc *GContext) {
-		fmt.Println("two")
-		gc.Next()
-		fmt.Println("two-back")
-	}, func(gc *GContext) {
-		fmt.Println("three")
-		gc.Next()
-		fmt.Println("three-back")
-	}, func(gc *GContext) {
-		fmt.Println("four")
-		//gc.Next()
-		fmt.Println("four-back")
-	})
+	gc.Use(one, two, three, four)
 	gc.Start()
 }
