@@ -86,7 +86,7 @@ func costTime() gin.HandlerFunc {
 		fmt.Printf(" reuqestUrl is %+v costTime is %+v\n", c.Request.URL.String(), time.Since(now))
 	}
 }
-func main() {
+func main6() {
 
 	r := gin.Default()
 	r.Use(costTime())
@@ -96,4 +96,53 @@ func main() {
 		})
 	})
 	r.Run("127.0.0.1:8080")
+}
+
+// gin 中间件执行原理分析
+type Handler func(gc *GContext)
+type HanclerChain []Handler
+
+type GContext struct {
+	Handlers HanclerChain
+	index    int
+}
+
+func (g *GContext) Next() {
+	g.index++
+	for g.index < len(g.Handlers) {
+		g.Handlers[g.index](g)
+		g.index++
+	}
+}
+
+func (g *GContext) Handle(hs ...Handler) {
+	g.Handlers = append(g.Handlers, hs...)
+}
+func (g *GContext) Start() {
+	g.Next()
+}
+
+func main() {
+	gc := &GContext{
+		index:    -1,
+		Handlers: HanclerChain{},
+	}
+	gc.Handle(func(gc *GContext) {
+		fmt.Println("one")
+		gc.Next()
+		fmt.Println("one-back")
+	}, func(gc *GContext) {
+		fmt.Println("two")
+		gc.Next()
+		fmt.Println("two-back")
+	}, func(gc *GContext) {
+		fmt.Println("three")
+		gc.Next()
+		fmt.Println("three-back")
+	}, func(gc *GContext) {
+		fmt.Println("four")
+		//gc.Next()
+		fmt.Println("four-back")
+	})
+	gc.Start()
 }
