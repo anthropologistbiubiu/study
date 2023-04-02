@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"html/template"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -38,7 +40,7 @@ func main2() {
 			return template.HTML(str)
 		},
 	})
-	router.LoadHTMLFiles("gin/html/temp/index.tmpl")
+	router.LoadHTMLFiles("gin/temp/index.tmpl")
 	router.GET("/index", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.tmpl", "")
 	})
@@ -62,7 +64,7 @@ func main3() {
 	router.Run(":8080")
 }
 
-func main() {
+func main4() {
 	r := gin.Default()
 
 	// ①
@@ -73,4 +75,25 @@ func main() {
 	r.StaticFile("/favicon.ico", "./assets/favicon.ico")
 
 	r.Run(":8080")
+}
+
+// gin 注册路由中间件
+func costTime() gin.HandlerFunc {
+	return func(c *gin.Context) {
+
+		now := time.Now()
+		c.Next()
+		fmt.Printf(" reuqestUrl is %+v costTime is %+v\n", c.Request.URL.String(), time.Since(now))
+	}
+}
+func main() {
+
+	r := gin.Default()
+	r.Use(costTime())
+	r.GET("/index", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"name": "sunweiming",
+		})
+	})
+	r.Run("127.0.0.1:8080")
 }
