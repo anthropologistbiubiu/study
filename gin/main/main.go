@@ -150,6 +150,12 @@ func main() {
 		index:    -1,
 		Handlers: HanclerChain{},
 	}
-	gc.Use(one, two, three, four)
+	gc.Use(one, two)
+	gc.Handle(
+		func(gc *GContext) {
+			fmt.Println("main process")
+		},
+	)
+	//gc.Use(three, four)
 	gc.Start()
 }
