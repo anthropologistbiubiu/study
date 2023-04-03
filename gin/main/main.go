@@ -163,9 +163,13 @@ func main7() {
 func main() {
 
 	r := gin.Default()
-	r.GET("/index", func(c *gin.Context) {
+	r.GET("/index/:id", func(c *gin.Context) {
+		//id := c.Query("id")
+		//id, ok := c.GetQuery("id")
+		id := c.Param("id")
 		c.JSON(200, gin.H{
-			"name": "sunweiming",
+			"id": id,
+			//"ok": ok,
 		})
 	})
 	r.Run(":8080")
