@@ -145,7 +145,7 @@ func four(gc *GContext) {
 	gc.Next()
 	fmt.Println("four-afer")
 }
-func main() {
+func main7() {
 	gc := &GContext{
 		index:    -1,
 		Handlers: HanclerChain{},
@@ -158,4 +158,15 @@ func main() {
 	)
 	//gc.Use(three, four)
 	gc.Start()
+}
+
+func main() {
+
+	r := gin.Default()
+	r.GET("/index", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"name": "sunweiming",
+		})
+	})
+	r.Run(":8080")
 }
