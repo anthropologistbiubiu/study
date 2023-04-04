@@ -44,3 +44,13 @@ func BenchmarkWithPool(b *testing.B) {
 		}
 	}
 }
+
+//pool]$ go test -bench .
+//goos: linux
+//goarch: amd64
+//pkg: pool
+//cpu: Intel(R) Xeon(R) Platinum 8269CY CPU @ 2.50GHz
+//BenchmarkWithoutPool-8              3736            277442 ns/op          160001 B/op      10000 allocs/op
+//BenchmarkWithPool-8                 7821            151826 ns/op               0 B/op          0 allocs/op
+//PASS
+//ok      pool    2.277s
