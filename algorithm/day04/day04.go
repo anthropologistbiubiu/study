@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 //0020. 有效的括号
 
 //给定一个只包括 '('，')'，'{'，'}'，'['，']' 的字符串，判断字符串是否有效。
@@ -32,13 +34,15 @@ package main
 //输出: true
 
 func isValid(s string) bool {
-	stack := []rune{}
+	stack := make([]rune, len(s))
 	top := -1
 	for _, v := range s {
+		fmt.Printf("%+v\n", v)
+		fmt.Printf("%+T\n", v)
 		if v == '(' || v == '[' || v == '{' {
+			fmt.Println(stack, top)
 			top++
 			stack[top] = v
-		} else if top == -1 {
 		} else {
 			if top == -1 {
 				return false
@@ -53,13 +57,13 @@ func isValid(s string) bool {
 			case ']':
 				item := stack[top]
 				top--
-				if item != '(' {
+				if item != '[' {
 					return false
 				}
 			case '}':
 				item := stack[top]
 				top--
-				if item != '(' {
+				if item != '{' {
 					return false
 				}
 			}
@@ -68,5 +72,12 @@ func isValid(s string) bool {
 
 		}
 	}
-	reutn false
+	return true
+}
+
+func main() {
+
+	s := "{[()]}"
+	fmt.Println(isValid(s))
+
 }
