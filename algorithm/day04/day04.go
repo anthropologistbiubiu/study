@@ -31,18 +31,42 @@ package main
 //输入: "{[]}"
 //输出: true
 
-func isValid(s string) {
-	stack := []string{}
-	top ,tail := -1,0
+func isValid(s string) bool {
+	stack := []rune{}
+	top := -1
 	for _, v := range s {
 		if v == '(' || v == '[' || v == '{' {
-			stack[++top] = v
+			top++
+			stack[top] = v
+		} else if top == -1 {
+		} else {
+			if top == -1 {
+				return false
+			}
+			switch v {
+			case ')':
+				item := stack[top]
+				top--
+				if item != '(' {
+					return false
+				}
+			case ']':
+				item := stack[top]
+				top--
+				if item != '(' {
+					return false
+				}
+			case '}':
+				item := stack[top]
+				top--
+				if item != '(' {
+					return false
+				}
+			}
 		}
 		switch v {
 
 		}
 	}
-}
-func main() {
-
+	reutn false
 }
