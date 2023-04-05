@@ -86,7 +86,7 @@ func costTime() gin.HandlerFunc {
 		fmt.Printf(" reuqestUrl is %+v costTime is %+v\n", c.Request.URL.String(), time.Since(now))
 	}
 }
-func main6() {
+func main() {
 
 	r := gin.Default()
 	r.Use(costTime())
@@ -160,7 +160,7 @@ func main7() {
 	gc.Start()
 }
 
-func main() {
+func main8() {
 
 	r := gin.Default()
 	r.GET("/index/:id", func(c *gin.Context) {
