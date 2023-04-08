@@ -7,11 +7,16 @@ package main
 //输入: [-2,1,-3,4,-1,2,1,-5,4]
 //输出: 6
 //解释: 连续子数组 [4,-1,2,1] 的和最大，为 6。
-//进阶:
+//进阶
 //
 //如果你已经实现复杂度为 O(n) 的解法，尝试使用更为精妙的分治法求解。
 
-func maxSubArray() {
+func maxSubArray(arr ...int) {
+
+	res := make([]int, 0)
+	for _, v := range arr {
+
+	}
 
 }
 func main() {
