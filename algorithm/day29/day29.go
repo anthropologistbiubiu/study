@@ -14,3 +14,22 @@ package main
 - C 是一个单字符，且保证是字符串 S 里的字符。
 - S 和 C 中的所有字母均为小写字母。
 */
+
+func shortestToChar(s string, c byte) []int {
+
+	asis := make([]int, 0)
+	ret := make([]int, 0)
+	for i, v := range []byte(s) {
+		if v == c {
+			asis = append(asis, i)
+		}
+	}
+	for i := 0; i < len(s); i++ {
+
+	}
+	return []int{}
+}
+
+func main() {
+
+}
