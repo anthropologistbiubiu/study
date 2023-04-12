@@ -42,12 +42,12 @@ func addTwoNumbers(l1 *ListNode, l2 *ListNode) *ListNode {
 			cur.next = tem
 			cur = cur.next
 		}
-		if l1.next != nil {
+		if l1 != nil {
 			l1 = l1.next
 		} else {
 			l1 = nil
 		}
-		if l2.next != nil {
+		if l2 != nil {
 			l2 = l2.next
 		} else {
 			l2 = nil
@@ -96,7 +96,7 @@ func (this *List) ListPrint() {
 */
 func main() {
 	list1 := new(List)
-	for _, val := range []int{2, 4, 3, 8} {
+	for _, val := range []int{2, 4, 3, 8, 1, 2, 9} {
 		list1.ListTailInsert(val)
 	}
 	list2 := new(List)
