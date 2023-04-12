@@ -31,17 +31,16 @@ func checkPossibility(nums []int) bool {
 	if len(nums) <= 2 {
 		return true
 	}
-	for i < len(nums) {
-		if nums[i-1] <= nums[i] {
+	for i < len(nums)-1 {
+		if nums[i] <= nums[i+1] {
 			i++
 		} else {
 			count++
 			i++
 		}
-		if count > 1 {
+		if count >= 1 {
 			return false
 		}
-		return true
 	}
 	return true
 }
