@@ -6,15 +6,21 @@ import (
 )
 
 type People struct {
-	Age int64
+	name string
+	Age  int64
 }
 
 func main() {
 	p := &People{
-		Age: 30,
+		name: "sunweiming",
+		Age:  30,
 	}
 
-	fmt.Println(reflect.ValueOf(p).Kind()) // ouput: ptr
-	value := reflect.Indirect(reflect.ValueOf(p))
-	fmt.Println(value.Kind()) // output: struct
+	fmt.Println(reflect.ValueOf(p)) // ouput: ptr
+	value := reflect.Indirect(reflect.ValueOf(p)).Type()
+	fmt.Println(value)
+	for i := 0; i < value.NumField(); i++ {
+		p := value.Field(i)
+		fmt.Println(p)
+	}
 }
