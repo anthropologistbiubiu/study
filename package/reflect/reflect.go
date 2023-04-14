@@ -21,6 +21,11 @@ func main() {
 	fmt.Println(value)
 	for i := 0; i < value.NumField(); i++ {
 		p := value.Field(i)
-		fmt.Println(p)
+		fmt.Println(p.Name)
 	}
+}
+
+func (s *People) DropTable() error {
+	_, err := s.Raw(fmt.Sprintf("DROP TABLE IF EXISTS %s", s.RefTable().Name)).Exec()
+	return err
 }
