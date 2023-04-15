@@ -24,8 +24,3 @@ func main() {
 		fmt.Println(p.Name)
 	}
 }
-
-func (s *People) DropTable() error {
-	_, err := s.Raw(fmt.Sprintf("DROP TABLE IF EXISTS %s", s.RefTable().Name)).Exec()
-	return err
-}

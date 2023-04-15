@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 // 图片平滑器
 /*
 图像平滑器 是大小为 3 x 3 的过滤器，用于对图像的每个单元格平滑处理，平滑处理后单元格的值为该单元格的平均灰度。
@@ -42,6 +44,22 @@ n == img[i].length
 0 <= img[i][j] <= 255
 
 */
-func main() {
 
+const (
+	north = iota
+	east
+	south
+	west
+)
+
+func robotSim([]int, [1][2]int) {
+	//var curDirec = 1
+
+}
+
+func main() {
+	fmt.Println(north)
+	fmt.Println(east)
+	fmt.Println(south)
+	fmt.Println(west)
 }
