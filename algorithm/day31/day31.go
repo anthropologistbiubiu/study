@@ -38,16 +38,6 @@ s 仅包含字母 'a'  和 'b'
 在真实的面试中遇到过这道题？
 */
 
-// 每天中午用python 写一个设计模式
-
-// 每天 写2个题 周末5个
-
-// 月底研究完 gorm gin goache gojsonpaser go-redis redigo
-
-// 五一 搞完 mysql redis mongdb es
-
-// 6月底前 加上 grpc etcd
-
 func main() {
 
 }
