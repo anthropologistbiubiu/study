@@ -1,47 +1,8 @@
 package main
 
-// 图片平滑器
-/*
-图像平滑器 是大小为 3 x 3 的过滤器，用于对图像的每个单元格平滑处理，平滑处理后单元格的值为该单元格的平均灰度。
-
-每个单元格的  平均灰度 定义为：该单元格自身及其周围的 8 个单元格的平均值，结果需向下取整。（即，需要计算蓝色平滑器中 9 个单元格的平均值）。
-
-如果一个单元格周围存在单元格缺失的情况，则计算平均灰度时不考虑缺失的单元格（即，需要计算红色平滑器中 4 个单元格的平均值）。
-
-给你一个表示图像灰度的 m x n 整数矩阵 img ，返回对图像的每个单元格平滑处理后的图像 。
-
-
-
-示例 1:
-
-输入:img = [[1,1,1],[1,0,1],[1,1,1]]
-输出:[[0, 0, 0],[0, 0, 0], [0, 0, 0]]
-解释:
-对于点 (0,0), (0,2), (2,0), (2,2): 平均(3/4) = 平均(0.75) = 0
-对于点 (0,1), (1,0), (1,2), (2,1): 平均(5/6) = 平均(0.83333333) = 0
-对于点 (1,1): 平均(8/9) = 平均(0.88888889) = 0
-
-
-示例 2:
-
-输入: img = [[100,200,100],[200,50,200],[100,200,100]]
-输出: [[137,141,137],[141,138,141],[137,141,137]]
-解释:
-对于点 (0,0), (0,2), (2,0), (2,2): floor((100+200+200+50)/4) = floor(137.5) = 137
-对于点 (0,1), (1,0), (1,2), (2,1): floor((200+200+50+200+100+100)/6) = floor(141.666667) = 141
-对于点 (1,1): floor((50+200+200+200+200+100+100+100+100)/9) = floor(138.888889) = 138
-
-
-
-
-提示:
-
-m == img.length
-n == img[i].length
-1 <= m, n <= 200
-0 <= img[i][j] <= 255
-
-*/
+import (
+	"math"
+)
 
 const (
 	north = iota
@@ -51,30 +12,91 @@ const (
 )
 
 // 第一步计算行走的方向 遍历下一个路径  计算下一次的计算 在每个方向上计算最大距离
-func robotSim(commands []int, obstacle [1][2]int) {
-	//var curDirec = 1
-
+func robotSim(commands []int, obstacle [][2]int) int {
+	mp := make(map[int]int)
+	for _, indexs := range obstacle {
+		mp[indexs[0]] = indexs[1]
+	}
 	cur := int(0)
+	curPos := [2]int{0, 0}
+	maxLen := int(0)
 	for _, v := range commands {
 		switch v {
 		case -1:
-			cur = (cur + 4 + v) % 4
+			cur = (cur + 1) % 4 // -1 是往右转
 		case -2:
-			cur = (cur + 4 + v) % 4
+			cur = (cur + 4 - 1) % 4 // -2 是往左转
 		default:
 			if cur == north {
-
+				for i := 0; i < v; i++ {
+					if _, ok := mp[curPos[0]+1]; ok {
+						continue
+					} else {
+						curPos[0] += 1
+						if math.Pow(float64(curPos[0]), 2)+math.Pow(float64(curPos[1]), 2) > float64(maxLen) {
+							maxLen = int(math.Pow(float64(curPos[0]), 2)) + int(math.Pow(float64(curPos[1]), 2))
+						}
+					}
+				}
 			} else if cur == east {
-
+				for i := 1; i < v; i++ {
+					_, ok := mp[curPos[0]+1]
+					if ok && mp[curPos[0]+1] == curPos[1] {
+						continue
+					} else {
+						curPos[0] += 1
+						if math.Pow(float64(curPos[0]), 2)+math.Pow(float64(curPos[1]), 2) > float64(maxLen) {
+							maxLen = int(math.Pow(float64(curPos[0]), 2)) + int(math.Pow(float64(curPos[1]), 2))
+						}
+					}
+				}
 			} else if cur == south {
-
+				for i := 0; i < v; i++ {
+					if _, ok := mp[curPos[0]]; ok {
+						if mp[curPos[0]] == curPos[1]-1 {
+							continue
+						}
+					} else {
+						curPos[0] -= 1
+						if math.Pow(float64(curPos[0]), 2)+math.Pow(float64(curPos[1]), 2) > float64(maxLen) {
+							maxLen = int(math.Pow(float64(curPos[0]), 2)) + int(math.Pow(float64(curPos[1]), 2))
+						}
+					}
+				}
 			} else if cur == west {
-
+				for i := 0; i < v; i++ {
+					if _, ok := mp[curPos[0]-1]; ok {
+						if mp[curPos[0]-1] == curPos[1] {
+							continue
+						}
+					} else {
+						curPos[0] -= 1
+						if math.Pow(float64(curPos[0]), 2)+math.Pow(float64(curPos[1]), 2) > float64(maxLen) {
+							maxLen = int(math.Pow(float64(curPos[0]), 2)) + int(math.Pow(float64(curPos[1]), 2))
+						}
+					}
+				}
 			}
-
 		}
 	}
+	return maxLen
 }
 
+/*
+-2：向左转 90 度
+-1：向右转 90 度
+1 <= x <= 9：向前移动 x 个单位长度
+在网格上有一些格子被视为障碍物。
+
+示例 1：
+输入: commands = [4,-1,3], obstacles = []
+输出: 25
+解释: 机器人将会到达 (3, 4)
+示例 2：
+输入: commands = [4,-1,4,-2,4], obstacles = [[2,4]]
+输出: 65
+解释: 机器人在左转走到 (1, 8) 之前将被困在 (1, 4) 处
+*/
 func main() {
+	//var commands = []int{4, -1, 4, -2, 4}
 }
