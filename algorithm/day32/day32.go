@@ -13,10 +13,19 @@ const (
 )
 
 // 第一步计算行走的方向 遍历下一个路径  计算下一次的计算 在每个方向上计算最大距离
-func robotSim(commands []int, obstacle [][2]int) int {
-	mp := make(map[int]int)
-	for _, indexs := range obstacle {
-		mp[indexs[0]] = indexs[1]
+func checkCoordinat(x, y int, mp map[[2]int]bool) bool {
+	var c = [2]int{x, y}
+	if _, ok := mp[c]; ok {
+		return true
+	}
+	return false
+}
+
+func robotSim1(commands []int, obstacle [][]int) int {
+	mp := make(map[[2]int]bool)
+	for _, v := range obstacle {
+		var c [2]int = [2]int{v[0], v[1]}
+		mp[c] = true
 	}
 	cur := int(0)
 	curPos := [2]int{0, 0}
@@ -30,9 +39,8 @@ func robotSim(commands []int, obstacle [][2]int) int {
 		default:
 			if cur == north {
 				for i := 0; i < v; i++ {
-					_, ok := mp[curPos[0]]
-					if ok && mp[curPos[0]] == curPos[1]+1 {
-						continue
+					if checkCoordinat(curPos[0], curPos[1]+1, mp) {
+						break
 					} else {
 						curPos[1] += 1
 						if math.Pow(float64(curPos[0]), 2)+math.Pow(float64(curPos[1]), 2) > float64(maxLen) {
@@ -42,9 +50,8 @@ func robotSim(commands []int, obstacle [][2]int) int {
 				}
 			} else if cur == east {
 				for i := 0; i < v; i++ {
-					_, ok := mp[curPos[0]+1]
-					if ok && mp[curPos[0]+1] == curPos[1] {
-						continue
+					if checkCoordinat(curPos[0]+1, curPos[1], mp) {
+						break
 					} else {
 						curPos[0] += 1
 						if math.Pow(float64(curPos[0]), 2)+math.Pow(float64(curPos[1]), 2) > float64(maxLen) {
@@ -54,10 +61,8 @@ func robotSim(commands []int, obstacle [][2]int) int {
 				}
 			} else if cur == south {
 				for i := 0; i < v; i++ {
-					if _, ok := mp[curPos[0]]; ok {
-						if mp[curPos[0]] == curPos[1]-1 {
-							continue
-						}
+					if checkCoordinat(curPos[0], curPos[1]-1, mp) {
+						break
 					} else {
 						curPos[1] -= 1
 						if math.Pow(float64(curPos[0]), 2)+math.Pow(float64(curPos[1]), 2) > float64(maxLen) {
@@ -67,10 +72,8 @@ func robotSim(commands []int, obstacle [][2]int) int {
 				}
 			} else if cur == west {
 				for i := 0; i < v; i++ {
-					if _, ok := mp[curPos[0]-1]; ok {
-						if mp[curPos[0]-1] == curPos[1] {
-							continue
-						}
+					if checkCoordinat(curPos[0]-1, curPos[1], mp) {
+						break
 					} else {
 						curPos[0] -= 1
 						if math.Pow(float64(curPos[0]), 2)+math.Pow(float64(curPos[1]), 2) > float64(maxLen) {
@@ -100,10 +103,13 @@ func robotSim(commands []int, obstacle [][2]int) int {
 解释: 机器人在左转走到 (1, 8) 之前将被困在 (1, 4) 处
 */
 func main() {
+	comm := []int{-2, 8, 3, 7, -1}
+	ob := [][]int{{-4, -1}, {1, -1}, {1, 4}, {5, 0}, {4, 5}, {-2, -1}, {2, -5}, {5, 1}, {-3, -1}, {5, -3}}
 	var commands = []int{4, -1, 4, -2, 4}
-	var obstacle = [][2]int{{2, 4}}
-	fmt.Println(robotSim(commands, obstacle))
-	var commands1 = []int{4, -1, 3}
-	var obstacle1 = [][2]int{}
-	fmt.Println(robotSim(commands1, obstacle1))
+	var obstacle = [][]int{{2, 4}}
+	var c = []int{7, -2, -2, 7, 5}
+	var y = [][]int{{-3, 2}, {-2, 1}, {0, 1}, {-2, 4}, {-1, 0}, {-2, -3}, {0, -3}, {4, 4}, {-3, 3}, {2, 2}}
+	fmt.Println(robotSim1(commands, obstacle))
+	fmt.Println(robotSim1(comm, ob)) //324
+	fmt.Println(robotSim1(c, y))     //4
 }
