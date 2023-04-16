@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"math"
 )
 
@@ -29,17 +30,18 @@ func robotSim(commands []int, obstacle [][2]int) int {
 		default:
 			if cur == north {
 				for i := 0; i < v; i++ {
-					if _, ok := mp[curPos[0]+1]; ok {
+					_, ok := mp[curPos[0]]
+					if ok && mp[curPos[0]] == curPos[1]+1 {
 						continue
 					} else {
-						curPos[0] += 1
+						curPos[1] += 1
 						if math.Pow(float64(curPos[0]), 2)+math.Pow(float64(curPos[1]), 2) > float64(maxLen) {
 							maxLen = int(math.Pow(float64(curPos[0]), 2)) + int(math.Pow(float64(curPos[1]), 2))
 						}
 					}
 				}
 			} else if cur == east {
-				for i := 1; i < v; i++ {
+				for i := 0; i < v; i++ {
 					_, ok := mp[curPos[0]+1]
 					if ok && mp[curPos[0]+1] == curPos[1] {
 						continue
@@ -57,7 +59,7 @@ func robotSim(commands []int, obstacle [][2]int) int {
 							continue
 						}
 					} else {
-						curPos[0] -= 1
+						curPos[1] -= 1
 						if math.Pow(float64(curPos[0]), 2)+math.Pow(float64(curPos[1]), 2) > float64(maxLen) {
 							maxLen = int(math.Pow(float64(curPos[0]), 2)) + int(math.Pow(float64(curPos[1]), 2))
 						}
@@ -98,5 +100,10 @@ func robotSim(commands []int, obstacle [][2]int) int {
 解释: 机器人在左转走到 (1, 8) 之前将被困在 (1, 4) 处
 */
 func main() {
-	//var commands = []int{4, -1, 4, -2, 4}
+	var commands = []int{4, -1, 4, -2, 4}
+	var obstacle = [][2]int{{2, 4}}
+	fmt.Println(robotSim(commands, obstacle))
+	var commands1 = []int{4, -1, 3}
+	var obstacle1 = [][2]int{}
+	fmt.Println(robotSim(commands1, obstacle1))
 }
