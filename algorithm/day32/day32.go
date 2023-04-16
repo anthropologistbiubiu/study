@@ -1,7 +1,5 @@
 package main
 
-import "fmt"
-
 // 图片平滑器
 /*
 图像平滑器 是大小为 3 x 3 的过滤器，用于对图像的每个单元格平滑处理，平滑处理后单元格的值为该单元格的平均灰度。
@@ -52,14 +50,31 @@ const (
 	west
 )
 
-func robotSim([]int, [1][2]int) {
+// 第一步计算行走的方向 遍历下一个路径  计算下一次的计算 在每个方向上计算最大距离
+func robotSim(commands []int, obstacle [1][2]int) {
 	//var curDirec = 1
 
+	cur := int(0)
+	for _, v := range commands {
+		switch v {
+		case -1:
+			cur = (cur + 4 + v) % 4
+		case -2:
+			cur = (cur + 4 + v) % 4
+		default:
+			if cur == north {
+
+			} else if cur == east {
+
+			} else if cur == south {
+
+			} else if cur == west {
+
+			}
+
+		}
+	}
 }
 
 func main() {
-	fmt.Println(north)
-	fmt.Println(east)
-	fmt.Println(south)
-	fmt.Println(west)
 }
