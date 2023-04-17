@@ -30,8 +30,17 @@ type ListNode struct {
 }
 
 func removeNthFromEnd(head *ListNode, k int) *ListNode {
-	pre, next := head, head
-	return nil
+	var pre *ListNode = head
+	var next *ListNode = head
+	for i := 0; i < k; i++ {
+		next = next.Next
+	}
+	for next.Next != nil {
+		pre = pre.Next
+		next = next.Next
+	}
+	pre.Next = pre.Next.Next
+	return head
 }
 
 func main() {
