@@ -15,18 +15,6 @@ package main
 // 判断第一位是否需要进位  如果需要进位  就通过覆盖的方式来 统一向后挪 也就是第一位是否为零
 
 func plusOne(nums ...int) {
-	i := len(nums) - 1
-	if nums[len(nums)-1]+1 > 9 {
-		ones := (nums[len(nums)-1] + 1) % 10
-		de := (nums[len(nums)-1] + 1) / 10
-		if nums[0] == 9 {
-			nums = append(nums, ones)
-			for i > 0 {
-
-			}
-		}
-
-	}
 }
 func main() {
 
