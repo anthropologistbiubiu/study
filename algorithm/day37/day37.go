@@ -29,9 +29,11 @@ type ListNode struct {
 	Next *ListNode
 }
 
-func removeNthFromEnd(head *ListNode, n int) *ListNode {
-
+func removeNthFromEnd(head *ListNode, k int) *ListNode {
+	pre, next := head, head
+	return nil
 }
+
 func main() {
 
 }
