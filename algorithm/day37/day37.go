@@ -33,6 +33,11 @@ func removeNthFromEnd(head *ListNode, k int) *ListNode {
 	for i := 0; i < k; i++ {
 		next = next.next
 	}
+	if next == nil {
+		head = head.next
+		return head
+	}
+
 	for next.next != nil {
 		pre = pre.next
 		next = next.next
