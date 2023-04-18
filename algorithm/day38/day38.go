@@ -33,7 +33,7 @@ func Sort(str string) string {
 }
 func groupAnagrams(str []string) [][]string {
 	mp := make(map[string]int, 10)
-	ans := make([][]string, 0)
+	ans := [][]string{}
 	for _, v := range str {
 		p := Sort(v)
 		tem := make([]string, 0)
