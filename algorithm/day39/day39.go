@@ -49,9 +49,25 @@ package main
 	[16, 7,10,11]
 
 ]
-*/
-func rotate([][]int) [][]int {
 
+
+事实上有一个更加巧妙的做法，我们可以巧妙地利用对称轴旋转达到我们的目的，
+我们先进行一次以对角线为轴的翻转，然后
+再进行一次以水平轴心线为轴的翻转即可。
+*/
+
+func rotate(matrix [][]int) [][]int {
+
+	if len(matrix) == 0 {
+		return [][]int{}
+	}
+	for i, horizontalV := range matrix {
+		for j, vertialV := range matrix[i] {
+
+		}
+	}
+
+	return [][]int{}
 }
 func main() {
 
