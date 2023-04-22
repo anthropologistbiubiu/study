@@ -12,7 +12,6 @@ import "fmt"
 //进阶
 //
 //如果你已经实现复杂度为 O(n) 的解法，尝试使用更为精妙的分治法求解。
-<<<<<<< HEAD
 
 func maxSubArray(nums ...int) int {
 	//res := make([]int, len(nums))
@@ -58,5 +57,3 @@ func main() {
 	fmt.Println(maxSubArray(nums...))
 
 }
-=======
->>>>>>> 3ffb4361f2d9a132248437aa8fc76cf36d0b9bfb
