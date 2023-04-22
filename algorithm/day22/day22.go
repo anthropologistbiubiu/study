@@ -42,14 +42,14 @@ func getSum1(a int, b int) int {
 		for carry != 0 {
 			a = a ^ b
 			carry = a & b << 1
+			b = carry
 		}
-
 	} else {
 		return a ^ b
 	}
 	return a
 }
 func main() {
-	fmt.Println(getSum(3, 2))
-	fmt.Println(getSum(3, 2))
+	fmt.Println(getSum(444, 3393))
+	fmt.Println(getSum(444, 3393))
 }
