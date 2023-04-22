@@ -1,6 +1,8 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 /*
 给定一个字符串，验证它是否是回文串，只考虑字母和数字字符，可以忽略字母的大小写。
@@ -17,20 +19,30 @@ import "fmt"
 输出: false
 */
 
+func isValid(s string) string {
+	var res string
+	for tail, _ := range s {
+		if s[tail] >= 65 && s[tail] <= 90 || s[tail] >= 97 && s[tail] <= 122 || s[tail] >= 48 && s[tail] <= 57 {
+			res += string(s[tail])
+		}
+
+	}
+	return res
+}
 func isPalindrome(s string) bool {
+
+	s = isValid(s)
+	fmt.Println(s)
+	if len(s) == 0 {
+		return true
+	}
 	var top, tail = 0, len(s) - 1
 	for top <= tail {
-		for s[top] < 65 || s[top] > 90 && s[top] < 97 || s[top] > 122 {
-			top++
-		}
-		for s[tail] < 65 || s[tail] > 90 && s[tail] < 97 || s[tail] > 122 {
-			tail--
-		}
-		if s[top] != s[tail] && s[top] != s[tail]+32 && s[top]+32 != s[tail] {
+		if !(s[top] == s[tail] || s[top] == s[tail]+32 || s[top]+32 == s[tail]) {
 			return false
 		}
-		top++
 		tail--
+		top++
 	}
 	return true
 }
@@ -43,8 +55,4 @@ func main() {
 	//fmt.Println(len(s))
 	var assist = "A man, a plan, a canal: Panama"
 	fmt.Println(isPalindrome(assist))
-	var scar = "race a car"
-	fmt.Println(isPalindrome(scar))
-	fmt.Println("", isPalindrome(""))
-
 }
