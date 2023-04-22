@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 /*
 给定一个 n × n 的二维矩阵表示一个图像。
 
@@ -56,10 +58,40 @@ package main
 再进行一次以水平轴心线为轴的翻转即可。
 */
 
-func rotate(matrix [][]int) [][]int {
+func matrixPrint(matrix [][]int) {
+	length := len(matrix)
+	for i := 0; i < length; i++ {
+		for j := 0; j < length; j++ {
+			fmt.Printf("%3d", matrix[i][j])
+		}
+		fmt.Println()
+	}
+	fmt.Println("______________")
+}
 
-	return [][]int{}
+func rotate(matrix [][]int) {
+	length := len(matrix)
+	n := length
+	for i := 0; i < length; i++ {
+		for j := 0; j < n-i-1; j++ {
+			matrix[i][j], matrix[n-j-1][n-i-1] = matrix[n-j-1][n-i-1], matrix[i][j]
+		}
+	}
+	for i := 0; i < length/2; i++ {
+		for j := 0; j < length; j++ {
+			matrix[i][j], matrix[n-1-i][j] = matrix[n-1-i][j], matrix[i][j]
+		}
+	}
+	matrixPrint(matrix)
 }
 func main() {
+	var matrix = [][]int{
+		{5, 1, 9, 11},
+		{2, 4, 8, 10},
+		{13, 3, 6, 7},
+		{15, 14, 12, 16},
+	}
+	matrixPrint(matrix)
+	rotate(matrix)
 
 }
