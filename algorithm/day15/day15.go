@@ -18,7 +18,6 @@ import "fmt"
 */
 
 func isPalindrome(s string) bool {
-
 	var top, tail = 0, len(s) - 1
 	for top <= tail {
 		for s[top] < 65 || s[top] > 90 && s[top] < 97 || s[top] > 122 {
@@ -46,5 +45,6 @@ func main() {
 	fmt.Println(isPalindrome(assist))
 	var scar = "race a car"
 	fmt.Println(isPalindrome(scar))
+	fmt.Println("", isPalindrome(""))
 
 }
