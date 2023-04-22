@@ -58,20 +58,6 @@ package main
 
 func rotate(matrix [][]int) [][]int {
 
-	if len(matrix) == 0 {
-		return [][]int{}
-	}
-	n := len(matrix)
-	for i, _ := range matrix {
-		for j, vertialV := range matrix[i] {
-
-			if i+j == n {
-				continue
-			}
-
-		}
-	}
-
 	return [][]int{}
 }
 func main() {
