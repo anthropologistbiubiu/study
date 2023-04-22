@@ -38,6 +38,13 @@ func isPalindrome(s string) bool {
 	}
 	var top, tail = 0, len(s) - 1
 	for top <= tail {
+		fmt.Println(s[top])
+		fmt.Println(s[tail])
+		if s[top] >= 48 && s[top] <= 57 {
+			if s[top] != s[tail] {
+				return false
+			}
+		}
 		if !(s[top] == s[tail] || s[top] == s[tail]+32 || s[top]+32 == s[tail]) {
 			return false
 		}
@@ -53,6 +60,6 @@ func main() {
 	//fmt.Printf("%T\n", (s[2]))
 	//fmt.Println(string(104))
 	//fmt.Println(len(s))
-	var assist = "A man, a plan, a canal: Panama"
+	var assist = "0P"
 	fmt.Println(isPalindrome(assist))
 }
