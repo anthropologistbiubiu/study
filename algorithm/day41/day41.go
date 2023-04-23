@@ -1,5 +1,10 @@
 package main
 
+import (
+	"fmt"
+	"strconv"
+)
+
 //积跬步，至千里。
 /*
 输入一个非负整数数组numbers，把数组里所有数字拼接起来排成一个数，打印能拼接出的所有数字中最小的一个。
@@ -9,11 +14,29 @@ package main
 */
 //JZ45 把数组排成最小的数
 
-func PrintMinNumber(numbers []int) string {
-	// write code here
-	return "c"
-}
+func getPos1(nums []int, first, last int) int {
 
+	var key = nums[first]
+	for first < last {
+		for first < last && verify(key, nums[last]) {
+			last--
+		}
+		nums[first], nums[last] = nums[last], nums[first]
+		for first < last && verify(nums[first], key) {
+			first++
+		}
+		nums[first], nums[last] = nums[last], nums[first]
+	}
+	return first
+}
+func verify(a, b int) bool {
+	var as = strconv.Itoa(a)
+	var bs = strconv.Itoa(b)
+	if as+bs <= bs+as {
+		return true
+	}
+	return false
+}
 func getPos(nums []int, first, last int) int {
 
 	var key = nums[first]
@@ -33,7 +56,27 @@ func QuickSort(nums []int, first, last int) {
 	if first >= last {
 		return
 	}
-	var pos = getPos(nums, first, last)
+	var pos = getPos1(nums, first, last)
 	QuickSort(nums, first, pos-1)
 	QuickSort(nums, pos+1, last)
+}
+
+func main() {
+	var nums = []int{3, 30, 34, 5, 9}
+	//输出: "3033459"
+	QuickSort(nums, 0, len(nums)-1)
+	PrintMinNumber(nums)
+	var nums1 = []int{10, 2}
+	QuickSort(nums1, 0, 1)
+	PrintMinNumber(nums1)
+}
+
+func PrintMinNumber(numbers []int) string {
+	// write code here
+	var ans string
+	for _, v := range numbers {
+		ans += strconv.Itoa(v)
+	}
+	fmt.Println(ans)
+	return ans
 }
