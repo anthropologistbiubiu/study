@@ -1,5 +1,9 @@
 package main
 
+import (
+	"fmt"
+)
+
 //积跬步，至千里。
 /*
 输入一个非负整数数组numbers，把数组里所有数字拼接起来排成一个数，打印能拼接出的所有数字中最小的一个。
@@ -14,28 +18,32 @@ func PrintMinNumber(numbers []int) string {
 	return "c"
 }
 
-func getPos(nums []int,fisrt,last int) int {
+func getPos(nums []int, first, last int) int {
 
-
+	var key = nums[first]
 	for first <= last {
-
-		var key = nums[first]
 		for first < last && key <= nums[last] {
 			last--
 		}
 		nums[first], nums[last] = nums[last], nums[first]
-		for first < last && key > nums[first] {
+		for first < last && key >= nums[first] {
 			first++
 		}
 		nums[first], nums[last] = nums[last], nums[first]
-
 	}
 	return first
 }
-func QuickSort(nums []int) {
-	var fisrt ,last = 0
-	if 
-	var pos = getPos(nums[],0,len(nums)-1)
-	getPos(nums,0,pos)
-	getPos(nums,post+1,pos)
+func QuickSort(nums []int, first, last int) {
+	if first >= last {
+		return
+	}
+	var pos = getPos(nums, 0, len(nums)-1)
+	QuickSort(nums, first, pos-1)
+	QuickSort(nums, pos+1, last)
+}
+
+func main() {
+	nums := []int{9, 93, 3, 4, 0, 2}
+	QuickSort(nums, 0, len(nums)-1)
+	fmt.Println(nums)
 }
