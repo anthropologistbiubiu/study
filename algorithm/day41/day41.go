@@ -14,9 +14,8 @@ func PrintMinNumber(numbers []int) string {
 	return "c"
 }
 
-func getPos(nums []int) int {
+func getPos(nums []int,fisrt,last int) int {
 
-	var first, last = 0, len(nums)
 
 	for first <= last {
 
@@ -36,5 +35,7 @@ func getPos(nums []int) int {
 func QuickSort(nums []int) {
 	var fisrt ,last = 0
 	if 
-	var pos = getPos(nums[])
+	var pos = getPos(nums[],0,len(nums)-1)
+	getPos(nums,0,pos)
+	getPos(nums,post+1,pos)
 }
