@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 func Insert(ch byte) {
 
 }
@@ -30,17 +32,20 @@ func permutation(s string) []string {
 
 }
 
-func swap(nums string, i, cur int) {
-
-}
-func dfs(s string, cur int) {
-	var res []string
+func dfs(s []byte, cur int, res []string) {
 	if cur == len(s)-1 {
-		res = append(res, s)
+		res = append(res, string(s))
 	}
 	for i := cur; i < len(s); i++ {
-		swap(s, cur, i)
-		dfs(s, cur+1)
-		swap(s, cur, i)
+		s[i], s[cur] = s[cur], s[i]
+		dfs(s, cur+1, res)
+		s[i], s[cur] = s[cur], s[i]
 	}
+}
+
+func main() {
+	s := "abc"
+	res := make([]string, 0)
+	dfs([]byte(s), 0, res)
+	fmt.Println(res)
 }
