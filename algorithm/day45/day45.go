@@ -29,3 +29,14 @@ func permutation(s string) []string {
 	return res
 
 }
+
+func dfs(s string, cur int) {
+	var res []string
+	if cur == len(s)-1 {
+		res = append(res, s)
+	}
+	dfs(s, cur+1)
+	tem := []byte(s)
+	tem[cur], tem[i] = tem[i], tem[cur]
+
+}
