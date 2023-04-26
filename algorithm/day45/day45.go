@@ -38,12 +38,12 @@ func dfs(s []byte, cur int) {
 	if cur == len(s)-1 {
 		res = append(res, string(s))
 	}
-	mp := make(map[string]struct{})
 	for i := cur; i < len(s); i++ {
-		if _, ok := mp[string(s[:i])]; ok {
+		mp := make(map[string]struct{})
+		if _, ok := mp[string(s[i])]; ok {
 			continue
 		} else {
-			mp[string(s[:i])] = struct{}{}
+			mp[string(s[i])] = struct{}{}
 			s[i], s[cur] = s[cur], s[i]
 			dfs(s, cur+1)
 			s[i], s[cur] = s[cur], s[i]
