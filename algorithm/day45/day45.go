@@ -36,7 +36,11 @@ func dfs(s []byte, cur int) {
 	if cur == len(s)-1 {
 		res = append(res, string(s))
 	}
+	mp := make(map[string]string)
 	for i := cur; i < len(s); i++ {
+		if _, ok := mp[s[i]]; ok {
+			continue
+		}
 		s[i], s[cur] = s[cur], s[i]
 		dfs(s, cur+1)
 		s[i], s[cur] = s[cur], s[i]
