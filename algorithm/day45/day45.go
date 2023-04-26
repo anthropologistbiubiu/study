@@ -30,14 +30,17 @@ func permutation(s string) []string {
 
 }
 
+func swap(nums string, i, cur int) {
+
+}
 func dfs(s string, cur int) {
 	var res []string
 	if cur == len(s)-1 {
 		res = append(res, s)
 	}
 	for i := cur; i < len(s); i++ {
+		swap(s, cur, i)
 		dfs(s, cur+1)
-		tem := []byte(s)
-		tem[cur], tem[i] = tem[i], tem[cur]
+		swap(s, cur, i)
 	}
 }
