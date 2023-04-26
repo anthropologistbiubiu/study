@@ -35,8 +35,9 @@ func dfs(s string, cur int) {
 	if cur == len(s)-1 {
 		res = append(res, s)
 	}
-	dfs(s, cur+1)
-	tem := []byte(s)
-	tem[cur], tem[i] = tem[i], tem[cur]
-
+	for i := x; i < len(s); i++ {
+		dfs(s, x+1)
+		tem := []byte(s)
+		tem[x], tem[i] = tem[i], tem[x]
+	}
 }
