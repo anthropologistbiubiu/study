@@ -1,6 +1,8 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func Insert(ch byte) {
 
@@ -36,21 +38,23 @@ func dfs(s []byte, cur int) {
 	if cur == len(s)-1 {
 		res = append(res, string(s))
 	}
-	mp := make(map[string]string)
+	mp := make(map[string]struct{})
 	for i := cur; i < len(s); i++ {
-		if _, ok := mp[s[i]]; ok {
+		if _, ok := mp[string(s[:i])]; ok {
 			continue
+		} else {
+			mp[string(s[:i])] = struct{}{}
+			s[i], s[cur] = s[cur], s[i]
+			dfs(s, cur+1)
+			s[i], s[cur] = s[cur], s[i]
 		}
-		s[i], s[cur] = s[cur], s[i]
-		dfs(s, cur+1)
-		s[i], s[cur] = s[cur], s[i]
 	}
 }
 
 var res []string
 
 func main() {
-	s := "abc"
+	s := "abb"
 	dfs([]byte(s), 0)
 	fmt.Println(res)
 }
