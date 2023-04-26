@@ -32,20 +32,21 @@ func permutation(s string) []string {
 
 }
 
-func dfs(s []byte, cur int, res []string) {
+func dfs(s []byte, cur int) {
 	if cur == len(s)-1 {
 		res = append(res, string(s))
 	}
 	for i := cur; i < len(s); i++ {
 		s[i], s[cur] = s[cur], s[i]
-		dfs(s, cur+1, res)
+		dfs(s, cur+1)
 		s[i], s[cur] = s[cur], s[i]
 	}
 }
 
+var res []string
+
 func main() {
 	s := "abc"
-	res := make([]string, 0)
-	dfs([]byte(s), 0, res)
+	dfs([]byte(s), 0)
 	fmt.Println(res)
 }
