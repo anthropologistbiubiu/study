@@ -34,12 +34,14 @@ func permutation(s string) []string {
 
 }
 
+var res []string
+
 func dfs(s []byte, cur int) {
 	if cur == len(s)-1 {
 		res = append(res, string(s))
 	}
+	mp := make(map[string]struct{})
 	for i := cur; i < len(s); i++ {
-		mp := make(map[string]struct{})
 		if _, ok := mp[string(s[i])]; ok {
 			continue
 		} else {
@@ -51,10 +53,27 @@ func dfs(s []byte, cur int) {
 	}
 }
 
-var res []string
-
 func main() {
-	s := "abb"
+	s := "baa"
+	var res []string
+	var dfs func(s []byte, cur int)
+	dfs = func(s []byte, cur int) {
+		if cur == len(s)-1 {
+			res = append(res, string(s))
+		}
+		mp := make(map[string]struct{})
+		for i := cur; i < len(s); i++ {
+			if _, ok := mp[string(s[i])]; ok {
+				continue
+			} else {
+				mp[string(s[i])] = struct{}{}
+				s[i], s[cur] = s[cur], s[i]
+				dfs(s, cur+1)
+				s[i], s[cur] = s[cur], s[i]
+			}
+		}
+
+	}
 	dfs([]byte(s), 0)
 	fmt.Println(res)
 }
