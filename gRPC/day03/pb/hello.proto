@@ -9,6 +9,9 @@ package pb; // 包名
 service Greeter {
     // SayHello 方法
     rpc SayHello (HelloRequest) returns (HelloResponse) {}
+    rpc LotsOfReplies(HelloRequest) returns (stream HelloResponse);
+    rpc LotsOfGreetings(stream HelloRequest) returns (HelloResponse);
+    rpc BidiHello(stream HelloRequest) returns (stream HelloResponse);
 }
 
 // 请求消息
