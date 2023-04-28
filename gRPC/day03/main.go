@@ -132,5 +132,6 @@ func main() {
 		log.Fatalf("could not greet: %v", err)
 	}
 	log.Printf("Greeting: %s", r.GetReply())
-	runLotsOfReplies(c)
+	//runLotsOfReplies(c)
+	runBidiHello(c)
 }
