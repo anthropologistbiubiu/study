@@ -12,6 +12,9 @@ service Greeter {
     rpc LotsOfReplies(HelloRequest) returns (stream HelloResponse);
     rpc LotsOfGreetings(stream HelloRequest) returns (HelloResponse);
     rpc BidiHello(stream HelloRequest) returns (stream HelloResponse);
+    rpc UnarySayHello(HelloRequest) returns (HelloResponse) {}
+    rpc bidirectionalWithMetadata(stream HelloRequest) returns (stream HelloResponse);
+    rpc BidirectionalStreamingSayHello (stream HelloRequest) returns (stream HelloResponse);
 }
 
 // 请求消息
