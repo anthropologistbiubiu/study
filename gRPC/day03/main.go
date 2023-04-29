@@ -1,24 +1,8 @@
 package main
 
-import (
-	"bufio"
-	"context"
-	"flag"
-	"fmt"
-	"io"
-	"log"
-	"os"
-	"strings"
-	"time"
-
-	"day03/pb"
-
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
-)
-
 // hello_client
 
+/*
 const (
 	defaultName = "world"
 )
@@ -135,3 +119,5 @@ func main() {
 	//runLotsOfReplies(c)
 	runBidiHello(c)
 }
+
+*/
