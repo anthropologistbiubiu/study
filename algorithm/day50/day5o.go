@@ -14,8 +14,8 @@ type Node struct {
 
 // 深度优先遍历的栈空间本身就是一个链式结构
 var set map[*Node]struct{}
-var ans *Node
 
+// 递归函数中的传参问题
 func copyRandomList(head *Node) *Node {
 
 	if head == nil {
@@ -28,10 +28,35 @@ func copyRandomList(head *Node) *Node {
 	ans.Val = head.Val
 	set[ans] = struct{}{}
 	ans.Next = copyRandomList(head.Next)
-	ans.Next = copyRandomList(head.Next)
+	ans.Next = copyRandomList(head.Random)
 	return ans
 }
 
-func main() {
+/*
+type RandomListNode struct {
+    Label int
+    Next *RandomListNode
+    Random *RandomListNode
+}
+*/
 
+/**
+ *
+ * @param pHead RandomListNode类
+ * @return RandomListNode类
+ */
+func Clone(head *RandomListNode) *RandomListNode {
+	//write your code here
+	if head == nil {
+		return nil
+	}
+	if _, ok := set[head]; !ok {
+		return head
+	}
+	ans := new(Node)
+	ans.Val = head.Val
+	set[ans] = struct{}{}
+	ans.Next = copyRandomList(head.Next)
+	ans.Next = copyRandomList(head.Random)
+	return ans
 }
