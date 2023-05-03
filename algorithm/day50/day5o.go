@@ -14,6 +14,10 @@ type Node struct {
 
 func copyRandomList(head *Node) *Node {
 
+	if head == nil {
+		return nil
+	}
+
 	return nil
 }
 func main() {
