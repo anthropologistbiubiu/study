@@ -12,11 +12,19 @@ type Node struct {
 	Random *Node
 }
 
+// 深度优先遍历的栈空间本身就是一个链式结构
+var set map[*Node]struct{}
+
 func copyRandomList(head *Node) *Node {
 
 	if head == nil {
 		return nil
 	}
+	if _, ok := set[head]; !ok {
+		return head
+	}
+	head.Next = copyRandomList(head.Next)
+	head.Next = copyRandomList(head.Next)
 
 	return nil
 }
