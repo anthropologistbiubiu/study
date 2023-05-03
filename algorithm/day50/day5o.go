@@ -13,7 +13,8 @@ type Node struct {
 }
 
 // 深度优先遍历的栈空间本身就是一个链式结构
-var set map[*Node]struct{}
+
+var set1 map[*Node]*Node = make(map[*Node]*Node)
 
 // 递归函数中的传参问题
 func copyRandomList(head *Node) *Node {
@@ -21,42 +22,37 @@ func copyRandomList(head *Node) *Node {
 	if head == nil {
 		return nil
 	}
-	if _, ok := set[head]; !ok {
-		return head
+	if _, ok := set1[head]; ok {
+		return set1[head]
 	}
 	ans := new(Node)
 	ans.Val = head.Val
-	set[ans] = struct{}{}
+	set1[head] = ans
 	ans.Next = copyRandomList(head.Next)
-	ans.Next = copyRandomList(head.Random)
+	ans.Random = copyRandomList(head.Random)
 	return ans
 }
 
-/*
 type RandomListNode struct {
-    Label int
-    Next *RandomListNode
-    Random *RandomListNode
+	Label  int
+	Next   *RandomListNode
+	Random *RandomListNode
 }
-*/
 
-/**
- *
- * @param pHead RandomListNode类
- * @return RandomListNode类
- */
+var mp map[*RandomListNode]*RandomListNode = make(map[*RandomListNode]*RandomListNode)
+
 func Clone(head *RandomListNode) *RandomListNode {
 	//write your code here
 	if head == nil {
 		return nil
 	}
-	if _, ok := set[head]; !ok {
-		return head
+	if _, ok := mp[head]; ok {
+		return mp[head]
 	}
-	ans := new(Node)
-	ans.Val = head.Val
-	set[ans] = struct{}{}
-	ans.Next = copyRandomList(head.Next)
-	ans.Next = copyRandomList(head.Random)
+	ans := new(RandomListNode)
+	ans.Label = head.Label
+	mp[head] = ans
+	ans.Next = Clone(head.Next)
+	ans.Random = Clone(head.Random)
 	return ans
 }
