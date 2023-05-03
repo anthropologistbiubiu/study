@@ -14,6 +14,7 @@ type Node struct {
 
 // 深度优先遍历的栈空间本身就是一个链式结构
 var set map[*Node]struct{}
+var ans *Node
 
 func copyRandomList(head *Node) *Node {
 
@@ -23,11 +24,14 @@ func copyRandomList(head *Node) *Node {
 	if _, ok := set[head]; !ok {
 		return head
 	}
-	head.Next = copyRandomList(head.Next)
-	head.Next = copyRandomList(head.Next)
-
-	return nil
+	ans := new(Node)
+	ans.Val = head.Val
+	set[ans] = struct{}{}
+	ans.Next = copyRandomList(head.Next)
+	ans.Next = copyRandomList(head.Next)
+	return ans
 }
+
 func main() {
 
 }
