@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 //字符流中第一个不重复的字符
 
 var s string
@@ -21,4 +23,11 @@ func FirstAppearingOnce() byte {
 	return '#'
 }
 func main() {
+	var s = "abc孙"
+	for _, v := range s {
+		fmt.Printf("%+v  %T\n", v, v)
+	}
+	for _, v := range []byte(s) {
+		fmt.Printf("%+v  %T\n", v, v)
+	}
 }
