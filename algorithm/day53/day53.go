@@ -10,6 +10,10 @@ package main
 输入：digits = "23"
 输出：["ad","ae","af","bd","be","bf","cd","ce","cf"]
 */
+func letterCombinations(digits string) []string {
+
+	return []string{}
+}
 func main() {
 
 }
