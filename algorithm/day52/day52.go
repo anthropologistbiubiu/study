@@ -30,4 +30,5 @@ func main() {
 	for _, v := range []byte(s) {
 		fmt.Printf("%+v  %T\n", v, v)
 	}
+	fmt.Printf("%T\n", s[3])
 }
