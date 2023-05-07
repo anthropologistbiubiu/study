@@ -143,7 +143,7 @@ func bidirectionalWithMetadata(c pb.GreeterClient, name string) {
 		}
 		// 从返回响应的header中读取数据.
 		if l, ok := header["name"]; ok {
-			fmt.Printf("name from header: %+v \n", l)
+			fmt.Printf("name from header: %+v \n ", l)
 			/*
 				for i, e := range l {
 					fmt.Printf("%d %s\n", i, e)

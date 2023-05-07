@@ -40,18 +40,18 @@ func main() {
 }
 */
 
-var s = semaphore.NewWeighted(10)
-
+var s = semaphore.NewWeighted(1000)
 var w sync.WaitGroup
 
+// 首先使用信号量机制带来的问题是什么
 func main() {
 
-	for i := 0; i < 11; i++ {
+	for i := 0; i < 10000; i++ {
 		err := s.Acquire(context.Background(), 1)
-		w.Add(1)
 		if err != nil {
 			fmt.Println(err)
 		}
+		w.Add(1)
 		go doSomething(i, s)
 	}
 	w.Wait()
@@ -59,7 +59,7 @@ func main() {
 
 func doSomething(u int, s *semaphore.Weighted) { // 模拟抓取任务的执行
 	fmt.Println(u)
-	time.Sleep(1 * time.Second)
+	time.Sleep(2 * time.Second)
 	defer func() {
 		s.Release(1)
 		w.Done()

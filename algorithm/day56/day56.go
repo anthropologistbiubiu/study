@@ -10,34 +10,22 @@ import (
 	"time"
 )
 
+var wg sync.WaitGroup
+
 func main() {
-
-	var wg sync.WaitGroup
-
-	for i := 0; i < 5; i = i + 1 {
-
+	for i := 0; i < 5; i++ {
 		wg.Add(1)
-
 		go func(n int) {
-
 			// defer wg.Done()
-
 			defer wg.Add(-1)
-
 			EchoNumber(n)
-
 		}(i)
-
 	}
-
 	wg.Wait()
-
 }
 
 func EchoNumber(i int) {
-
 	time.Sleep(3e9)
-
 	fmt.Println(i)
 
 }
