@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"sync"
 	"time"
 
 	"golang.org/x/sync/semaphore"
@@ -40,17 +41,20 @@ func main() {
 */
 
 var s = semaphore.NewWeighted(10)
-var ctx context.Context
+
+var w sync.WaitGroup
 
 func main() {
 
-	for i := 0; i < 1000; i++ {
-		err := s.Acquire(ctx, 1)
+	for i := 0; i < 11; i++ {
+		err := s.Acquire(context.Background(), 1)
+		w.Add(1)
 		if err != nil {
 			fmt.Println(err)
 		}
 		go doSomething(i, s)
 	}
+	w.Wait()
 }
 
 func doSomething(u int, s *semaphore.Weighted) { // 模拟抓取任务的执行
@@ -58,5 +62,6 @@ func doSomething(u int, s *semaphore.Weighted) { // 模拟抓取任务的执行
 	time.Sleep(1 * time.Second)
 	defer func() {
 		s.Release(1)
+		w.Done()
 	}()
 }
