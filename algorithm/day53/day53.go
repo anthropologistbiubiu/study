@@ -45,14 +45,16 @@ var Map = map[string]string{
 
 var result []string
 
-func traceback(digits string, index int, ans string) {
+var ans = make([]byte, 0)
+
+func traceback(digits string, index int, ans []byte) {
 	if index == len(digits) {
-		result = append(result, ans)
+		result = append(result, string(ans))
 	}
 	digit := string(digits[index])
 	letters := Map[digit]
-	for i := 0; i < len(letters); i++ {
-
+	for _, v := range []byte(letters) {
+		ans = append(ans, v)
 	}
 
 }
