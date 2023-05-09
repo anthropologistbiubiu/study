@@ -14,6 +14,45 @@ func letterCombinations(digits string) []string {
 
 	return []string{}
 }
+
+/*
+	const string letterMap[10] = {
+	        "", // 0
+	        "", // 1
+	        "abc", // 2
+	        "def", // 3
+	        "ghi", // 4
+	        "jkl", // 5
+	        "mno", // 6
+	        "pqrs", // 7
+	        "tuv", // 8
+	        "wxyz", // 9
+	    };
+*/
+
+var Map = map[string]string{
+	"0": " ",
+	"1": " ",
+	"2": "abc",
+	"3": "defc",
+	"4": "ghi",
+	"5": "jkl",
+	"6": "mno",
+	"7": "pqrs",
+	"8": "tuv",
+	"9": "wxyz",
+}
+
+var result []string
+
+func traceback(digits string, index int, ans string) {
+	if index == len(digits) {
+		result = append(result, ans)
+	}
+}
+
 func main() {
 
 }
+
+// 今晚写完这道题
