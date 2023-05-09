@@ -24,7 +24,6 @@ func letterCombinations(digits string) []string {
 	var ans = []byte{}
 	var result = []string{}
 	traceback(digits, index, ans, &result)
-	fmt.Println(ans)
 	return result
 }
 
