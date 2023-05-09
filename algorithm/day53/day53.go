@@ -49,6 +49,12 @@ func traceback(digits string, index int, ans string) {
 	if index == len(digits) {
 		result = append(result, ans)
 	}
+	digit := string(digits[index])
+	letters := Map[digit]
+	for i := 0; i < len(letters); i++ {
+
+	}
+
 }
 
 func main() {
