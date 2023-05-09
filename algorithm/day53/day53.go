@@ -12,13 +12,19 @@ import "fmt"
 输入：digits = "23"
 输出：["ad","ae","af","bd","be","bf","cd","ce","cf"]
 */
-var result []string
 
+// 所以这里就是传值还是传引用的问题
+// []string 传进去是错误的
 func letterCombinations(digits string) []string {
 
+	if len(digits) == 0 {
+		return []string{}
+	}
 	index := 0
 	var ans = []byte{}
-	traceback(digits, index, ans)
+	var result = []string{}
+	traceback(digits, index, ans, &result)
+	fmt.Println(ans)
 	return result
 }
 
@@ -35,16 +41,16 @@ var Map = map[string]string{
 	"9": "wxyz",
 }
 
-func traceback(digits string, index int, ans []byte) {
+func traceback(digits string, index int, ans []byte, result *[]string) {
 	if index == len(digits) {
-		result = append(result, string(ans))
+		*result = append(*result, string(ans))
 		return
 	}
 	digit := string(digits[index])
 	letters := Map[digit]
 	for _, v := range []byte(letters) {
 		ans = append(ans, v)
-		traceback(digits, index+1, ans)
+		traceback(digits, index+1, ans, result)
 		ans = ans[:len(ans)-1]
 	}
 
@@ -54,8 +60,7 @@ func main() {
 	var digits = "23"
 	//输出：["ad","ae","af","bd","be","bf","cd","ce","cf"]
 	// .   [ad    ae   af   bd   be   bf   cd   ce   cf]
-	letterCombinations(digits)
-	fmt.Println(result)
+	fmt.Println(letterCombinations(digits))
 }
 
 // 今晚写完这道题
