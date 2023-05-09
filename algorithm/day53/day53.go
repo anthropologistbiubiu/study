@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 /*
 电话号码的字母组合
 给定一个仅包含数字 2-9 的字符串，返回所有它能表示的字母组合。答案可以按 任意顺序 返回。
@@ -10,31 +12,21 @@ package main
 输入：digits = "23"
 输出：["ad","ae","af","bd","be","bf","cd","ce","cf"]
 */
+var result []string
+
 func letterCombinations(digits string) []string {
 
-	return []string{}
+	index := 0
+	var ans = []byte{}
+	traceback(digits, index, ans)
+	return result
 }
-
-/*
-	const string letterMap[10] = {
-	        "", // 0
-	        "", // 1
-	        "abc", // 2
-	        "def", // 3
-	        "ghi", // 4
-	        "jkl", // 5
-	        "mno", // 6
-	        "pqrs", // 7
-	        "tuv", // 8
-	        "wxyz", // 9
-	    };
-*/
 
 var Map = map[string]string{
 	"0": " ",
 	"1": " ",
 	"2": "abc",
-	"3": "defc",
+	"3": "def",
 	"4": "ghi",
 	"5": "jkl",
 	"6": "mno",
@@ -43,24 +35,27 @@ var Map = map[string]string{
 	"9": "wxyz",
 }
 
-var result []string
-
-var ans = make([]byte, 0)
-
 func traceback(digits string, index int, ans []byte) {
 	if index == len(digits) {
 		result = append(result, string(ans))
+		return
 	}
 	digit := string(digits[index])
 	letters := Map[digit]
 	for _, v := range []byte(letters) {
 		ans = append(ans, v)
+		traceback(digits, index+1, ans)
+		ans = ans[:len(ans)-1]
 	}
 
 }
 
 func main() {
-
+	var digits = "23"
+	//输出：["ad","ae","af","bd","be","bf","cd","ce","cf"]
+	// .   [ad    ae   af   bd   be   bf   cd   ce   cf]
+	letterCombinations(digits)
+	fmt.Println(result)
 }
 
 // 今晚写完这道题
