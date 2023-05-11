@@ -1,7 +1,6 @@
 package main
 
 import (
-	"runtime"
 	"sync/atomic"
 )
 
@@ -19,7 +18,7 @@ func (m *Mutex) Lock() {
 	if atomic.AddInt32(&m.key, 1) == 1 {
 		return
 	}
-	runtime.Semacquire(&m.sema)
+	//runtime.Semacquire(&m.sema)
 }
 
 func (m *Mutex) Unlock() {
@@ -29,5 +28,5 @@ func (m *Mutex) Unlock() {
 	case v == -1:
 		panic("sync: unlock of unlocked mutex")
 	}
-	runtime.Semrelease(&m.sema)
+	//runtime.Semrelease(&m.sema)
 }
