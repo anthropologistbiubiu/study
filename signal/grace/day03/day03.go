@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 	"net/http"
 	"os"
@@ -10,12 +11,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// 直接关闭 serve
+// 平滑关闭 serve
 func main() {
 	router := gin.Default()
 	router.GET("/home", func(c *gin.Context) {
 		time.Sleep(5 * time.Second)
-		c.String(http.StatusOK, "Welcome Gin Server\n")
+		c.String(http.StatusOK, "Welcome Gin Server")
 	})
 
 	server := &http.Server{
@@ -40,11 +41,7 @@ func main() {
 	}()
 
 	<-quit
-	log.Println("receive interrupt signal")
-	//ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	//defer cancel()
-
-	if err := server.Close(); err != nil {
+	if err := server.Shutdown(context.Background()); err != nil {
 		log.Fatal("Server Close:", err)
 	}
 	log.Println("Server exiting")
