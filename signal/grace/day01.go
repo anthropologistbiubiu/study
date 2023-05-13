@@ -13,6 +13,4 @@ func startHttpServer() {
 	}
 }
 
-func main() {
-
-}
+// startHttpServer start http server
