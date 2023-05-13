@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
-	"time"
 )
 
 func main() {
@@ -13,9 +12,13 @@ func main() {
 	// if we're not ready to receive when the signal is sent.
 	c := make(chan os.Signal)
 	signal.Notify(c, os.Interrupt)
+	go func() {
+		for {
+			fmt.Println("test")
+		}
+	}()
 
-	time.Sleep(5 * time.Second)
 	// Block until a signal is received.
-	s := <-c
-	fmt.Println("Got signal:", s)
+	<-c
+	fmt.Println("Got signal end")
 }
