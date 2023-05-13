@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -69,6 +70,9 @@ func main() {
 	//gin.SetMode(gin.ReleaseMode)
 	g := gin.Default()
 	g.GET("/hello", func(context *gin.Context) {
+
+		time.Sleep(time.Second * 10)
+		fmt.Println("老顽童")
 		// 被 gin 所在 goroutine 捕获
 		/*
 			defer func() {
