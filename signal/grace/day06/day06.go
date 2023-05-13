@@ -7,7 +7,6 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -35,11 +34,12 @@ func NewShutdownSignal() chan os.Signal {
 }
 
 // Recover the go routine
-func Recover(cleanups ...func()) {
-	for _, cleanup := range cleanups {
-		cleanup()
-	}
-
+func Recover() {
+	/*
+		for _, cleanup := range cleanups {
+			cleanup()
+		}
+	*/
 	if err := recover(); err != nil {
 		fmt.Println("recover error", err)
 	}
@@ -47,8 +47,17 @@ func Recover(cleanups ...func()) {
 
 // GoSafe instead go func()
 func GoSafe(ctx context.Context, fn func(ctx context.Context)) {
+	/*
+		go func(ctx context.Context) {
+			defer Recover()
+		}(ctx)
+	*/
 	go func(ctx context.Context) {
-		defer Recover()
+		defer func() {
+			if err := recover(); err != nil {
+				fmt.Println(err)
+			}
+		}()
 		if fn != nil {
 			fn(ctx)
 		}
@@ -57,10 +66,17 @@ func GoSafe(ctx context.Context, fn func(ctx context.Context)) {
 
 func main() {
 	// a gin http server
-	gin.SetMode(gin.ReleaseMode)
+	//gin.SetMode(gin.ReleaseMode)
 	g := gin.Default()
 	g.GET("/hello", func(context *gin.Context) {
 		// 被 gin 所在 goroutine 捕获
+		/*
+			defer func() {
+				err := recover()
+				fmt.Println(err)
+			}()
+		*/
+		defer Recover()
 		panic("i am panic")
 	})
 
@@ -73,7 +89,7 @@ func main() {
 
 	// a custom dangerous go routine, 10s later app will crash!!!!
 	GoSafe(context.Background(), func(ctx context.Context) {
-		time.Sleep(time.Second * 10)
+		//time.Sleep(time.Second * 5)
 		panic("dangerous")
 	})
 
