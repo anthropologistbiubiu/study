@@ -101,7 +101,10 @@ func main() {
 	signalChan := NewShutdownSignal()
 	WaitExit(signalChan, func() {
 		// your clean code
-		if err := httpSrv.Shutdown(context.Background()); err != nil {
+		ctx, channel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer channel()
+
+		if err := httpSrv.Shutdown(ctx); err != nil {
 			fmt.Println(err.Error())
 		}
 		fmt.Println("http server closed")
