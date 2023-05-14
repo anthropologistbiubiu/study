@@ -20,28 +20,33 @@ import (
 链接：https://leetcode.cn/leetbook/read/top-interview-questions-medium/xv67o6/
 */
 
-var result [][]int
-
 func subsets(nums []int) [][]int {
 
-	traceback(nums, 0)
+	var result = make([][]int, 0)
+	result = append(result, []int{})
+	traceback(nums, 0, &result)
 	return result
 }
 
-func traceback(nums []int, index int) {
+func traceback(nums []int, index int, result *[][]int) {
 
 	if index == len(nums) {
 		return
 	}
-	var next int
-	for next < len(result) {
-		result[next] = append(result[next], nums[index])
+	*result = append(*result, []int{nums[index]})
+	var next int = 1
+	var length = len(*result) - 1
+	for next < length {
+		v := (*result)[next]
+		v = append(v, nums[index])
+		*result = append(*result, v)
 		next++
 	}
-	traceback(nums, index+1)
+	traceback(nums, index+1, result)
 }
 
 func main() {
-
-	fmt.Println(len([][]int{}))
+	var nums = []int{9, 0, 3, 5, 7} //[]int{1, 2, 3}
+	//输出：[[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]
+	fmt.Println(subsets(nums))
 }
