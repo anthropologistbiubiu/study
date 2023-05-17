@@ -1,8 +1,6 @@
 package main
 
-import (
-	"fmt"
-)
+import "fmt"
 
 /*
 给你一个整数数组 nums ，数组中的元素 互不相同 。返回该数组所有可能的子集（幂集）。
@@ -20,29 +18,33 @@ import (
 链接：https://leetcode.cn/leetbook/read/top-interview-questions-medium/xv67o6/
 */
 
-func subsets(nums []int) [][]int {
+var result = [][]int{}
 
-	var result = make([][]int, 0)
+func subsets(nums []int) [][]int {
 	result = append(result, []int{})
-	traceback(nums, 0, &result)
+	traceback(nums, 0)
 	return result
 }
 
-func traceback(nums []int, index int, result *[][]int) {
+func traceback(nums []int, index int) {
 
-	if index == len(nums) {
+	if index >= len(nums) {
 		return
 	}
-	*result = append(*result, []int{nums[index]})
+	result = append(result, []int{nums[index]})
 	var next int = 1
-	var length = len(*result) - 1
-	for next < length {
-		v := (*result)[next]
+	var last = len(result) - 2
+	for next <= last {
+		v := (result)[next]
+		if index == 4 && next == 8 {
+			fmt.Println(">>>>>", v, nums[index], result)
+		}
 		v = append(v, nums[index])
-		*result = append(*result, v)
+
+		result = append(result, v)
 		next++
 	}
-	traceback(nums, index+1, result)
+	traceback(nums, index+1)
 }
 
 func main() {
