@@ -1,6 +1,5 @@
 package main
 
-/*
 import (
 	"bytes"
 	"fmt"
@@ -222,4 +221,3 @@ func main() {
 	log.Printf("out:\n%s\nerr:\n%s", stdout.String(), stderr.String())
 }
 
-*/

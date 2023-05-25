@@ -161,7 +161,6 @@ func main7() {
 }
 
 func main8() {
-
 	r := gin.Default()
 	r.GET("/index/:id", func(c *gin.Context) {
 		//id := c.Query("id")
