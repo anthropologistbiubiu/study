@@ -64,13 +64,13 @@ func Test(tem []string) {
 	Test(tem)
 }
 func main() {
-	var digits = "234"
+	//var digits = "234"
 	//输出：["ad","ae","af","bd","be","bf","cd","ce","cf"]
 	// .   [ad    ae   af   bd   be   bf   cd   ce   cf]
-	fmt.Println(letterCombinations(digits))
-	//var tem = []string{}
-	//Test(tem)
-	//fmt.Println(tem)
+	//fmt.Println(letterCombinations(digits))
+	var tem = []string{}
+	Test(tem)
+	fmt.Println(tem)
 
 }
 

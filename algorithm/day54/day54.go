@@ -18,37 +18,35 @@ import "fmt"
 链接：https://leetcode.cn/leetbook/read/top-interview-questions-medium/xv67o6/
 */
 
-var result = [][]int{}
-
 func subsets(nums []int) [][]int {
+
+	var result = [][]int{}
 	result = append(result, []int{})
-	traceback(nums, 0)
+	traceback(nums, 0, &result)
 	return result
 }
 
-func traceback(nums []int, index int) {
+func traceback(nums []int, index int, result *[][]int) {
 
 	if index >= len(nums) {
 		return
 	}
-	result = append(result, []int{nums[index]})
+	*result = append(*result, []int{nums[index]})
 	var next int = 1
-	var last = len(result) - 2
+	var last = len(*result) - 2
 	for next <= last {
-		v := (result)[next]
-		if index == 4 && next == 8 {
-			fmt.Println(">>>>>", v, nums[index], result)
-		}
+		v := (*result)[next]
 		v = append(v, nums[index])
-
-		result = append(result, v)
+		tmp := make([]int, len(v))
+		copy(tmp, v)
+		*result = append(*result, tmp)
 		next++
 	}
-	traceback(nums, index+1)
+	traceback(nums, index+1, result)
 }
 
 func main() {
-	var nums = []int{9, 0, 3, 5, 7} //[]int{1, 2, 3}
+	var nums = []int{1, 2, 3} //[]int{1, 2, 3}
 	//输出：[[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]
 	fmt.Println(subsets(nums))
 }
