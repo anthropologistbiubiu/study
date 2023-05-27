@@ -8,15 +8,19 @@ func dfs(cur int, nums []int, curNum []int) {
 
 	if cur == len(nums) {
 		ans = append(ans, curNum)
-		fmt.Println(ans)
 		return
+	} else {
+		curNum = append(curNum, nums[cur])
+		dfs(cur+1, nums, curNum)
+		curNum = curNum[:len(curNum)-1]
+		ans = append(ans, curNum)
 	}
-	curNum = append(curNum, nums[cur])
-	dfs(cur+1, nums, curNum)
-	ans = append(ans, curNum)
-	curNum = curNum[:len(curNum)-1]
-	cur++
-	dfs(cur+1, nums, curNum)
+	if cur+1 == len(nums) {
+		return
+	} else {
+		cur++
+		dfs(cur+1, nums, curNum)
+	}
 }
 
 /*
