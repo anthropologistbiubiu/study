@@ -8,18 +8,19 @@ func dfs(cur int, nums []int, curNum []int) {
 
 	if cur == len(nums) {
 		ans = append(ans, curNum)
+		fmt.Println("ans", ans)
 		return
-	} else {
-		curNum = append(curNum, nums[cur])
-		dfs(cur+1, nums, curNum)
-		curNum = curNum[:len(curNum)-1]
-		ans = append(ans, curNum)
 	}
-	if cur+1 == len(nums) {
-		return
-	} else {
-		cur++
-		dfs(cur+1, nums, curNum)
+	for i := cur; i < len(nums); i++ {
+		curNum = append(curNum, nums[i])
+		dfs(i+1, nums, curNum)
+		fmt.Println("cur,i,curNum", cur, i, curNum)
+		curNum = curNum[:len(curNum)-1]
+		if len(curNum) == 0 {
+			continue
+		}
+		ans = append(ans, curNum)
+		fmt.Println("ans", ans)
 	}
 }
 
@@ -28,7 +29,6 @@ nums = [1,2,3]
 输出：[[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]
 */
 func subsets(nums []int) [][]int {
-
 	var curNum = []int{}
 	dfs(0, nums, curNum)
 	return ans
