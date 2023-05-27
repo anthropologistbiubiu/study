@@ -17,7 +17,13 @@ func dfs(cur int, nums []int) {
 		ans = append(ans, res)
 	}
 	dfs(cur+1, nums)
+	for cur < len(nums) {
+		cur++
+		dfs(cur, nums)
+	}
+
 }
+
 func main() {
 	fmt.Println()
 
