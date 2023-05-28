@@ -27,42 +27,53 @@ board =
 func exist(board [][]byte, word string) bool {
 
 	aux := make(map[[2]int]struct{}, 0)
-	for x, arr := range board {
-		for y, v := range arr {
+	var x, y int
+	for haxis, arr := range board {
+		x = haxis
+		for vaxis, v := range arr {
+			y = vaxis
 			if v != word[0] {
 				continue
 			}
-			dfs(aux, board, word, x, y, 0)
-			return true
+			//fmt.Println("start v,x y", string(v), x, y)
+			dfs(aux, board, word, x, y, 1)
 		}
 	}
-	return false
+	fmt.Println("x y", x, y)
+	if x == len(board)-1 && y == len(board[0])-1 {
+		return false
+	}
+	return true
 }
 
 func dfs(aux map[[2]int]struct{}, board [][]byte, word string, x, y, cur int) {
-
-	if x-1 >= 0 && board[x-1][y] == word[cur] && cur < len(word) {
+	//fmt.Println("dfs x . y", x, y, cur)
+	if cur < len(word) && x-1 >= 0 && board[x-1][y] == word[cur] {
+		//fmt.Println("^")
 		if _, ok := aux[[2]int{x, y}]; !ok {
 			aux[[2]int{x, y}] = struct{}{}
 			dfs(aux, board, word, x, y, cur+1)
 		}
 		delete(aux, [2]int{x, y})
 	}
-	if x+1 <= len(board) && board[x+1][y] == word[cur] && cur < len(word) {
+	if cur < len(word) && x+1 < len(board) && board[x+1][y] == word[cur] {
+		//fmt.Println("....")
 		if _, ok := aux[[2]int{x, y}]; !ok {
 			aux[[2]int{x, y}] = struct{}{}
 			dfs(aux, board, word, x+1, y, cur+1)
 		}
 		delete(aux, [2]int{x, y})
 	}
-	if y-1 >= 0 && board[x][y-1] == word[cur] && cur < len(word) {
+	if cur < len(word) && y-1 >= 0 && board[x][y-1] == word[cur] {
+		//fmt.Println("<<<<<")
 		if _, ok := aux[[2]int{x, y}]; !ok {
 			aux[[2]int{x, y}] = struct{}{}
 			dfs(aux, board, word, x, y-1, cur+1)
 		}
 		delete(aux, [2]int{x, y})
 	}
-	if y+1 < len(board[0]) && board[x][y+1] == word[cur] && cur < len(word) {
+	if cur < len(word) && y+1 < len(board[0]) && board[x][y+1] == word[cur] {
+		//fmt.Println(">>>>>>")
 		if _, ok := aux[[2]int{x, y}]; !ok {
 			aux[[2]int{x, y}] = struct{}{}
 			dfs(aux, board, word, x, y+1, cur+1)
