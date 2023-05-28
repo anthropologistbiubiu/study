@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 /*
 给定一个二维网格和一个单词，找出该单词是否存在于网格中。
 
@@ -25,9 +27,13 @@ board =
 func exist(board [][]byte, word string) bool {
 
 	aux := make(map[[2]int]struct{}, 0)
-	for _, arr := range board {
+	for x, arr := range board {
 		for y, v := range arr {
 
+			if v != word[0] {
+				continue
+			}
+			dfs(aux, board, word, x, y)
 		}
 	}
 
@@ -39,5 +45,9 @@ func dfs(aux map[[2]int]struct{}, board [][]byte, word string, x, y int) {
 }
 
 func main() {
+
+	var test = "abc"
+	fmt.Println(test[0])
+	fmt.Printf("test[0] %T", test[0])
 
 }
