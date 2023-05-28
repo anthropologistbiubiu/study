@@ -29,25 +29,36 @@ func exist(board [][]byte, word string) bool {
 	aux := make(map[[2]int]struct{}, 0)
 	for x, arr := range board {
 		for y, v := range arr {
-
 			if v != word[0] {
 				continue
 			}
-			dfs(aux, board, word, x, y)
+			dfs(aux, board, word, x, y, 0)
+			return true
 		}
 	}
+	return false
 
-	return true
 }
 
-func dfs(aux map[[2]int]struct{}, board [][]byte, word string, x, y int) {
+func dfs(aux map[[2]int]struct{}, board [][]byte, word string, x, y, cur int) {
 
+	if x-1 >= 0 && board[x-1][y] == word[cur] {
+		dfs(aux, board, word, x, y, cur)
+	}
+	if x+1 <= len(board) && board[x+1][y] == word[cur] {
+		dfs(aux, board, word, x+1, y, cur)
+	}
+	if y-1 >= 0 && board[x][y-1] == word[cur] {
+		dfs(aux, board, word, x, y-1, cur)
+	}
+	if y+1 < len(board[0]) && board[x][y+1] == word[cur] {
+		dfs(aux, board, word, x, y+1, cur)
+	}
+	return
 }
 
 func main() {
-
 	var test = "abc"
-	fmt.Println(test[0])
-	fmt.Printf("test[0] %T", test[0])
-
+	fmt.Println(string(test[0]))
+	fmt.Printf("test[0] %T\n", test[0])
 }
