@@ -43,16 +43,32 @@ func exist(board [][]byte, word string) bool {
 func dfs(aux map[[2]int]struct{}, board [][]byte, word string, x, y, cur int) {
 
 	if x-1 >= 0 && board[x-1][y] == word[cur] {
-		dfs(aux, board, word, x, y, cur)
+		if _, ok := aux[[2]int{x, y}]; !ok {
+			aux[[2]int{x, y}] = struct{}{}
+			dfs(aux, board, word, x, y, cur+1)
+		}
+		delete(aux, [2]int{x, y})
 	}
 	if x+1 <= len(board) && board[x+1][y] == word[cur] {
-		dfs(aux, board, word, x+1, y, cur)
+		if _, ok := aux[[2]int{x, y}]; !ok {
+			aux[[2]int{x, y}] = struct{}{}
+			dfs(aux, board, word, x+1, y, cur+1)
+		}
+		delete(aux, [2]int{x, y})
 	}
 	if y-1 >= 0 && board[x][y-1] == word[cur] {
-		dfs(aux, board, word, x, y-1, cur)
+		if _, ok := aux[[2]int{x, y}]; !ok {
+			aux[[2]int{x, y}] = struct{}{}
+			dfs(aux, board, word, x, y-1, cur+1)
+		}
+		delete(aux, [2]int{x, y})
 	}
 	if y+1 < len(board[0]) && board[x][y+1] == word[cur] {
-		dfs(aux, board, word, x, y+1, cur)
+		if _, ok := aux[[2]int{x, y}]; !ok {
+			aux[[2]int{x, y}] = struct{}{}
+			dfs(aux, board, word, x, y+1, cur+1)
+		}
+		delete(aux, [2]int{x, y})
 	}
 	return
 }
