@@ -53,6 +53,40 @@ func lengthOfLIS(nums []int) int {
 	return maxlen
 }
 
+func lengthOfLIS1(nums []int) int {
+
+	var dp = make([]int, 0)
+	dp = append(dp, nums[0])
+	var tail int = 0
+	var maxlen int = 1
+	fmt.Println("start", dp)
+	for i := 1; i < len(nums); i++ {
+		if nums[i] > dp[tail] {
+			dp = append(dp, nums[i])
+			tail++
+			fmt.Println("dp1", dp, tail)
+		} else {
+			l := 0
+			r := tail
+			mid := 0
+			for l <= r {
+				mid = (l + r) / 2
+				if dp[mid] >= nums[i] {
+					r = mid - 1
+				} else {
+					l = mid + 1
+				}
+			}
+			dp[l] = nums[i]
+			fmt.Println("dp2", dp, tail)
+		}
+
+		if len(dp) > maxlen {
+			maxlen = len(dp)
+		}
+	}
+	return maxlen
+}
 func main() {
 	//var nums = []int{0, 1, 0, 3, 2, 3}
 	//var nums = []int{7, 7, 7, 7, 7, 7}
@@ -60,5 +94,5 @@ func main() {
 	//var nums = []int{10, 9, 2, 5, 3, 7, 101, 18}
 	//var nums = []int{1, 3, 6, 7, 9, 4, 10, 5, 6}
 	var nums = []int{18, 55, 66, 2, 3, 54}
-	fmt.Println(lengthOfLIS(nums))
+	fmt.Println(lengthOfLIS1(nums))
 }
