@@ -16,23 +16,49 @@ import "fmt"
 */
 func lengthOfLIS(nums []int) int {
 
-	var dp = []int{}
+	var dp = make([]int, 0)
 	dp = append(dp, nums[0])
+	var tail int = 0
+	var maxlen int = 1
+	fmt.Println("start", dp)
 	for i := 1; i < len(nums); i++ {
-		fmt.Println(dp)
-		if nums[i] < dp[len(dp)-1] {
-			dp[len(dp)-1] = nums[i]
-		} else if nums[i] > dp[len(dp)-1] {
+		if nums[i] > dp[tail] {
 			dp = append(dp, nums[i])
+			tail++
+			fmt.Println("dp1", dp, tail)
+		} else {
+			for tail >= 0 {
+				if dp[tail] >= nums[i] {
+					tail--
+				} else {
+					dp[tail+1] = nums[i]
+					tail = len(dp) - 1
+					//tail
+					break
+				}
+			}
+			if tail == -1 {
+				tail++
+				dp[tail] = nums[i]
+				tail = len(dp) - 1
+
+			}
+			fmt.Println("dp2", dp, tail)
+		}
+
+		if len(dp) > maxlen {
+			maxlen = len(dp)
 		}
 	}
-	return len(dp)
-
+	return maxlen
 }
 
 func main() {
 	//var nums = []int{0, 1, 0, 3, 2, 3}
 	//var nums = []int{7, 7, 7, 7, 7, 7}
-	var nums = []int{4, 10, 4, 2, 8, 9}
+	//var nums = []int{4, 10, 4, 2, 8, 9}
+	//var nums = []int{10, 9, 2, 5, 3, 7, 101, 18}
+	//var nums = []int{1, 3, 6, 7, 9, 4, 10, 5, 6}
+	var nums = []int{18, 55, 66, 2, 3, 54}
 	fmt.Println(lengthOfLIS(nums))
 }
