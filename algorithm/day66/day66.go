@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 /*
 给你一个整数数组 nums ，找到其中最长严格递增子序列的长度。
 
@@ -9,9 +11,6 @@ package main
 输出：4
 解释：最长递增子序列是 [2,3,7,101]，因此长度为 4 。
 
-输入：nums = [0,1,0,3,2,3]
-输出：4
-
 输入：nums = [7,7,7,7,7,7,7]
 输出：1
 */
@@ -19,9 +18,19 @@ func lengthOfLIS(nums []int) int {
 
 	var dp = make([]int, len(nums))
 	dp[0] = 1
-	var maxLen int
-	for i := 0; i < len(nums); i++ {
-
+	var index int = 0
+	for i := 1; i < len(nums); i++ {
+		if nums[i] > nums[index] {
+			dp[i] = dp[index] + 1
+			index = i
+		} else {
+			dp[i] = 1
+		}
 	}
-	return maxLen
+	return dp[index]
+}
+
+func main() {
+	var nums = []int{0, 1, 0, 3, 2, 3}
+	fmt.Println(lengthOfLIS(nums))
 }
