@@ -18,19 +18,18 @@ func lengthOfLIS(nums []int) int {
 
 	var dp = make([]int, len(nums))
 	dp[0] = 1
-	var index int = 0
 	for i := 1; i < len(nums); i++ {
-		if nums[i] > nums[index] {
-			dp[i] = dp[index] + 1
-			index = i
+		if nums[i] > nums[i-1] {
+			dp[i] = dp[i-1] + 1
 		} else {
-			dp[i] = 1
+			dp[i] = dp[i-1]
 		}
 	}
-	return dp[index]
+	return dp[len(nums)-1]
 }
 
 func main() {
-	var nums = []int{0, 1, 0, 3, 2, 3}
+	//var nums = []int{0, 1, 0, 3, 2, 3}
+	var nums = []int{7, 7, 7, 7, 7, 7}
 	fmt.Println(lengthOfLIS(nums))
 }
