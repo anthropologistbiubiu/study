@@ -16,20 +16,23 @@ import "fmt"
 */
 func lengthOfLIS(nums []int) int {
 
-	var dp = make([]int, len(nums))
-	dp[0] = 1
+	var dp = []int{}
+	dp = append(dp, nums[0])
 	for i := 1; i < len(nums); i++ {
-		if nums[i] > nums[i-1] {
-			dp[i] = dp[i-1] + 1
-		} else {
-			dp[i] = dp[i-1]
+		fmt.Println(dp)
+		if nums[i] < dp[len(dp)-1] {
+			dp[len(dp)-1] = nums[i]
+		} else if nums[i] > dp[len(dp)-1] {
+			dp = append(dp, nums[i])
 		}
 	}
-	return dp[len(nums)-1]
+	return len(dp)
+
 }
 
 func main() {
 	//var nums = []int{0, 1, 0, 3, 2, 3}
-	var nums = []int{7, 7, 7, 7, 7, 7}
+	//var nums = []int{7, 7, 7, 7, 7, 7}
+	var nums = []int{4, 10, 4, 2, 8, 9}
 	fmt.Println(lengthOfLIS(nums))
 }
