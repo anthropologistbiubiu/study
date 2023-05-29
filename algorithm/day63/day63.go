@@ -23,77 +23,90 @@ board =
 给定 word = "SEE", 返回 true
 给定 word = "ABCB", 返回 false
 */
-
 func exist(board [][]byte, word string) bool {
 
-	aux := make(map[[2]int]struct{}, 0)
-	var x, y int
-	for haxis, arr := range board {
-		x = haxis
-		for vaxis, v := range arr {
-			y = vaxis
+	var flag bool
+	for x, arr := range board {
+		for y, v := range arr {
 			if v != word[0] {
 				continue
 			}
-			//fmt.Println("start v,x y", string(v), x, y)
-			dfs(aux, board, word, x, y, 1)
+			aux := make(map[[2]int]struct{}, 0)
+			aux[[2]int{x, y}] = struct{}{}
+			fmt.Println("start v,x y", string(v), x, y)
+			dfs(aux, board, word, x, y, 0, &flag)
 		}
 	}
-	fmt.Println("x y", x, y)
-	if x == len(board)-1 && y == len(board[0])-1 {
-		return false
-	}
-	return true
+	return flag
 }
 
-func dfs(aux map[[2]int]struct{}, board [][]byte, word string, x, y, cur int) {
-	//fmt.Println("dfs x . y", x, y, cur)
-	if cur < len(word) && x-1 >= 0 && board[x-1][y] == word[cur] {
-		//fmt.Println("^")
-		if _, ok := aux[[2]int{x, y}]; !ok {
-			aux[[2]int{x, y}] = struct{}{}
-			dfs(aux, board, word, x, y, cur+1)
-		}
-		delete(aux, [2]int{x, y})
+func dfs(aux map[[2]int]struct{}, board [][]byte, word string, x, y, cur int, flag *bool) {
+	fmt.Println("x y cur map ", x, y, cur, aux)
+	if cur == len(word)-1 {
+		*flag = true
+		return
 	}
-	if cur < len(word) && x+1 < len(board) && board[x+1][y] == word[cur] {
-		//fmt.Println("....")
-		if _, ok := aux[[2]int{x, y}]; !ok {
-			aux[[2]int{x, y}] = struct{}{}
-			dfs(aux, board, word, x+1, y, cur+1)
+	if cur+1 < len(word) && x-1 >= 0 && board[x-1][y] == word[cur+1] {
+		if _, ok := aux[[2]int{x - 1, y}]; !ok {
+			aux[[2]int{x - 1, y}] = struct{}{}
+			dfs(aux, board, word, x-1, y, cur+1, flag)
 		}
-		delete(aux, [2]int{x, y})
+		delete(aux, [2]int{x - 1, y})
 	}
-	if cur < len(word) && y-1 >= 0 && board[x][y-1] == word[cur] {
-		//fmt.Println("<<<<<")
-		if _, ok := aux[[2]int{x, y}]; !ok {
-			aux[[2]int{x, y}] = struct{}{}
-			dfs(aux, board, word, x, y-1, cur+1)
+	if cur+1 < len(word) && x+1 < len(board) && board[x+1][y] == word[cur+1] {
+		if _, ok := aux[[2]int{x + 1, y}]; !ok {
+			aux[[2]int{x + 1, y}] = struct{}{}
+			dfs(aux, board, word, x+1, y, cur+1, flag)
 		}
-		delete(aux, [2]int{x, y})
+		delete(aux, [2]int{x + 1, y})
 	}
-	if cur < len(word) && y+1 < len(board[0]) && board[x][y+1] == word[cur] {
-		//fmt.Println(">>>>>>")
-		if _, ok := aux[[2]int{x, y}]; !ok {
-			aux[[2]int{x, y}] = struct{}{}
-			dfs(aux, board, word, x, y+1, cur+1)
+	if cur+1 < len(word) && y-1 >= 0 && board[x][y-1] == word[cur+1] {
+		if _, ok := aux[[2]int{x, y - 1}]; !ok {
+			aux[[2]int{x, y - 1}] = struct{}{}
+			dfs(aux, board, word, x, y-1, cur+1, flag)
 		}
-		delete(aux, [2]int{x, y})
+		delete(aux, [2]int{x, y - 1})
+	}
+	if cur+1 < len(word) && y+1 < len(board[0]) && board[x][y+1] == word[cur+1] {
+		if _, ok := aux[[2]int{x, y + 1}]; !ok {
+			aux[[2]int{x, y + 1}] = struct{}{}
+			dfs(aux, board, word, x, y+1, cur+1, flag)
+		}
+		delete(aux, [2]int{x, y + 1})
 	}
 }
 
 func main() {
-	var board = [][]byte{
+	/*
+		board := [][]byte{
 
-		{'A', 'B', 'C', 'E'},
-		{'S', 'F', 'C', 'S'},
-		{'A', 'D', 'E', 'E'},
+			{'A', 'B', 'C', 'E'},
+			{'S', 'F', 'C', 'S'},
+			{'A', 'D', 'E', 'E'},
+		}
+		test := [][]byte{
+			{'C', 'A', 'A'},
+			{'A', 'A', 'A'},
+			{'B', 'C', 'D'},
+		}
+		var word1 = "ABCCED"
+		var word2 = "SEE"
+		var word3 = "ABCB"
+		var boards = [][]byte{{'a', 'a'}}
+		word4 := "aaa"
+		fmt.Println(exist(board, word1))
+		fmt.Println(exist(board, word2))
+		fmt.Println(exist(board, word3))
+		fmt.Println(exist(boards, word4))
+		fmt.Println(exist(test, "AAB"))
+	*/
+	var boardss = [][]byte{
+		{'a', 'a', 'a', 'a'},
+		{'a', 'a', 'a', 'a'},
+		{'a', 'a', 'a', 'a'},
 	}
+	fmt.Println(exist(boardss, "aaaaaaaaaaaaa"))
 
-	word1 := "ABCCED" //返回 true
-	word2 := "SEE"    //, 返回 true
-	word3 := "ABCB"   //, 返回 false
-	fmt.Println(exist(board, word1))
-	fmt.Println(exist(board, word2))
-	fmt.Println(exist(board, word3))
 }
+
+/// 放弃了改日再会
