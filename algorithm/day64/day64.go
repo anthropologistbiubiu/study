@@ -17,8 +17,6 @@ import "fmt"
 
 func canJump(nums []int) bool {
 
-	var dp = []bool{}
-	dp[0] = true
 	var curIndex int
 	for i := 0; i < len(nums); i++ {
 		if nums[i]+curIndex >= len(nums)-1 {
@@ -31,7 +29,7 @@ func canJump(nums []int) bool {
 }
 
 func main() {
-
-	var nums = []int{2, 3, 1, 1, 4}
+	var nums = []int{3, 2, 1, 0, 4}
+	//var nums = []int{2, 3, 1, 1, 4}
 	fmt.Println(canJump(nums))
 }
