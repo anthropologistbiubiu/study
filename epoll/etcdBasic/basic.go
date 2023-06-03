@@ -1,10 +1,9 @@
-package main
-
+package basic 
+/*
 import (
     "context"
     "fmt"
     "time"
-
     "go.etcd.io/etcd/client/v3"
 )
 
@@ -41,5 +40,13 @@ func main() {
     }
     for _, ev := range resp.Kvs {
         fmt.Printf("%s:%s\n", ev.Key, ev.Value)
+
     }
+    a ,err := cli.Get(ctx,"foo")
+    if err != nil{
+        fmt.Printf("%s",err)
+    }
+    fmt.Println(a)
+
 }
+*/
