@@ -23,6 +23,7 @@ func f1() *[]student {
 func usef1() {
 	or := f1()
 	fmt.Println(or)
+	*or =append(*or) 
 }
 func BenchmarkParallelf1(b *testing.B) {
 	b.RunParallel(func(pb *testing.PB) {

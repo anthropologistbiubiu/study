@@ -4,7 +4,7 @@ import (
 	"context"
 	"etcd/proto"
 	"etcd/register"
-	"flag"
+	"fmt"
 	"google.golang.org/grpc"
 	"log"
 	"time"
@@ -16,15 +16,17 @@ const registerDialPrefix = "register://localhost:2379/"
 
 func main() {
 	// 解析命令行参数
-	flag.Parse()
-
+	//flag.Parse()
+	fmt.Println(">>>>>>>>>>>>>>>>>>>")
 	service, err := register.NewLocalDefNamingService("my1")
 	if err != nil {
-		log.Println("Create naming service error: %v", err)
+		fmt.Println("Create naming service error: %v", err)
 	}
+	fmt.Println(err)
+	fmt.Println("____________")
 	resolver, err := service.NewEtcdResolver()
 	if err != nil {
-		log.Fatalf("Create register resolver error: %v", err)
+		fmt.Println("Create register resolver error: %v", err)
 	}
 	// 连接服务端
 	conn, err := grpc.Dial(registerDialPrefix+service.GetPathServerName("s1"), grpc.WithInsecure(), grpc.WithResolvers(resolver),
@@ -64,5 +66,4 @@ func main() {
 	// 睡眠一会再结束
 	log.Println("3秒后结束，客户端自动断开连接")
 	time.Sleep(time.Second * 3)
-
 }
