@@ -82,13 +82,15 @@ func (s *ServiceDiscovery) DelServiceList(key string) {
 }
 
 // GetServices 获取服务地址
-func (s *ServiceDiscovery) GetServices() []string {
+func (s *ServiceDiscovery) GetServices(serName string) []string {
 	s.lock.Lock()
 	defer s.lock.Unlock()
 	addrs := make([]string, 0)
 
 	for _, v := range s.serverList {
-		addrs = append(addrs, v)
+		if _, ok := s.serverList[serName]; ok {
+			addrs = append(addrs, v)
+		}
 	}
 	return addrs
 }
@@ -107,7 +109,7 @@ func main() {
 	for {
 		select {
 		case <-time.Tick(10 * time.Second):
-			log.Println(ser.GetServices())
+			log.Println("/web/nodel1", ser.GetServices("/web/node1"))
 		}
 	}
 }
