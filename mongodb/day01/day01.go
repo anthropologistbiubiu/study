@@ -52,7 +52,8 @@ func main() {
 	fmt.Println("自增ID", id.Hex())
 	// 查找一条数据
 	cond := model.FindByJobName{JobName: "job10"}
-	if cursor, err = collection.Find(context.TODO(), cond, options.Find().SetSkip(0), options.Find().SetLimit(2)); err != nil {
+	cursor, err := collection.Find(context.TODO(), cond, options.Find().SetSkip(0), options.Find().SetLimit(2))
+	if err != nil {
 		fmt.Println(err)
 		return
 	}
@@ -81,6 +82,4 @@ func main() {
 	for _, result := range results {
 		fmt.Println(result)
 	}
-}
-
 }
