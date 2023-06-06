@@ -33,35 +33,47 @@ func main() {
 	fmt.Println(collection)
 	//4.插入一条数据
 	/*
-		lr := model.LogRecord{
-			JobName: "job10",
-			Command: "echo 2",
-			Err:     "",
-			Content: "2",
-			Tp: model.TimePorint{
-				StartTime: time.Now().Unix(),
-				EndTime:   time.Now().Unix() + 10,
-			},
-		}
-		iResult, err := collection.InsertOne(context.TODO(), lr)
+			lr := model.LogRecord{
+				JobName: "job10",
+				Command: "echo 2",
+				Err:     "",
+				Content: "2",
+				Tp: model.TimePorint{
+					StartTime: time.Now().Unix(),
+					EndTime:   time.Now().Unix() + 10,
+				},
+			}
+			iResult, err := collection.InsertOne(context.TODO(), lr)
+			if err != nil {
+				fmt.Print(err)
+			}
+			//_id:默认生成一个全局唯一ID
+			id := iResult.InsertedID.(primitive.ObjectID)
+			fmt.Println("自增ID", id.Hex())
+			// 查找一条数据
+			cond := model.FindByJobName{JobName: "job10"}
+			cursor, err := collection.Find(context.TODO(), cond, options.Find().SetSkip(0), options.Find().SetLimit(2))
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+		//bson
+		filter := bson.M{"jobName": "job10"}
+		cursor, err := collection.Find(context.TODO(), filter, options.Find().SetSkip(0), options.Find().SetLimit(2))
 		if err != nil {
-			fmt.Print(err)
-		}
-		//_id:默认生成一个全局唯一ID
-		id := iResult.InsertedID.(primitive.ObjectID)
-		fmt.Println("自增ID", id.Hex())
-		// 查找一条数据
-		cond := model.FindByJobName{JobName: "job10"}
-		cursor, err := collection.Find(context.TODO(), cond, options.Find().SetSkip(0), options.Find().SetLimit(2))
-		if err != nil {
-			fmt.Println(err)
-			return
+			log.Fatal(err)
 		}
 	*/
-	//bson
-	filter := bson.M{"jobName": "job10"}
-	cursor, err := collection.Find(context.TODO(), filter, options.Find().SetSkip(0), options.Find().SetLimit(2))
-	if err != nil {
+	//按照jobName分组,countJob中存储每组的数目
+	groupStage := mongo.Pipeline{bson.D{
+		{"$group", bson.D{
+			{"_id", "$jobName"},
+			{"countJob", bson.D{
+				{"$sum", 1},
+			}},
+		}},
+	}}
+	if cursor, err = collection.Aggregate(context.TODO(), groupStage); err != nil {
 		log.Fatal(err)
 	}
 	//延迟关闭游标
