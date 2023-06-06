@@ -16,3 +16,9 @@ type LogRecord struct {
 type FindByJobName struct {
 	JobName string `bson:"jobName"` //任务名
 }
+
+// 更新实体
+type UpdateByJobName struct {
+	Command string `bson:"command"` //shell命令
+	Content string `bson:"content"` //脚本输出
+}

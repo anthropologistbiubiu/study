@@ -114,5 +114,22 @@ func main() {
 	for _, result := range results {
 		fmt.Println(result)
 	}
+	/*
+		update := bson.M{"$set": model.UpdateByJobName{Command: "byModel", Content: "model"}}
+		//update := bson.M{"$set": model.LogRecord{JobName:"job10",Command:"byModel"}}
+		filter := bson.M{"jobName": "job10"}
+		uResult, err := collection.UpdateMany(context.TODO(), filter, update)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+	*/
+	//uResult.MatchedCount表示符合过滤条件的记录数，即更新了多少条数据。
+	filter := bson.M{"jobName": "job10"}
+	uResult, err := collection.DeleteMany(context.TODO(), filter)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println(uResult.DeletedCount)
 
 }
