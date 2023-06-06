@@ -7,7 +7,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
-	"mongodb/model"
 	"time"
 )
 
@@ -73,7 +72,8 @@ func main() {
 			}},
 		}},
 	}}
-	if cursor, err = collection.Aggregate(context.TODO(), groupStage); err != nil {
+	cursor, err := collection.Aggregate(context.TODO(), groupStage)
+	if err != nil {
 		log.Fatal(err)
 	}
 	//延迟关闭游标
@@ -96,12 +96,23 @@ func main() {
 	*/
 
 	//这里的结果遍历可以使用另外一种更方便的方式：
-	var results []model.LogRecord
+	/*
+		var results []model.LogRecord
+		if err = cursor.All(context.TODO(), &results); err != nil {
+			log.Fatal(err)
+		}
+		for _, result := range results {
+			fmt.Println(result)
+		}
+	*/
+	//聚合查询
+	//遍历游标
+	var results []bson.M
 	if err = cursor.All(context.TODO(), &results); err != nil {
 		log.Fatal(err)
 	}
 	for _, result := range results {
 		fmt.Println(result)
 	}
-	//聚合查询
+
 }
