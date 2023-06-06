@@ -27,12 +27,12 @@ func main() {
 	//2.选择数据库 my_db
 	db = client.Database("my_db")
 	fmt.Println(db.Name())
+	//3.选择表 my_collection
+	collection = db.Collection("my_collection")
+	collection = collection
+	fmt.Println(collection)
+	//4.插入一条数据
 	/*
-		//3.选择表 my_collection
-		collection = db.Collection("my_collection")
-		collection = collection
-		fmt.Println(collection)
-		//4.插入一条数据
 		lr := model.LogRecord{
 			JobName: "job10",
 			Command: "echo 2",
@@ -58,6 +58,7 @@ func main() {
 			return
 		}
 	*/
+	//bson
 	filter := bson.M{"jobName": "job10"}
 	cursor, err := collection.Find(context.TODO(), filter, options.Find().SetSkip(0), options.Find().SetLimit(2))
 	if err != nil {
@@ -90,4 +91,5 @@ func main() {
 	for _, result := range results {
 		fmt.Println(result)
 	}
+	//聚合查询
 }
