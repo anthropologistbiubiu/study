@@ -54,7 +54,8 @@ func SystemIpWhite(c *gin.Context) {
 	ip := c.ClientIP()
 
 	//白名单数据源
-	blackList := models.FindConfig("SystemWhiteList")
+	var blackList = "  "
+	//blackList := models.FindConfig("SystemWhiteList")
 	strings.ReplaceAll(blackList, "\r\n", "\n")
 	list := strings.Split(blackList, "\n")
 	exist := false
