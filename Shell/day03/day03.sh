@@ -3,14 +3,13 @@
 
 num=0
 
-
 while (($num<=500))
 do
 if (($num%7==0))
 then
     echo $num
 fi
-    let "num++"
+let "num++"
 done
 
 
