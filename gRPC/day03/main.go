@@ -1,8 +1,21 @@
 package main
 
+import (
+	"bufio"
+	"context"
+	"flag"
+	"fmt"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
+	"io"
+	"log"
+	"os"
+	"strings"
+	"time"
+)
+
 // hello_client
 
-/*
 const (
 	defaultName = "world"
 )
@@ -105,6 +118,10 @@ func main() {
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
+	/*
+		client := &grpc.ClientConn{}
+		client.Connect()
+	*/
 	defer conn.Close()
 	c := pb.NewGreeterClient(conn)
 
@@ -119,5 +136,3 @@ func main() {
 	//runLotsOfReplies(c)
 	runBidiHello(c)
 }
-
-*/
