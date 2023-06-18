@@ -18,3 +18,4 @@ for (( i=0;i<${#array1[@]};i++))
 do
     echo ${array1[i]};
 done;
+
