@@ -1,13 +1,16 @@
 
 
 
-
-array=("sun" "wei" "ming")
-i=0
-while [ $i -lt ${#array[@]} ]
-#当变量（下标）小于数组长度时进入循环体
+for value in I like programming
 do
-    echo ${ #array[i] }
-    #按下标打印数组元素
-    let i++
+    echo $value
+done
+
+
+
+StringVal="Welcome to linuxhint"
+
+# Iterate the string variable using for loop
+for val in $StringVal; do
+    echo $val
 done
