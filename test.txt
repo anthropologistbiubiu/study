@@ -1,1 +1,0 @@
-ABCBuffered string

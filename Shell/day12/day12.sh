@@ -10,3 +10,7 @@ for val in ${stringList//,/ }
 do
    echo $val
 done
+:<<!
+输出hello world
+!
+echo "hello world"
