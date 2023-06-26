@@ -1,4 +1,4 @@
-package day03
+package main
 
 import (
 	"bufio"
@@ -30,4 +30,8 @@ func server() {
 			}
 		}(conn)
 	}
+}
+
+func main() {
+	server()
 }
