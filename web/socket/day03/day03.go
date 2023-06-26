@@ -24,7 +24,7 @@ func server() {
 				if err != nil {
 					fmt.Println(err)
 				}
-				fmt.Printf("from %+v content:%+v", conn.RemoteAddr(), recv)
+				fmt.Printf("server recive from %+v content:%+v", conn.RemoteAddr(), string(recv))
 				send := "ok"
 				conn.Write([]byte(send))
 			}

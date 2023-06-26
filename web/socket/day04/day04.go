@@ -26,7 +26,7 @@ func client() {
 		if err != nil {
 			fmt.Println(err)
 		}
-		fmt.Printf("recive from remote server:%+v ,content is %+v\n", conn.RemoteAddr(), string(recv))
+		fmt.Printf("client recive from remote server:%+v ,content is %+v\n", conn.RemoteAddr(), string(recv))
 	}
 
 }
