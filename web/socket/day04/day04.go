@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"strings"
 )
 
 func client() {
@@ -15,18 +16,23 @@ func client() {
 	for {
 		input := bufio.NewReader(os.Stdin)
 		msg, err := input.ReadString('\n')
-		fmt.Printf("msg :%+v", msg)
+		msg = strings.TrimSpace(msg)
+		fmt.Printf("msg :%+v\n", []byte(msg))
 		if err != nil {
 			fmt.Println(err)
 		}
-		conn.Write([]byte(msg))
-		var recv = []byte{}
-		n, err := conn.Read(recv)
+		n, err := conn.Write([]byte(msg))
+		if err != nil {
+			fmt.Println(err)
+		}
+		//var recv = []byte{}
+		var recv = [128]byte{}
+		n, err = conn.Read(recv[:])
 		if err != nil {
 			fmt.Println(err)
 		}
 		if n > 0 {
-			fmt.Printf("client recive from remote server:%+v ,content is %+v\n", conn.RemoteAddr(), string(recv))
+			fmt.Printf("client recive from remote server:%+v ,content is %+v\n", conn.RemoteAddr(), string(recv[:]))
 		}
 	}
 }
