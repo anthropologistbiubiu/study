@@ -16,20 +16,23 @@ func server() {
 		if err != nil {
 			fmt.Println(err)
 		}
-		for {
-			reader := bufio.NewReader(conn)
-			//recv := make([]byte, 0, 128)
-			recv := make([]byte, 128)
-			n, err := reader.Read(recv)
-			if err != nil {
-				fmt.Println(err)
+		go func(net.Conn) {
+			defer conn.Close()
+			for {
+				reader := bufio.NewReader(conn)
+				//recv := make([]byte, 0, 128)
+				recv := make([]byte, 128)
+				n, err := reader.Read(recv)
+				if err != nil {
+					fmt.Println(err)
+				}
+				if n > 0 {
+					fmt.Printf("server recive from %+v content:%+v\n", conn.RemoteAddr(), string(recv[:n]))
+					send := "ok"
+					conn.Write([]byte(send))
+				}
 			}
-			if n > 0 {
-				fmt.Printf("server recive from %+v content:%+v\n", conn.RemoteAddr(), string(recv[:n]))
-				send := "ok"
-				conn.Write([]byte(send))
-			}
-		}
+		}(conn)
 	}
 }
 

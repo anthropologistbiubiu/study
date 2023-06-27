@@ -13,6 +13,7 @@ func client() {
 	if err != nil {
 		fmt.Println(err)
 	}
+	defer conn.Close()
 	for {
 		input := bufio.NewReader(os.Stdin)
 		msg, err := input.ReadString('\n')
