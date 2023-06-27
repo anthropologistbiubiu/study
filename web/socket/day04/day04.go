@@ -8,27 +8,27 @@ import (
 )
 
 func client() {
-
-	conn, err := net.Dial("tcp", ":9091")
+	conn, err := net.Dial("tcp", "127.0.0.1:9091")
 	if err != nil {
 		fmt.Println(err)
 	}
 	for {
 		input := bufio.NewReader(os.Stdin)
-		var buff = []byte{}
-		_, err := input.Read(buff)
+		msg, err := input.ReadString('\n')
+		fmt.Printf("msg :%+v", msg)
 		if err != nil {
 			fmt.Println(err)
 		}
-		conn.Write(buff)
-		recv := make([]byte, 0, 1024)
-		_, err = conn.Read(recv)
+		conn.Write([]byte(msg))
+		var recv = []byte{}
+		n, err := conn.Read(recv)
 		if err != nil {
 			fmt.Println(err)
 		}
-		fmt.Printf("client recive from remote server:%+v ,content is %+v\n", conn.RemoteAddr(), string(recv))
+		if n > 0 {
+			fmt.Printf("client recive from remote server:%+v ,content is %+v\n", conn.RemoteAddr(), string(recv))
+		}
 	}
-
 }
 
 func main() {

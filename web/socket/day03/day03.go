@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"net"
+	"time"
 )
 
 func server() {
@@ -11,22 +12,28 @@ func server() {
 	if err != nil {
 		fmt.Println(err)
 	}
-
 	for {
 		conn, err := listener.Accept()
 		if err != nil {
 			fmt.Println(err)
 		}
+		fmt.Println(conn)
 		go func(net.Conn) {
+			fmt.Println(conn)
 			for {
 				input := bufio.NewReader(conn)
-				recv, err := input.ReadString('\n')
+				recv := make([]byte, 0, 1024)
+				n, err := input.Read(recv)
+				fmt.Println("server n ", n, string(recv))
+				time.Sleep(5 * time.Second)
 				if err != nil {
 					fmt.Println(err)
 				}
-				fmt.Printf("server recive from %+v content:%+v", conn.RemoteAddr(), string(recv))
-				send := "ok"
-				conn.Write([]byte(send))
+				if n > 0 {
+					fmt.Printf("server recive from %+v content:%+v\n", conn.RemoteAddr(), string(recv[:n]))
+					send := "ok"
+					conn.Write([]byte(send))
+				}
 			}
 		}(conn)
 	}
