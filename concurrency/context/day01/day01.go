@@ -11,7 +11,6 @@ func sleepRandom(fromFunction string, ch chan int) {
 	defer func() {
 		fmt.Println(fromFunction, "sleepRandom complete")
 	}()
-
 	seed := time.Now().UnixNano()
 	r := rand.New(rand.NewSource(seed))
 	randomNumber := r.Intn(100)
@@ -30,9 +29,7 @@ func sleepRandomContext(ctx context.Context, ch chan bool) {
 		fmt.Println("sleepRandomContext complete")
 		ch <- true
 	}()
-
 	sleeptimeChan := make(chan int)
-
 	go sleepRandom("sleepRandomContext", sleeptimeChan)
 	select {
 	case <-ctx.Done():
@@ -51,27 +48,26 @@ func doWorkContext(ctx context.Context) {
 	}()
 	ch := make(chan bool)
 	go sleepRandomContext(ctxWithTimeout, ch)
-
 	select {
 	case <-ctx.Done():
-		fmt.Println("doWorkContext: Time to return")
+		fmt.Println("doWorkContext: Done")
 	case <-ch:
-		fmt.Println("sleepRandomContext returned")
+		fmt.Println("sleepRandomContext ch")
 	}
 }
 
 func main() {
 	ctx := context.Background()
 	ctxWithCancel, cancelFunction := context.WithCancel(ctx)
-
 	defer func() {
 		fmt.Println("Main Defer: canceling context")
 		cancelFunction()
 	}()
 	go func() {
 		sleepRandom("Main", nil)
-		cancelFunction()
+		//cancelFunction()
 		fmt.Println("Main Sleep complete. canceling context")
 	}()
 	doWorkContext(ctxWithCancel)
+	context.Background()
 }
