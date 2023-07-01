@@ -22,7 +22,6 @@ func main() {
 	bufferPool := &sync.Pool{
 		New: createBuffer,
 	}
-
 	// 多 goroutine 并发测试
 	numWorkers := 1024 * 1024
 	var wg sync.WaitGroup
