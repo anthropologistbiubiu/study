@@ -1,8 +1,9 @@
 package main
 
 import (
+	"context"
 	"fmt"
-	"github.com/go-redis/redis"
+	"github.com/redis/go-redis/v9"
 	"sync"
 	"time"
 )
@@ -13,12 +14,12 @@ func incr() {
 		Password: "", // no password set
 		DB:       0,  // use default DB
 	})
-
+	var ctx = context.Background()
 	var lockKey = "counter_lock"
 	var counterKey = "counter"
 
 	// lock
-	resp := client.SetNX(lockKey, 1, time.Second*5)
+	resp := client.SetNX(ctx, lockKey, 1, time.Second*5)
 	lockSuccess, err := resp.Result()
 
 	if err != nil || !lockSuccess {
@@ -27,11 +28,11 @@ func incr() {
 	}
 
 	// counter ++
-	getResp := client.Get(counterKey)
+	getResp := client.Get(ctx, counterKey)
 	cntValue, err := getResp.Int64()
 	if err == nil || err == redis.Nil {
 		cntValue++
-		resp := client.Set(counterKey, cntValue, 0)
+		resp := client.Set(ctx, counterKey, cntValue, 0)
 		_, err := resp.Result()
 		if err != nil {
 			// log err
@@ -40,7 +41,7 @@ func incr() {
 	}
 	println("current counter is", cntValue)
 
-	delResp := client.Del(lockKey)
+	delResp := client.Del(ctx, lockKey)
 	unlockSuccess, err := delResp.Result()
 	if err == nil && unlockSuccess > 0 {
 		println("unlock success!")
