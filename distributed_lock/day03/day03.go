@@ -35,7 +35,6 @@ func incr() {
 		resp := client.Set(ctx, counterKey, cntValue, 0)
 		_, err := resp.Result()
 		if err != nil {
-			// log err
 			println("set value error!")
 		}
 	}
