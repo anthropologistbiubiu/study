@@ -52,3 +52,8 @@ func (lock *Lock) tryLock() (bool, error) {
 	}
 	return false, err
 }
+
+func main() {
+
+	println("hello world")
+}
