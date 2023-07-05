@@ -13,6 +13,7 @@ type Client struct {
 type Lock struct {
 	timeout int
 	client  *Client
+	key     string
 	tag     string
 }
 
