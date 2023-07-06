@@ -20,12 +20,23 @@ import (
 */
 func handler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("模拟数据库操作")
+	panic("error")
 	time.Sleep(10 * time.Second)
 }
 
 func main() {
 	mux1 := mux.NewRouter()
 	mux1.HandleFunc("/sleep", handler)
+	srv := endless.NewServer("127.0.0.1:5003", mux1)
+	sigHooks := map[os.Signal]func(){
+		os.Interrupt:    func() { fmt.Println("test data1") },
+		syscall.SIGTERM: func() { fmt.Println("test data2") },
+	}
+	for sig, hook := range sigHooks {
+		if _, ok := srv.SignalHooks[endless.PRE_SIGNAL][sig]; ok {
+			srv.SignalHooks[endless.PRE_SIGNAL][sig] = append(srv.SignalHooks[endless.PRE_SIGNAL][sig], hook)
+		}
+	}
 
 	go func() {
 		sigchan := make(chan os.Signal, 1)
@@ -42,7 +53,7 @@ func main() {
 			}
 		}
 	}()
-	err := endless.ListenAndServe("127.0.0.1:5003", mux1)
+	err := srv.ListenAndServe()
 	if err != nil {
 		log.Println(err)
 	}
