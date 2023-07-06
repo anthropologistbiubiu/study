@@ -38,6 +38,7 @@ func main() {
 				fmt.Println("process task!")
 			case <-sigchan:
 				fmt.Println("模拟关闭消费者 ")
+				return
 			}
 		}
 	}()
