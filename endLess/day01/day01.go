@@ -26,7 +26,8 @@ func handler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	mux1 := mux.NewRouter()
 	mux1.HandleFunc("/sleep", handler)
-	srv := endless.NewServer("127.0.0.1:5003", mux1)
+	srv := endless.NewServer("127.0.0.1:5004", mux1)
+	fmt.Println("pid", os.Getpid())
 	sigHooks := map[os.Signal]func(){
 		os.Interrupt: func() { fmt.Println("test data1") },
 		os.Kill:      func() { fmt.Println("test data2") },
@@ -38,6 +39,7 @@ func main() {
 			Ctrl-\ 发送 QUIT signal (SIGQUIT); 通常导致进程结束 和 dump core.
 			Ctrl-T (不是所有的UNIX都支持) 发送INFO signal (SIGINFO); 导致操作系统显示此运行命令的信息
 			kill -9 pid 会发送 SIGKILL信号给进程。
+			kill -1 sighub   重启 signal(sigint) 不能中断
 	*/
 	for sig, hook := range sigHooks {
 		if _, ok := srv.SignalHooks[endless.PRE_SIGNAL][sig]; ok {
