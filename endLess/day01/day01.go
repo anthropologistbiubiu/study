@@ -29,8 +29,8 @@ func main() {
 	mux1.HandleFunc("/sleep", handler)
 	srv := endless.NewServer("127.0.0.1:5003", mux1)
 	sigHooks := map[os.Signal]func(){
-		os.Interrupt:    func() { fmt.Println("test data1") },
-		syscall.SIGTERM: func() { fmt.Println("test data2") },
+		os.Interrupt:   func() { fmt.Println("test data1") },
+		syscall.SIGHUP: func() { fmt.Println("test data2") },
 	}
 	for sig, hook := range sigHooks {
 		if _, ok := srv.SignalHooks[endless.PRE_SIGNAL][sig]; ok {
