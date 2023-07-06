@@ -28,8 +28,11 @@ func main() {
 	mux1.HandleFunc("/sleep", handler)
 	srv := endless.NewServer("127.0.0.1:5003", mux1)
 	sigHooks := map[os.Signal]func(){
-		os.Interrupt: func() { fmt.Println("test data1") },
-		os.Kill:      func() { fmt.Println("test data2") },
+		os.Interrupt: func() {
+			fmt.Println("wait for child gorutine")
+			time.Sleep(4 * time.Second)
+		},
+		os.Kill: func() { fmt.Println("test data2") },
 	}
 	/*
 		    SIGHUP 进程重启
