@@ -20,8 +20,8 @@ import (
 */
 func handler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("模拟数据库操作")
-	panic("error")
 	time.Sleep(10 * time.Second)
+	fmt.Println("模拟数据库操作Done")
 }
 
 func main() {
@@ -29,9 +29,17 @@ func main() {
 	mux1.HandleFunc("/sleep", handler)
 	srv := endless.NewServer("127.0.0.1:5003", mux1)
 	sigHooks := map[os.Signal]func(){
-		os.Interrupt:   func() { fmt.Println("test data1") },
-		syscall.SIGHUP: func() { fmt.Println("test data2") },
+		os.Interrupt: func() { fmt.Println("test data1") },
+		os.Kill:      func() { fmt.Println("test data2") },
 	}
+	/*
+		    SIGHUP 进程重启
+			Ctrl-C 发送 INT signal (SIGINT)，通常导致进程结束
+			Ctrl-Z 发送 TSTP signal (SIGTSTP); 通常导致进程挂起(suspend)
+			Ctrl-\ 发送 QUIT signal (SIGQUIT); 通常导致进程结束 和 dump core.
+			Ctrl-T (不是所有的UNIX都支持) 发送INFO signal (SIGINFO); 导致操作系统显示此运行命令的信息
+			kill -9 pid 会发送 SIGKILL信号给进程。
+	*/
 	for sig, hook := range sigHooks {
 		if _, ok := srv.SignalHooks[endless.PRE_SIGNAL][sig]; ok {
 			srv.SignalHooks[endless.PRE_SIGNAL][sig] = append(srv.SignalHooks[endless.PRE_SIGNAL][sig], hook)
@@ -47,6 +55,11 @@ func main() {
 			select {
 			case <-ticker.C:
 				fmt.Println("process task!")
+				go func() {
+					time.Sleep(2 * time.Second)
+					fmt.Println("child task!")
+
+				}()
 			case <-sigchan:
 				fmt.Println("模拟关闭消费者 ")
 				return
