@@ -1,7 +1,7 @@
 package main
 
 import (
-	"log"
+	"fmt"
 )
 
 const (
@@ -18,21 +18,21 @@ type Item interface {
 type Int int
 
 func (x Int) Less(than Item) bool {
-	log.Println(x, " ", than.(Int))
+	fmt.Println(x, " ", than.(Int))
 	return x < than.(Int)
 }
 
 type Uint32 uint32
 
 func (x Uint32) Less(than Item) bool {
-	log.Println(x, " ", than.(Uint32))
+	fmt.Println(x, " ", than.(Uint32))
 	return x < than.(Uint32)
 }
 
 type String string
 
 func (x String) Less(than Item) bool {
-	log.Println(x, " ", than.(String))
+	fmt.Println(x, " ", than.(String))
 	return x < than.(String)
 }
 
@@ -71,23 +71,18 @@ func (rbt *Rbtree) LeftRotate(no *Node) {
 	if no.Right == rbt.NIL {
 		return
 	}
-
 	//          |                                  |
 	//          X                                  Y
 	//         / \         left rotate            / \
 	//        α  Y       ------------->         X   γ
 	//           / \                            / \
 	//          β  γ                            α  β
-
 	rchild := no.Right
 	no.Right = rchild.Left
-
 	if rchild.Left != rbt.NIL {
 		rchild.Left.Parent = no
 	}
-
 	rchild.Parent = no.Parent
-
 	if no.Parent == rbt.NIL {
 		rbt.root = rchild
 	} else if no == no.Parent.Left {
@@ -95,9 +90,7 @@ func (rbt *Rbtree) LeftRotate(no *Node) {
 	} else {
 		no.Parent.Right = rchild
 	}
-
 	rchild.Left = no
-
 	no.Parent = rchild
 
 }
@@ -149,7 +142,7 @@ func (rbt *Rbtree) Insert(no *Node) {
 		} else if less(x.Item, no.Item) {
 			x = x.Right
 		} else {
-			log.Println("that node already exist")
+			fmt.Println("that node already exist")
 		}
 	}
 
@@ -175,7 +168,7 @@ func (rbt *Rbtree) insertFixup(no *Node) {
 				//
 				// 情形 4
 
-				log.Println("TRACE Do Case 4 :", no.Item)
+				fmt.Println("TRACE Do Case 4 :", no.Item)
 
 				no.Parent.color = BLACK
 				y.color = BLACK
@@ -186,14 +179,14 @@ func (rbt *Rbtree) insertFixup(no *Node) {
 					//
 					// 情形 5 : 反向情形
 					// 直接左旋转 , 然后进行情形3(变色->右旋)
-					log.Println("TRACE Do Case 5 :", no.Item)
+					fmt.Println("TRACE Do Case 5 :", no.Item)
 
 					if no == no.Parent.Right {
 						no = no.Parent
 						rbt.LeftRotate(no)
 					}
 				}
-				log.Println("TRACE Do Case 6 :", no.Item)
+				fmt.Println("TRACE Do Case 6 :", no.Item)
 
 				no.Parent.color = BLACK
 				no.Parent.Parent.color = RED
@@ -222,25 +215,25 @@ func (rbt *Rbtree) insertFixup(no *Node) {
 }
 
 func LeftRotateTest() {
-	var i10 Int = 10
-	var i12 Int = 12
+	var i Int = 10
+	var j Int = 12
 
 	rbtree := New()
 
-	x := &Node{rbtree.NIL, rbtree.NIL, rbtree.NIL, BLACK, i10}
+	x := &Node{rbtree.NIL, rbtree.NIL, rbtree.NIL, BLACK, i}
 	rbtree.root = x
-	y := &Node{rbtree.root.Right, rbtree.NIL, rbtree.NIL, RED, i12}
+	y := &Node{rbtree.root.Right, rbtree.NIL, rbtree.NIL, RED, j}
 	rbtree.root.Right = y
 
-	log.Println("root : ", rbtree.root)
-	log.Println("left : ", rbtree.root.Left)
-	log.Println("right : ", rbtree.root.Right)
+	fmt.Println("root:", rbtree.root)
+	fmt.Println("left:", rbtree.root.Left)
+	fmt.Println("right:", rbtree.root.Right)
 
 	rbtree.LeftRotate(rbtree.root)
 
-	log.Println("root : ", rbtree.root)
-	log.Println("left : ", rbtree.root.Left)
-	log.Println("right : ", rbtree.root.Right)
+	fmt.Println("root:", rbtree.root)
+	fmt.Println("left:", rbtree.root.Left)
+	fmt.Println("right:", rbtree.root.Right)
 
 }
 
@@ -255,15 +248,15 @@ func RightRotateTest() {
 	y := &Node{rbtree.root.Right, rbtree.NIL, rbtree.NIL, RED, i12}
 	rbtree.root.Left = y
 
-	log.Println("root : ", rbtree.root)
-	log.Println("left : ", rbtree.root.Left)
-	log.Println("right : ", rbtree.root.Right)
+	fmt.Println("root : ", rbtree.root)
+	fmt.Println("left : ", rbtree.root.Left)
+	fmt.Println("right : ", rbtree.root.Right)
 
 	rbtree.RightRotate(rbtree.root)
 
-	log.Println("root : ", rbtree.root)
-	log.Println("left : ", rbtree.root.Left)
-	log.Println("right : ", rbtree.root.Right)
+	fmt.Println("root : ", rbtree.root)
+	fmt.Println("left : ", rbtree.root.Left)
+	fmt.Println("right : ", rbtree.root.Right)
 
 }
 
@@ -271,12 +264,12 @@ func ItemTest() {
 	var itype1 Int = 10
 	var itype2 Int = 12
 
-	log.Println(itype1.Less(itype2))
+	fmt.Println(itype1.Less(itype2))
 
 	var strtype1 String = "sola"
 	var strtype2 String = "ailumiyana"
 
-	log.Println(strtype1.Less(strtype2))
+	fmt.Println(strtype1.Less(strtype2))
 }
 
 func InsertTest() {
@@ -288,18 +281,18 @@ func InsertTest() {
 	rbtree.Insert(&Node{rbtree.NIL, rbtree.NIL, rbtree.NIL, RED, Int(6)})
 	rbtree.Insert(&Node{rbtree.NIL, rbtree.NIL, rbtree.NIL, RED, Int(7)})
 
-	log.Println("rbtree counts : ", rbtree.count)
+	fmt.Println("rbtree counts : ", rbtree.count)
 
-	log.Println("------ ", rbtree.root.Item)
-	log.Println("----", rbtree.root.Left.Item, "---", rbtree.root.Right.Item)
-	log.Println("--", rbtree.root.Left.Left.Item, "-", rbtree.root.Left.Right.Item)
+	fmt.Println("------ ", rbtree.root.Item)
+	fmt.Println("----", rbtree.root.Left.Item, "---", rbtree.root.Right.Item)
+	fmt.Println("--", rbtree.root.Left.Left.Item, "-", rbtree.root.Left.Right.Item)
 
 }
 
 func main() {
-	log.Println(" ---- main ------ ")
+	fmt.Println(" ---- main ------ ")
 	LeftRotateTest()
-	RightRotateTest()
-	ItemTest()
-	InsertTest()
+	//RightRotateTest()
+	//ItemTest()
+	//InsertTest()
 }
