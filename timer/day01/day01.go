@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"time"
 )
 
@@ -44,10 +43,24 @@ func AfterFuncDemo() {
 func WorngTicker() {
 	for {
 		select {
-		case <- time.Tick(1 * time.Second)
-			log.Println("资源泄露")
+		case <-time.Tick(1 * time.Second):
+			fmt.Println("资源泄露")
 		}
 	}
+}
+func demo(t interface{}) {
+	for {
+		select {
+		case <-t.(*time.Ticker).C:
+			println("1s timer")
+		}
+	}
+}
+
+func main1() {
+	t := time.NewTicker(time.Second * 1)
+	go demo(t)
+	select {}
 }
 
 func main() {
@@ -59,4 +72,5 @@ func main() {
 	//DelayFunction()
 	//AfterDemo()
 	AfterFuncDemo()
+	main1()
 }
