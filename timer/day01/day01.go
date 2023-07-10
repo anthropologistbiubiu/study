@@ -71,6 +71,7 @@ func main() {
 	//fmt.Println("flag", flag)
 	//DelayFunction()
 	//AfterDemo()
-	AfterFuncDemo()
+	AfterFuncDemo() //time.AfterFunc()是异步执行的，
+	// 所以需要在函数最后sleep等待指定的协程退出，否则可能函数结束时协程还未执行。
 	main1()
 }
