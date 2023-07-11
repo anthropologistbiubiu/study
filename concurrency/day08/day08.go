@@ -20,9 +20,8 @@ func doWork1() {
 
 func doWork2() {
 	defer wg.Done()
-	for {
-		i := <-bridge
-		println(i + 1)
+	for i, j := range bridge {
+		println(i, j)
 	}
 }
 
