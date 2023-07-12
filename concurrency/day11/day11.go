@@ -6,8 +6,8 @@ import (
 )
 
 // 用两个无缓冲管道  实现两个协程交替打印
-var chan1 = make(chan struct{})
-var chan2 = make(chan struct{})
+var chan1 = make(chan struct{}, 1)
+var chan2 = make(chan struct{}, 1)
 
 func work1() {
 
@@ -36,12 +36,11 @@ func work2() {
 	}
 }
 
+// 验证一下无缓冲管道和有缓冲管道 buff=1 在并发控制中的不同
 func main() {
 
 	runtime.GOMAXPROCS(2)
-	go func() {
-		chan2 <- struct{}{}
-	}()
+	chan2 <- struct{}{}
 	go work1()
 	go work2()
 
