@@ -1,21 +1,6 @@
 package main
 
-import (
-	"time"
-)
-
-func main() {
-
-	var workChan = make(chan int)
-	go func() {
-		println("gorutine start")
-		workChan <- 1
-		println("gorutine end")
-	}()
-	//<-workChan
-	println("end")
-	time.Sleep(2 * time.Second)
-}
+import "time"
 
 var switchChan = make(chan struct{})
 var dataChan = make(chan int, 1)
@@ -35,12 +20,19 @@ func work1() {
 
 func work2() {
 
-	for i := 0; i < 10; i++ {
+	for i := 1; i <= 10; i++ {
 		if i%2 == 0 {
 			println("work2", i)
-			switchChan <- struct{}{}
+			<-switchChan
 		} else {
 			continue
 		}
 	}
+}
+
+func main() {
+
+	go work1()
+	go work2()
+	time.Sleep(5 * time.Second)
 }
