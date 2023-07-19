@@ -24,7 +24,7 @@ func main() {
 	primes1 := make(chan int)
 	go filter(2, c, primes1)
 	i := <-primes1
-	println(i)
+	println("i", i)
 
 	primes2 := make(chan int)
 	go filter(i, primes1, primes2)

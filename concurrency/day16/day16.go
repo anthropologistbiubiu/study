@@ -20,7 +20,6 @@ func counter(c chan int) {
 func main() {
 	c := make(chan int)
 	go counter(c)
-
 	for i := 0; i < 11; i++ {
 		p := <-c
 		fmt.Println(p)
