@@ -1,7 +1,5 @@
 package main
 
-import "fmt"
-
 func filter(in, out chan int, prime int) {
 	for {
 		i := <-in
@@ -22,7 +20,7 @@ func main() {
 	go counter(c)
 	for i := 0; i < 11; i++ {
 		p := <-c
-		fmt.Println(p)
+		println(p)
 		primes := make(chan int)
 		go filter(c, primes, p)
 		c = primes
