@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-grpc v1.3.0
 // - protoc             v3.21.9
-// source: sign.proto
+// source: proto/sign.proto
 
-package __
+package proto
 
 import (
 	context "context"
@@ -105,5 +105,5 @@ var SignServiceRequest_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "sign.proto",
+	Metadata: "proto/sign.proto",
 }
