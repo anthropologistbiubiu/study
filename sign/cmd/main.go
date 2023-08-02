@@ -1,6 +1,8 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+)
 
 //grpc框架    +  protobuf  重构签名服务器
 
@@ -16,6 +18,11 @@ func main() {
 
 	server := gin.Default()
 
+	server.POST("/sign", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"sign": "sunweiming",
+		})
+	})
 	// 使用grpc 来调用
 
 }
