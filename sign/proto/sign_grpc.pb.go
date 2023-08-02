@@ -51,7 +51,7 @@ func (c *signServiceRequestClient) GetSign(ctx context.Context, in *SignRequest,
 // for forward compatibility
 type SignServiceRequestServer interface {
 	GetSign(context.Context, *SignRequest) (*SignReponse, error)
-	mustEmbedUnimplementedSignServiceRequestServer()
+	//mustEmbedUnimplementedSignServiceRequestServer()
 }
 
 // UnimplementedSignServiceRequestServer must be embedded to have forward compatible implementations.
