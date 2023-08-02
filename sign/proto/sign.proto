@@ -1,0 +1,19 @@
+syntax="proto3";
+
+option go_package = "./pb";
+
+message SignRequest{
+  string name = 1;
+  string email =2;
+  string phone = 3;
+  int32  amount = 4;
+}
+
+message SignReponse{
+   string sign =1;
+   int32  code =2;
+}
+
+service SignServiceRequest{
+  rpc GetSign(SignRequest) returns (SignReponse);
+}
