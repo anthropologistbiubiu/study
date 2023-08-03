@@ -23,9 +23,13 @@ type SignServer struct {
 
 /*
 func (s *sign) mustEmbedUnimplementedSignServiceRequestServer() {
-
 }
 */
+// 现在已经通过grpc 改造了签名服务器，现在剩下的就是改造每个业务层，实现这个业务的完整性，在业务层中添加 orm 的过程。
+// 添加服务的注册与发现
+// 添加 log 层的日志归档和记录
+// kafa 实现请求的限流的熔断
+
 func (s *SignServer) mustEmbedUnimplementedSignServiceRequestServer() {}
 
 func (s *SignServer) GetSign(ctx context.Context, req *proto.SignRequest) (*proto.SignReponse, error) {
