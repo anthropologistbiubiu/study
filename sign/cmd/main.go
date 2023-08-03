@@ -8,8 +8,13 @@ import (
 	"fmt"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
+	"log"
 	"net"
+	"os"
+	"os/signal"
 	"sign/proto"
+	"sync"
+	"syscall"
 	"time"
 )
 
@@ -28,7 +33,18 @@ func (s *SignServer) GetSign(ctx context.Context, req *proto.SignRequest) (*prot
 	if err != nil {
 		return nil, err
 	}
-	time.Sleep(5 * time.Second) //模拟数据库操作
+	var flag bool
+	timer := time.After(10 * time.Second)
+	for !flag {
+		select {
+		case <-timer:
+			fmt.Println("10s is coming")
+			flag = true
+		default:
+			time.Sleep(1 * time.Second)
+			fmt.Println(time.Now().Second())
+		}
+	}
 	hash := sha256.New()
 	hash.Write(data)
 	hashValue := hash.Sum(nil)
@@ -48,8 +64,24 @@ func main() {
 	server := grpc.NewServer()
 	reflection.Register(server)
 	proto.RegisterSignServiceRequestServer(server, &SignServer{})
+	var wg sync.WaitGroup
+	wg.Add(1)
+	// 处理优雅退出信号
+	go func() {
+		defer wg.Done()
+		sigCh := make(chan os.Signal, 1)
+		signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
+		<-sigCh
+		fmt.Println("\nReceived shutdown signal. Gracefully shutting down...")
+		// 关闭gRPC服务器
+		server.GracefulStop()
+	}()
+
 	fmt.Println("start success!")
-	if err = server.Serve(listen); err != nil {
-		fmt.Println(err)
+	// 启动gRPC服务器
+	if err := server.Serve(listen); err != nil {
+		log.Fatalf("failed to serve: %v", err)
 	}
+	// 等待所有活动的请求处理完成
+	wg.Wait()
 }
