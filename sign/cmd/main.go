@@ -58,6 +58,7 @@ func (s *sign) mustEmbedUnimplementedSignServiceRequestServer() {
 // 这个服务当中重要的一些逻辑就是缓存的处理 (string,hash,zset,list)  还有就是 + 数据精度的处理 + channel + 协程 + 接口
 
 // func (s *SignServer) mustEmbedUnimplementedSignServiceRequestServer() {}
+// ci / cd /git /vim /paycharm
 
 func (s *SignServer) GetSign(ctx context.Context, req *proto.SignRequest) (*proto.SignReponse, error) {
 	data, err := json.Marshal(req)
