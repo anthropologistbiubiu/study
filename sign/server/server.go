@@ -48,6 +48,7 @@ func (s *sign) mustEmbedUnimplementedSignServiceRequestServer() {
 //2.虚拟货币支付交易
 // ihive服务的技术栈 + 多了一个scaner 服务的部署  + kafk 数据的推送的服务 +  transfer 服务的调用(grpc) + 支付服务的主体逻辑 + 预警服
 // 这个服务当中重要的一些逻辑就是缓存的处理 (string,hash,zset,list)  还有就是 + 数据精度的处理 + channel + 协程 + 接口
+// lua 脚本的处理 redis 服务的过程。
 
 // func (s *SignServer) mustEmbedUnimplementedSignServiceRequestServer() {}
 // ci / cd /git /vim /paycharm
