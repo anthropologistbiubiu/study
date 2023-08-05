@@ -16,12 +16,12 @@ var (
 
 func init() {
 	// 注册etcd的服务发现解析器
-	resolver.Register(&etcdResolverBuilder{})
+	resolver.Register(&EtcdResolverBuilder{})
 }
 
-type etcdResolverBuilder struct{}
+type EtcdResolverBuilder struct{}
 
-func (*etcdResolverBuilder) Build(target resolver.Target, cc resolver.ClientConn, opts resolver.BuildOptions) (resolver.Resolver, error) {
+func (*EtcdResolverBuilder) Build(target resolver.Target, cc resolver.ClientConn, opts resolver.BuildOptions) (resolver.Resolver, error) {
 	r := &etcdResolver{
 		target: target,
 		cc:     cc,
@@ -30,7 +30,7 @@ func (*etcdResolverBuilder) Build(target resolver.Target, cc resolver.ClientConn
 	return r, nil
 }
 
-func (*etcdResolverBuilder) Scheme() string {
+func (*EtcdResolverBuilder) Scheme() string {
 	return "etcd"
 }
 

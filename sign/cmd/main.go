@@ -52,6 +52,7 @@ func (s *sign) mustEmbedUnimplementedSignServiceRequestServer() {
 // 梳理清楚分库分表的逻辑
 // 分布式缓存  + 数据一致性
 // 设计模式
+// nginx 负载均衡
 
 //2.虚拟货币支付交易
 // ihive服务的技术栈 + 多了一个scaner 服务的部署  + kafk 数据的推送的服务 +  transfer 服务的调用(grpc) + 支付服务的主体逻辑 + 预警服
@@ -88,7 +89,7 @@ func (s *SignServer) GetSign(ctx context.Context, req *proto.SignRequest) (*prot
 }
 func main() {
 
-	serviceAddr := "localhost:50051" // 替换为实际的服务器地址
+	serviceAddr := "localhost:8080" // 替换为实际的服务器地址
 	if err := etcd.RegisterService(serviceAddr); err != nil {
 		log.Fatalf("Failed to register service: %v", err)
 	}

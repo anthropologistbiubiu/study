@@ -4,15 +4,18 @@ import (
 	"context"
 	"fmt"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/resolver"
+	"sign/etcd"
 	"sign/proto"
 )
 
+// 客户端给出 负载均衡的调用过程
 func main() {
-	serverAddr := "localhost:8080"
+	resolver.Register(&etcd.EtcdResolverBuilder{})
 	// 连接gRPC服务器
-	conn, err := grpc.Dial(serverAddr, grpc.WithInsecure())
+	conn, err := grpc.Dial("etcd:///sign-service", grpc.WithDefaultServiceConfig(`{"loadBalancingPolicy":"round_robin"}`))
 	if err != nil {
-		fmt.Println("failed to connect: %v", err)
+		fmt.Println("Failed to connect: %v", err)
 	}
 	defer conn.Close()
 	// 创建gRPC客户端
