@@ -18,6 +18,18 @@ import (
 	"time"
 )
 
+var (
+	etcdEndpoints = []string{"localhost:2379"}
+	etcdKeyPrefix = "sign-service/"
+)
+
+func etcdregist() {
+	serviceAddr := "localhost:50051" // 替换为实际的服务器地址
+	if err := registerService(serviceAddr); err != nil {
+		log.Fatalf("Failed to register service: %v", err)
+	}
+}
+
 type SignServer struct {
 }
 
@@ -26,7 +38,7 @@ func (s *sign) mustEmbedUnimplementedSignServiceRequestServer() {
 }
 */
 // 现在已经通过grpc 改造了签名服务器，现在剩下的就是改造每个业务层，实现这个业务的完整性，在业务层中添加 orm 的过程。
-// 添加服务的注册与发现
+// 添加服务的注册与发现  添加负载均衡
 // 添加 log 层的日志归档和记录
 // kafa 实现请求的限流的熔断
 
@@ -88,4 +100,8 @@ func main() {
 	}
 	// 等待所有活动的请求处理完成
 	wg.Wait()
+	// 在服务器退出时，注销服务
+	if err := deregisterService(serviceAddr); err != nil {
+		log.Fatalf("Failed to deregister service: %v", err)
+	}
 }
