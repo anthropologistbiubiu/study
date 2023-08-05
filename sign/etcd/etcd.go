@@ -9,6 +9,7 @@ import (
 	"time"
 )
 
+// 这里给出解析 etcd 的过程
 var (
 	etcdEndpoints = []string{"localhost:2379"}
 	etcdKeyPrefix = "sign-service/"
