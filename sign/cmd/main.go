@@ -35,10 +35,18 @@ func (s *sign) mustEmbedUnimplementedSignServiceRequestServer() {
 }
 */
 // 现在已经通过grpc 改造了签名服务器，现在剩下的就是改造每个业务层，实现这个业务的完整性，在业务层中添加 orm 的过程。
+// 添加 redis 分布式缓存 了解 分布式缓存的特点
 // 添加服务的注册与发现  添加负载均衡
 // 添加 log 层的日志归档和记录
 // kafa 实现请求的限流的熔断
 // 抽象出 aes md5 rsa 等这些 服务接口
+// 有 grpc 的认证过程
+
+// 支付服务的 主要逻辑  想想能不能把 kafka 这个消息队列用起来
+// 白名单 + 一个限流算法 令牌桶算法 / 滑动窗口算法
+// 支付服务当中 怎么把定时任务加进去   要持续的优化这个服务
+
+// ihive服务的技术栈
 
 //func (s *SignServer) mustEmbedUnimplementedSignServiceRequestServer() {}
 
