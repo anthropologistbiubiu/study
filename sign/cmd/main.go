@@ -22,11 +22,6 @@ import (
 	"time"
 )
 
-var (
-// etcdEndpoints = []string{"localhost:2379"}
-// etcdKeyPrefix = "sign-service/"
-)
-
 type SignServer struct {
 }
 
@@ -34,7 +29,8 @@ type SignServer struct {
 func (s *sign) mustEmbedUnimplementedSignServiceRequestServer() {
 }
 */
-// 现在已经通过grpc 改造了签名服务器，现在剩下的就是改造每个业务层，实现这个业务的完整性，在业务层中添加 orm 的过程。
+// 实现这个业务的完整性，在业务层中添加 orm 的过程。
+// 添加orm 事务的处理过程。
 // 添加 redis 分布式缓存 了解 分布式缓存的特点
 // 添加服务的注册与发现  添加负载均衡
 // 添加 log 层的日志归档和记录
@@ -58,9 +54,9 @@ func (s *sign) mustEmbedUnimplementedSignServiceRequestServer() {
 // ihive服务的技术栈 + 多了一个scaner 服务的部署  + kafk 数据的推送的服务 +  transfer 服务的调用(grpc) + 支付服务的主体逻辑 + 预警服
 // 这个服务当中重要的一些逻辑就是缓存的处理 (string,hash,zset,list)  还有就是 + 数据精度的处理 + channel + 协程 + 接口
 
-// func (s *SignServer) mustEmbedUnimplementedSignServiceRequestServer() {}
 // ci / cd /git /vim /paycharm
 
+func (s *SignServer) mustEmbedUnimplementedSignServiceRequestServer() {}
 func (s *SignServer) GetSign(ctx context.Context, req *proto.SignRequest) (*proto.SignReponse, error) {
 	data, err := json.Marshal(req)
 	if err != nil {
@@ -94,8 +90,7 @@ func main() {
 		log.Fatalf("Failed to register service: %v", err)
 	}
 
-	listener := ":8080"
-	listen, err := net.Listen("tcp", listener)
+	listen, err := net.Listen("tcp", serviceAddr)
 	if err != nil {
 		fmt.Println("", err)
 	}

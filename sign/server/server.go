@@ -50,9 +50,8 @@ func (s *sign) mustEmbedUnimplementedSignServiceRequestServer() {
 // 这个服务当中重要的一些逻辑就是缓存的处理 (string,hash,zset,list)  还有就是 + 数据精度的处理 + channel + 协程 + 接口
 // lua 脚本的处理 redis 服务的过程。
 
-// func (s *SignServer) mustEmbedUnimplementedSignServiceRequestServer() {}
 // ci / cd /git /vim /paycharm
-
+func (s *SignServer) mustEmbedUnimplementedSignServiceRequestServer() {}
 func (s *SignServer) GetSign(ctx context.Context, req *proto.SignRequest) (*proto.SignReponse, error) {
 	data, err := json.Marshal(req)
 	if err != nil {
@@ -81,13 +80,12 @@ func (s *SignServer) GetSign(ctx context.Context, req *proto.SignRequest) (*prot
 }
 func main() {
 
-	serviceAddr := "localhost:8080" // 替换为实际的服务器地址
+	serviceAddr := "localhost:8081" // 替换为实际的服务器地址
 	if err := etcd.RegisterService(serviceAddr); err != nil {
 		fmt.Println("Failed to register service: %v", err)
 	}
 
-	listener := ":8080"
-	listen, err := net.Listen("tcp", listener)
+	listen, err := net.Listen("tcp", serviceAddr)
 	if err != nil {
 		fmt.Println("", err)
 	}

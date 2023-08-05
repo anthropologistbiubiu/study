@@ -2,6 +2,7 @@ package etcd
 
 import (
 	"context"
+	"fmt"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"google.golang.org/grpc/resolver"
 	"log"
@@ -44,6 +45,7 @@ func RegisterService(serviceAddr string) error {
 	}
 	defer etcdCli.Close()
 	key := etcdKeyPrefix + serviceAddr
+	fmt.Println("NNNNNNNNNNNNNNN", key)
 	_, err = etcdCli.Put(context.Background(), key, serviceAddr)
 	return err
 }

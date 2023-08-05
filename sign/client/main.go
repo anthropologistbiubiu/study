@@ -13,7 +13,7 @@ import (
 func main() {
 	resolver.Register(&etcd.EtcdResolverBuilder{})
 	// 连接gRPC服务器
-	conn, err := grpc.Dial("etcd:///sign-service", grpc.WithDefaultServiceConfig(`{"loadBalancingPolicy":"round_robin"}`))
+	conn, err := grpc.Dial("etcd:///sign-service", grpc.WithInsecure(), grpc.WithDefaultServiceConfig(`{"loadBalancingPolicy":"round_robin"}`))
 	if err != nil {
 		fmt.Println("Failed to connect: %v", err)
 	}
@@ -26,10 +26,12 @@ func main() {
 		Phone:  "1319847957",
 		Amount: 500,
 	}
-	response, err := client.GetSign(context.Background(), req)
-	if err != nil {
-		fmt.Println("GetSign Err", err)
+	fmt.Println("Client >>>>>>>", client)
+	for i := 0; i < 10; i++ {
+		response, err := client.GetSign(context.Background(), req)
+		if err != nil {
+			fmt.Println("GetSign Err", err)
+		}
+		fmt.Printf("%v\n", response)
 	}
-	fmt.Printf("%v\n", response)
-
 }
