@@ -41,14 +41,23 @@ func (s *sign) mustEmbedUnimplementedSignServiceRequestServer() {
 // kafa 实现请求的限流的熔断
 // 抽象出 aes md5 rsa 等这些 服务接口
 // 有 grpc 的认证过程
+// 添加配置文件的解析过程
+// 掌握分布式的特点
 
+// 1.聚合支付
 // 支付服务的 主要逻辑  想想能不能把 kafka 这个消息队列用起来
 // 白名单 + 一个限流算法 令牌桶算法 / 滑动窗口算法
 // 支付服务当中 怎么把定时任务加进去   要持续的优化这个服务
+// es + 实现大数据的查询
+// 梳理清楚分库分表的逻辑
+// 分布式缓存  + 数据一致性
+// 设计模式
 
-// ihive服务的技术栈
+//2.虚拟货币支付交易
+// ihive服务的技术栈 + 多了一个scaner 服务的部署  + kafk 数据的推送的服务 +  transfer 服务的调用(grpc) + 支付服务的主体逻辑 + 预警服
+// 这个服务当中重要的一些逻辑就是缓存的处理 (string,hash,zset,list)  还有就是 + 数据精度的处理 + channel + 协程 + 接口
 
-//func (s *SignServer) mustEmbedUnimplementedSignServiceRequestServer() {}
+// func (s *SignServer) mustEmbedUnimplementedSignServiceRequestServer() {}
 
 func (s *SignServer) GetSign(ctx context.Context, req *proto.SignRequest) (*proto.SignReponse, error) {
 	data, err := json.Marshal(req)
