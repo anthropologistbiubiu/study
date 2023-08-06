@@ -82,7 +82,7 @@ func (s *SignServer) GetSign(ctx context.Context, req *proto.SignRequest) (*prot
 }
 func main() {
 
-	serviceAddr := "localhost:8081" // 替换为实际的服务器地址
+	serviceAddr := "localhost:55002" // 替换为实际的服务器地址
 	serviceName := "sign-service"
 	etcd.RegisterServiceWithEtcd(serviceName, serviceAddr)
 
