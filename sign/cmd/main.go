@@ -6,9 +6,9 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"sign/etcd"
-	//clientv3 "go.etcd.io/etcd/client/v3"
 	"google.golang.org/grpc"
+	"sign/etcd"
+
 	"google.golang.org/grpc/reflection"
 	//"google.golang.org/grpc/resolver"
 	"log"
@@ -25,10 +25,6 @@ import (
 type SignServer struct {
 }
 
-/*
-func (s *sign) mustEmbedUnimplementedSignServiceRequestServer() {
-}
-*/
 // 实现这个业务的完整性，在业务层中添加 orm 的过程。
 // 添加orm 事务的处理过程。
 // 添加 redis 分布式缓存 了解 分布式缓存的特点
@@ -58,6 +54,7 @@ func (s *sign) mustEmbedUnimplementedSignServiceRequestServer() {
 
 func (s *SignServer) mustEmbedUnimplementedSignServiceRequestServer() {}
 func (s *SignServer) GetSign(ctx context.Context, req *proto.SignRequest) (*proto.SignReponse, error) {
+	fmt.Println("cmd ")
 	data, err := json.Marshal(req)
 	if err != nil {
 		return nil, err
@@ -86,9 +83,8 @@ func (s *SignServer) GetSign(ctx context.Context, req *proto.SignRequest) (*prot
 func main() {
 
 	serviceAddr := "localhost:8080" // 替换为实际的服务器地址
-	if err := etcd.RegisterService(serviceAddr); err != nil {
-		log.Fatalf("Failed to register service: %v", err)
-	}
+	serviceName := "sign-service"
+	etcd.RegisterServiceWithEtcd(serviceName, serviceAddr)
 
 	listen, err := net.Listen("tcp", serviceAddr)
 	if err != nil {
@@ -118,7 +114,5 @@ func main() {
 	// 等待所有活动的请求处理完成
 	wg.Wait()
 	// 在服务器退出时，注销服务
-	if err := etcd.DeregisterService(serviceAddr); err != nil {
-		log.Fatalf("Failed to deregister service: %v", err)
-	}
+	etcd.UnregisterServiceWithEtcd("", "")
 }

@@ -6,13 +6,17 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"sign/etcd"
+	//clientv3 "go.etcd.io/etcd/client/v3"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
+	//"google.golang.org/grpc/resolver"
+	"log"
 	"net"
 	"os"
 	"os/signal"
-	"sign/etcd"
 	"sign/proto"
+	//"strings"
 	"sync"
 	"syscall"
 	"time"
@@ -21,11 +25,8 @@ import (
 type SignServer struct {
 }
 
-/*
-func (s *sign) mustEmbedUnimplementedSignServiceRequestServer() {
-}
-*/
-// 现在已经通过grpc 改造了签名服务器，现在剩下的就是改造每个业务层，实现这个业务的完整性，在业务层中添加 orm 的过程。
+// 实现这个业务的完整性，在业务层中添加 orm 的过程。
+// 添加orm 事务的处理过程。
 // 添加 redis 分布式缓存 了解 分布式缓存的特点
 // 添加服务的注册与发现  添加负载均衡
 // 添加 log 层的日志归档和记录
@@ -48,11 +49,12 @@ func (s *sign) mustEmbedUnimplementedSignServiceRequestServer() {
 //2.虚拟货币支付交易
 // ihive服务的技术栈 + 多了一个scaner 服务的部署  + kafk 数据的推送的服务 +  transfer 服务的调用(grpc) + 支付服务的主体逻辑 + 预警服
 // 这个服务当中重要的一些逻辑就是缓存的处理 (string,hash,zset,list)  还有就是 + 数据精度的处理 + channel + 协程 + 接口
-// lua 脚本的处理 redis 服务的过程。
 
 // ci / cd /git /vim /paycharm
+
 func (s *SignServer) mustEmbedUnimplementedSignServiceRequestServer() {}
 func (s *SignServer) GetSign(ctx context.Context, req *proto.SignRequest) (*proto.SignReponse, error) {
+	fmt.Println("serve")
 	data, err := json.Marshal(req)
 	if err != nil {
 		return nil, err
@@ -81,9 +83,8 @@ func (s *SignServer) GetSign(ctx context.Context, req *proto.SignRequest) (*prot
 func main() {
 
 	serviceAddr := "localhost:8081" // 替换为实际的服务器地址
-	if err := etcd.RegisterService(serviceAddr); err != nil {
-		fmt.Println("Failed to register service: %v", err)
-	}
+	serviceName := "sign-service"
+	etcd.RegisterServiceWithEtcd(serviceName, serviceAddr)
 
 	listen, err := net.Listen("tcp", serviceAddr)
 	if err != nil {
@@ -108,12 +109,10 @@ func main() {
 	fmt.Println("start success!")
 	// 启动gRPC服务器
 	if err := server.Serve(listen); err != nil {
-		fmt.Println("failed to serve: %v", err)
+		log.Fatalf("failed to serve: %v", err)
 	}
 	// 等待所有活动的请求处理完成
 	wg.Wait()
 	// 在服务器退出时，注销服务
-	if err := etcd.DeregisterService(serviceAddr); err != nil {
-		fmt.Println("Failed to deregister service: %v", err)
-	}
+	etcd.UnregisterServiceWithEtcd("", "")
 }
