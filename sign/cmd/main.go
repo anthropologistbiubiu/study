@@ -1,13 +1,10 @@
 package main
 
 import (
-	"context"
-	"crypto/sha256"
-	"encoding/hex"
-	"encoding/json"
 	"fmt"
 	"google.golang.org/grpc"
 	"sign/etcd"
+	"sign/service"
 
 	"google.golang.org/grpc/reflection"
 	//"google.golang.org/grpc/resolver"
@@ -16,14 +13,9 @@ import (
 	"os"
 	"os/signal"
 	"sign/proto"
-	//"strings"
 	"sync"
 	"syscall"
-	"time"
 )
-
-type SignServer struct {
-}
 
 // 实现这个业务的完整性，在业务层中添加 orm 的过程。
 // 添加orm 事务的处理过程。
@@ -52,37 +44,7 @@ type SignServer struct {
 // 这个服务当中重要的一些逻辑就是缓存的处理 (string,hash,zset,list)  还有就是 + 数据精度的处理 + channel + 协程 + 接口
 
 // ci / cd /git /vim /paycharm
-
-func (s *SignServer) mustEmbedUnimplementedSignServiceRequestServer() {}
-func (s *SignServer) GetSign(ctx context.Context, req *proto.SignRequest) (*proto.SignReponse, error) {
-	fmt.Println("cmd ")
-	data, err := json.Marshal(req)
-	if err != nil {
-		return nil, err
-	}
-	var flag bool
-	timer := time.After(10 * time.Second)
-	for !flag {
-		select {
-		case <-timer:
-			fmt.Println("10s is coming")
-			flag = true
-		default:
-			time.Sleep(1 * time.Second)
-			fmt.Println(time.Now().Second())
-		}
-	}
-	hash := sha256.New()
-	hash.Write(data)
-	hashValue := hash.Sum(nil)
-	response := &proto.SignReponse{
-		Sign: hex.EncodeToString(hashValue),
-		Code: 200,
-	}
-	return response, nil
-}
 func main() {
-
 	serviceAddr := "localhost:55001" // 替换为实际的服务器地址
 	serviceName := "sign-service"
 	etcd.RegisterServiceWithEtcd(serviceName, serviceAddr)
@@ -93,7 +55,7 @@ func main() {
 	}
 	server := grpc.NewServer()
 	reflection.Register(server)
-	proto.RegisterSignServiceRequestServer(server, &SignServer{})
+	proto.RegisterSignServiceRequestServer(server, &service.SignServer{})
 	var wg sync.WaitGroup
 	wg.Add(1)
 	// 处理优雅退出信号
