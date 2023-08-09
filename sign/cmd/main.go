@@ -32,7 +32,8 @@ import (
 
 func main() {
 	//defer log.Sync()
-	logger := log.New(os.Stderr, log.WarnLevel, log.AddCaller())
+	// lumberjack
+	logger := log.New(os.Stderr, log.WarnLevel, log.AddCaller(), log.AddCallerSkip(2))
 	log.ReplaceDefault(logger)
 	log.Warn("sunweiming")
 }
