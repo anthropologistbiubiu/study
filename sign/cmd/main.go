@@ -1,6 +1,9 @@
 package main
 
-import "sign/utils/log"
+import (
+	"os"
+	"sign/utils/log"
+)
 
 // 实现这个业务的完整性，在业务层中添加 orm 的过程。
 // 添加orm 事务的处理过程。
@@ -28,12 +31,10 @@ import "sign/utils/log"
 // 这个服务当中重要的一些逻辑就是缓存的处理 (string,hash,zset,list)  还有就是 + 数据精度的处理 + channel + 协程 + 接口
 
 func main() {
-	defer log.Sync()
-	log.Info("Info msg")
-
-	log.SetLevel(log.ErrorLevel)
-	log.Info("Info msg")
-	log.Error("Error msg")
+	//defer log.Sync()
+	logger := log.New(os.Stderr, log.WarnLevel)
+	log.ReplaceDefault(logger)
+	log.Warn("sunweiming")
 }
 
 /*

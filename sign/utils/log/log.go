@@ -92,4 +92,22 @@ func Error(msg string, fields ...Field) { std.Error(msg, fields...) }
 func Panic(msg string, fields ...Field) { std.Panic(msg, fields...) }
 func Fatal(msg string, fields ...Field) { std.Fatal(msg, fields...) }
 
-func Sync() error { return std.Sync() }
+func Sync() error {
+	return std.Sync()
+}
+
+type Option = zap.Option
+
+// 支持日志选项
+var (
+	WrapCore      = zap.WrapCore
+	Hooks         = zap.Hooks
+	Fields        = zap.Fields
+	ErrorOutput   = zap.ErrorOutput
+	Development   = zap.Development
+	AddCaller     = zap.AddCaller
+	WithCaller    = zap.WithCaller
+	AddCallerSkip = zap.AddCallerSkip
+	AddStacktrace = zap.AddStacktrace
+	IncreaseLevel = zap.IncreaseLevel
+)
