@@ -22,7 +22,6 @@ import (
 // 添加 redis 分布式缓存 了解 分布式缓存的特点
 // 添加服务的注册与发现  添加负载均衡
 // 添加 log 层的日志归档和记录
-// kafa 实现请求的限流的熔断
 // 抽象出 aes md5 rsa 等这些 服务接口
 // 有 grpc 的认证过程
 // 添加配置文件的解析过程
@@ -43,7 +42,6 @@ import (
 // ihive服务的技术栈 + 多了一个scaner 服务的部署  + kafk 数据的推送的服务 +  transfer 服务的调用(grpc) + 支付服务的主体逻辑 + 预警服
 // 这个服务当中重要的一些逻辑就是缓存的处理 (string,hash,zset,list)  还有就是 + 数据精度的处理 + channel + 协程 + 接口
 
-// ci / cd /git /vim /paycharm
 func main() {
 	serviceAddr := "localhost:55001" // 替换为实际的服务器地址
 	serviceName := "sign-service"

@@ -1,14 +1,11 @@
 package main
 
 import (
-	"context"
-	"crypto/sha256"
-	"encoding/hex"
-	"encoding/json"
 	"fmt"
-	"sign/etcd"
-	//clientv3 "go.etcd.io/etcd/client/v3"
 	"google.golang.org/grpc"
+	"sign/etcd"
+	"sign/service"
+
 	"google.golang.org/grpc/reflection"
 	//"google.golang.org/grpc/resolver"
 	"log"
@@ -16,25 +13,20 @@ import (
 	"os"
 	"os/signal"
 	"sign/proto"
-	//"strings"
 	"sync"
 	"syscall"
-	"time"
 )
-
-type SignServer struct {
-}
 
 // 实现这个业务的完整性，在业务层中添加 orm 的过程。
 // 添加orm 事务的处理过程。
 // 添加 redis 分布式缓存 了解 分布式缓存的特点
 // 添加服务的注册与发现  添加负载均衡
 // 添加 log 层的日志归档和记录
-// kafa 实现请求的限流的熔断
 // 抽象出 aes md5 rsa 等这些 服务接口
 // 有 grpc 的认证过程
 // 添加配置文件的解析过程
 // 掌握分布式的特点
+// 加上单元测试
 
 // 1.聚合支付
 // 支付服务的 主要逻辑  想想能不能把 kafka 这个消息队列用起来
@@ -51,38 +43,8 @@ type SignServer struct {
 // 这个服务当中重要的一些逻辑就是缓存的处理 (string,hash,zset,list)  还有就是 + 数据精度的处理 + channel + 协程 + 接口
 
 // ci / cd /git /vim /paycharm
-
-func (s *SignServer) mustEmbedUnimplementedSignServiceRequestServer() {}
-func (s *SignServer) GetSign(ctx context.Context, req *proto.SignRequest) (*proto.SignReponse, error) {
-	fmt.Println("serve")
-	data, err := json.Marshal(req)
-	if err != nil {
-		return nil, err
-	}
-	var flag bool
-	timer := time.After(10 * time.Second)
-	for !flag {
-		select {
-		case <-timer:
-			fmt.Println("10s is coming")
-			flag = true
-		default:
-			time.Sleep(1 * time.Second)
-			fmt.Println(time.Now().Second())
-		}
-	}
-	hash := sha256.New()
-	hash.Write(data)
-	hashValue := hash.Sum(nil)
-	response := &proto.SignReponse{
-		Sign: hex.EncodeToString(hashValue),
-		Code: 200,
-	}
-	return response, nil
-}
 func main() {
-
-	serviceAddr := "localhost:55002" // 替换为实际的服务器地址
+	serviceAddr := "localhost:55001" // 替换为实际的服务器地址
 	serviceName := "sign-service"
 	etcd.RegisterServiceWithEtcd(serviceName, serviceAddr)
 
@@ -92,7 +54,7 @@ func main() {
 	}
 	server := grpc.NewServer()
 	reflection.Register(server)
-	proto.RegisterSignServiceRequestServer(server, &SignServer{})
+	proto.RegisterSignServiceRequestServer(server, &service.SignServer{})
 	var wg sync.WaitGroup
 	wg.Add(1)
 	// 处理优雅退出信号
