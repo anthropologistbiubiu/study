@@ -1,21 +1,6 @@
 package main
 
-import (
-	"fmt"
-	"google.golang.org/grpc"
-	"sign/etcd"
-	"sign/service"
-
-	"google.golang.org/grpc/reflection"
-	//"google.golang.org/grpc/resolver"
-	"log"
-	"net"
-	"os"
-	"os/signal"
-	"sign/proto"
-	"sync"
-	"syscall"
-)
+import "sign/utils/log"
 
 // 实现这个业务的完整性，在业务层中添加 orm 的过程。
 // 添加orm 事务的处理过程。
@@ -42,6 +27,16 @@ import (
 // ihive服务的技术栈 + 多了一个scaner 服务的部署  + kafk 数据的推送的服务 +  transfer 服务的调用(grpc) + 支付服务的主体逻辑 + 预警服
 // 这个服务当中重要的一些逻辑就是缓存的处理 (string,hash,zset,list)  还有就是 + 数据精度的处理 + channel + 协程 + 接口
 
+func main() {
+	defer log.Sync()
+	log.Info("Info msg")
+
+	log.SetLevel(log.ErrorLevel)
+	log.Info("Info msg")
+	log.Error("Error msg")
+}
+
+/*
 func main() {
 	serviceAddr := "localhost:55001" // 替换为实际的服务器地址
 	serviceName := "sign-service"
@@ -77,3 +72,4 @@ func main() {
 	// 在服务器退出时，注销服务
 	etcd.UnregisterServiceWithEtcd("", "")
 }
+*/
