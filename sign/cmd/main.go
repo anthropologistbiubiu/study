@@ -38,6 +38,9 @@ func main() {
 	log.Warn("sunweiming")
 }
 
+// 封装出 access.log error.log info.log
+// grpc 怎么封装 access.log ----- 拦截器
+// gin 中间件的使用
 /*
 func main() {
 	serviceAddr := "localhost:55001" // 替换为实际的服务器地址
