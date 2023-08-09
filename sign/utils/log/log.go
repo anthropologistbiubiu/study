@@ -1,6 +1,7 @@
 package log
 
 import (
+	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
 
@@ -20,3 +21,8 @@ const (
 	PanicLevel = zapcore.PanicLevel
 	FatalLevel = zapcore.FatalLevel
 )
+
+type Logger struct {
+	l  *zap.Logger
+	al *zap.AtomicLevel
+}
