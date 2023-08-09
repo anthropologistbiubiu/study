@@ -1,7 +1,6 @@
 package log
 
 import (
-	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
 
@@ -14,5 +13,10 @@ func log() {
 type Level = zapcore.Level
 
 const (
-	Infolevel = zap.InfoLevel
+	DebugLevel = zapcore.DebugLevel
+	InfoLevel  = zapcore.InfoLevel
+	WarnLevel  = zapcore.WarnLevel
+	ErrorLevel = zapcore.ErrorLevel
+	PanicLevel = zapcore.PanicLevel
+	FatalLevel = zapcore.FatalLevel
 )
