@@ -3,6 +3,8 @@ package log
 import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+	"io"
+	"os"
 )
 
 func log() {
@@ -25,4 +27,21 @@ const (
 type Logger struct {
 	l  *zap.Logger
 	al *zap.AtomicLevel
+}
+
+func New(out io.Writer, level Level) *Logger {
+	if out == nil {
+		out = os.Stderr
+	}
+
+	al := zap.NewAtomicLevelAt(level)
+	cfg := zap.NewProductionEncoderConfig()
+	cfg.EncodeTime = zapcore.RFC3339TimeEncoder
+
+	core := zapcore.NewCore(
+		zapcore.NewJSONEncoder(cfg),
+		zapcore.AddSync(out),
+		al,
+	)
+	return &Logger{l: zap.New(core), al: &al}
 }
