@@ -20,12 +20,28 @@ const (
 	FatalLevel = zapcore.FatalLevel
 )
 
+type Option = zap.Option
+
+// 支持日志选项
+var (
+	WrapCore      = zap.WrapCore
+	Hooks         = zap.Hooks
+	Fields        = zap.Fields
+	ErrorOutput   = zap.ErrorOutput
+	Development   = zap.Development
+	AddCaller     = zap.AddCaller
+	WithCaller    = zap.WithCaller
+	AddCallerSkip = zap.AddCallerSkip
+	AddStacktrace = zap.AddStacktrace
+	IncreaseLevel = zap.IncreaseLevel
+)
+
 type Logger struct {
 	l  *zap.Logger
 	al *zap.AtomicLevel
 }
 
-func New(out io.Writer, level Level) *Logger {
+func New(out io.Writer, level Level, option ...Option) *Logger {
 	if out == nil {
 		out = os.Stderr
 	}
@@ -39,7 +55,7 @@ func New(out io.Writer, level Level) *Logger {
 		zapcore.AddSync(out),
 		al,
 	)
-	return &Logger{l: zap.New(core), al: &al}
+	return &Logger{l: zap.New(core, option...), al: &al}
 }
 
 func (l *Logger) SetLevel(level Level) {
@@ -95,19 +111,3 @@ func Fatal(msg string, fields ...Field) { std.Fatal(msg, fields...) }
 func Sync() error {
 	return std.Sync()
 }
-
-type Option = zap.Option
-
-// 支持日志选项
-var (
-	WrapCore      = zap.WrapCore
-	Hooks         = zap.Hooks
-	Fields        = zap.Fields
-	ErrorOutput   = zap.ErrorOutput
-	Development   = zap.Development
-	AddCaller     = zap.AddCaller
-	WithCaller    = zap.WithCaller
-	AddCallerSkip = zap.AddCallerSkip
-	AddStacktrace = zap.AddStacktrace
-	IncreaseLevel = zap.IncreaseLevel
-)

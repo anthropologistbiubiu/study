@@ -32,7 +32,7 @@ import (
 
 func main() {
 	//defer log.Sync()
-	logger := log.New(os.Stderr, log.WarnLevel)
+	logger := log.New(os.Stderr, log.WarnLevel, log.AddCaller())
 	log.ReplaceDefault(logger)
 	log.Warn("sunweiming")
 }
