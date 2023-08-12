@@ -45,14 +45,15 @@ import (
 // ci / cd /git /vim /paycharm
 func main() {
 	serviceAddr := "localhost:55001" // 替换为实际的服务器地址
-	serviceName := "sign-service"
-	etcd.RegisterServiceWithEtcd(serviceName, serviceAddr)
-
+	/*
+		serviceName := "sign-service"
+		etcd.RegisterServiceWithEtcd(serviceName, serviceAddr)
+	*/
 	listen, err := net.Listen("tcp", serviceAddr)
 	if err != nil {
 		fmt.Println("", err)
 	}
-	server := grpc.NewServer()
+	server := grpc.NewServer(grpc.UnaryInterceptor(accessLogInterceptor))
 	reflection.Register(server)
 	proto.RegisterSignServiceRequestServer(server, &service.SignServer{})
 	var wg sync.WaitGroup
