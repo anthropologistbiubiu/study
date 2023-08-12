@@ -20,7 +20,10 @@ func accessLogInterceptor(ctx context.Context, req interface{}, info *grpc.Unary
 	// 执行RPC调用
 	path := "sunweiming"
 	//cost := ""
-	log.Info(path, zap.Duration("cost", time.Duration(5)))
+	log.Info(path,
+		zap.Duration("cost", time.Duration(5)),
+		zap.Any("request", req),
+		zap.Any("reponse", info))
 	// 记录访问日志
 	// 访问日志的拦截器需要自定义   // 可以参考gin框架
 	// log.Info(zap.String("requst", req.(string)))

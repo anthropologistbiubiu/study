@@ -1,18 +1,20 @@
 package main
 
 import (
+	"context"
+	"encoding/json"
 	"fmt"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
-	"sign/etcd"
-	"sign/service"
-
 	"google.golang.org/grpc/reflection"
+	"sign/etcd"
+	"sign/proto"
+	"sign/service"
+	"sign/utils/log"
 	//"google.golang.org/grpc/resolver"
-	"log"
 	"net"
 	"os"
 	"os/signal"
-	"sign/proto"
 	"sync"
 	"syscall"
 )
@@ -43,6 +45,26 @@ import (
 // 这个服务当中重要的一些逻辑就是缓存的处理 (string,hash,zset,list)  还有就是 + 数据精度的处理 + channel + 协程 + 接口
 
 // ci / cd /git /vim /paycharm
+func AccessLogInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo,
+	handler grpc.UnaryHandler) (interface{}, error) {
+	//start := time.Now()
+	// 执行RPC调用
+	cost := ""
+	request, err := json.Marshal(req)
+	if err != nil {
+		fmt.Println("NNNNNNN", err)
+	}
+	response, err := json.Marshal(ctx.Value("response"))
+	if err != nil {
+		fmt.Println("MMMMMMM", err)
+	}
+	log.Info(cost, zap.Any("method", info.FullMethod),
+		zap.Any("request", string(request)),
+		zap.Any("response", string(response)),
+	)
+	// 访问日志的拦截器需要自定义   // 可以参考gin框架
+	return nil, nil
+}
 func main() {
 	serviceAddr := "localhost:55001" // 替换为实际的服务器地址
 	/*
@@ -53,7 +75,7 @@ func main() {
 	if err != nil {
 		fmt.Println("", err)
 	}
-	server := grpc.NewServer(grpc.UnaryInterceptor(accessLogInterceptor))
+	server := grpc.NewServer(grpc.UnaryInterceptor(AccessLogInterceptor))
 	reflection.Register(server)
 	proto.RegisterSignServiceRequestServer(server, &service.SignServer{})
 	var wg sync.WaitGroup
@@ -72,7 +94,7 @@ func main() {
 	fmt.Println("start success!")
 	// 启动gRPC服务器
 	if err := server.Serve(listen); err != nil {
-		log.Fatalf("failed to serve: %v", err)
+		fmt.Printf("failed to serve: %v", err)
 	}
 	// 等待所有活动的请求处理完成
 	wg.Wait()

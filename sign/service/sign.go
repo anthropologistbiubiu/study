@@ -29,10 +29,13 @@ type SignServer struct {
 
 func (s *SignServer) mustEmbedUnimplementedSignServiceRequestServer() {}
 func (s *SignServer) GetSign(ctx context.Context, req *proto.SignRequest) (*proto.SignReponse, error) {
+	fmt.Println("WWWWWWWWWWW")
 	data, err := json.Marshal(req)
 	if err != nil {
+		fmt.Println("&&&&&&&&&&", err)
 		return nil, err
 	}
+	fmt.Println("UUUUUUUUU")
 	if signTool, ok := mp[req.Type]; ok {
 		signTool.GetServiceSign(data)
 	}
@@ -52,5 +55,6 @@ func (s *SignServer) GetSign(ctx context.Context, req *proto.SignRequest) (*prot
 		Sign: hashValue,
 		Code: hashCode,
 	}
+	context.WithValue(ctx, "response", response)
 	return response, nil
 }
