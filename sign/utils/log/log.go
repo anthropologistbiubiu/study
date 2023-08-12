@@ -102,7 +102,11 @@ func ReplaceDefault(l *Logger) { std = l }
 func SetLevel(level Level) { std.SetLevel(level) }
 
 func Debug(msg string, fields ...Field) { std.Debug(msg, fields...) }
-func Info(msg string, fields ...Field)  { std.Info(msg, fields...) }
+
+func Info(msg string, fields ...Field) {
+	std.Info(msg, fields...)
+}
+
 func Warn(msg string, fields ...Field)  { std.Warn(msg, fields...) }
 func Error(msg string, fields ...Field) { std.Error(msg, fields...) }
 func Panic(msg string, fields ...Field) { std.Panic(msg, fields...) }

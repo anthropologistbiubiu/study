@@ -40,17 +40,14 @@ func signFunc(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-
 	// 从我们的map中获取用户的密码
 	expectedPassword, ok := users[creds.Username]
-
 	// 如果设置的用户密码与我们收到的密码相同，那么我们可以继续。
 	// 如果不是，则返回“未经授权”状态。
 	if !ok || expectedPassword != creds.Password {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
-
 	// 在这里声明令牌的到期时间，我们将其保留为5分钟
 	expirationTime := time.Now().Add(5 * time.Minute)
 	// 创建JWT声明，其中包括用户名和有效时间
@@ -61,7 +58,6 @@ func signFunc(w http.ResponseWriter, r *http.Request) {
 			ExpiresAt: expirationTime.Unix(),
 		},
 	}
-
 	// 使用用于签名的算法和令牌
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	// 创建JWT字符串
@@ -71,7 +67,6 @@ func signFunc(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-
 	// 最后，我们将客户端cookie token设置为刚刚生成的JWT
 	// 我们还设置了与令牌本身相同的cookie到期时间
 	http.SetCookie(w, &http.Cookie{
@@ -93,7 +88,6 @@ func welcomeFunc(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-
 	// 从Cookie获取JWT字符串
 	tknStr := c.Value
 
@@ -118,7 +112,6 @@ func welcomeFunc(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
-
 	// 最后，将欢迎消息以及令牌中的用户名返回给用户
 	w.Write([]byte(fmt.Sprintf("Welcome %s!", claims.Username)))
 }
