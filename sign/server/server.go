@@ -1,16 +1,13 @@
 package main
 
 import (
-	"context"
-	"encoding/json"
 	"fmt"
-	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"sign/etcd"
 	"sign/proto"
+	"sign/router"
 	"sign/service"
-	"sign/utils/log"
 	//"google.golang.org/grpc/resolver"
 	"net"
 	"os"
@@ -44,27 +41,7 @@ import (
 // ihive服务的技术栈 + 多了一个scaner 服务的部署  + kafk 数据的推送的服务 +  transfer 服务的调用(grpc) + 支付服务的主体逻辑 + 预警服
 // 这个服务当中重要的一些逻辑就是缓存的处理 (string,hash,zset,list)  还有就是 + 数据精度的处理 + channel + 协程 + 接口
 
-// ci / cd /git /vim /paycharm
-func AccessLogInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo,
-	handler grpc.UnaryHandler) (interface{}, error) {
-	//start := time.Now()
-	// 执行RPC调用
-	cost := ""
-	request, err := json.Marshal(req)
-	if err != nil {
-		fmt.Println("NNNNNNN", err)
-	}
-	response, err := json.Marshal(ctx.Value("response"))
-	if err != nil {
-		fmt.Println("MMMMMMM", err)
-	}
-	log.Info(cost, zap.Any("method", info.FullMethod),
-		zap.Any("request", string(request)),
-		zap.Any("response", string(response)),
-	)
-	// 访问日志的拦截器需要自定义   // 可以参考gin框架
-	return nil, nil
-}
+// 定义访问日志 和接口消耗时间
 func main() {
 	serviceAddr := "localhost:55001" // 替换为实际的服务器地址
 	/*
@@ -75,7 +52,7 @@ func main() {
 	if err != nil {
 		fmt.Println("", err)
 	}
-	server := grpc.NewServer(grpc.UnaryInterceptor(AccessLogInterceptor))
+	server := grpc.NewServer(grpc.UnaryInterceptor(router.AccessLogInterceptor))
 	reflection.Register(server)
 	proto.RegisterSignServiceRequestServer(server, &service.SignServer{})
 	var wg sync.WaitGroup
