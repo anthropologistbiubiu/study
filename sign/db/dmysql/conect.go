@@ -14,17 +14,22 @@ import (
 // 查询不同类型的签名的secret
 
 var (
-	DB       *gorm.DB
+	Orms     = &Orm{}
 	err      error
 	userName = "sunweiming"
-	dataName = ""
+	dbName   = ""
 	passWord = ""
 )
 
+type Orm struct {
+	DB *gorm.DB
+}
+
 func InitMysql() {
-	dsn := fmt.Sprintf("%s %s %s", userName, dataName, passWord)
-	DB, err = gorm.Open(mysql.Open(dsn))
+	dsn := fmt.Sprintf("%s %s %s", userName, dbName, passWord)
+	Orms.DB, err = gorm.Open(mysql.Open(dsn))
 	if err != nil {
 		log.Error("", zap.String("err", fmt.Sprintf("%s", err)))
 	}
+	// 最后改一下配置
 }
