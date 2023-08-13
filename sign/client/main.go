@@ -44,8 +44,7 @@ func main() {
 		Type:   "md5",
 	}
 	// 遍历服务列表并打印
-	ctx := context.WithValue(context.Background(), "ip", "127.0.0.1")
-	response, err := client.GetSign(ctx, req)
+	response, err := client.GetSign(context.Background(), req)
 	if err != nil {
 		fmt.Println("GetSign Err", err)
 	}

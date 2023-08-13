@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/peer"
 	"sign/utils/log"
 	"time"
 )
@@ -14,9 +15,10 @@ func AccessLogInterceptor(ctx context.Context, req interface{}, info *grpc.Unary
 	handler grpc.UnaryHandler) (interface{}, error) {
 	start := time.Now()
 	msg := ""
-	ip, _ := ctx.Value("ip").(string)
 	response, err := handler(ctx, req)
 	cost := time.Since(start)
+	p, _ := peer.FromContext(ctx)
+	ip := p.Addr.String()
 	request, err := json.Marshal(req)
 	if err != nil {
 		log.Info(msg, zap.String("error", fmt.Sprintf("%s", err)))

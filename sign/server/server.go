@@ -41,7 +41,6 @@ import (
 // ihive服务的技术栈 + 多了一个scaner 服务的部署  + kafk 数据的推送的服务 +  transfer 服务的调用(grpc) + 支付服务的主体逻辑 + 预警服
 // 这个服务当中重要的一些逻辑就是缓存的处理 (string,hash,zset,list)  还有就是 + 数据精度的处理 + channel + 协程 + 接口
 
-// 定义访问日志 和接口消耗时间
 func main() {
 	serviceAddr := "localhost:55001" // 替换为实际的服务器地址
 	/*
