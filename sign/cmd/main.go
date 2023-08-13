@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"sign/db/dmysql"
 	"sign/utils/log"
 )
 
@@ -36,6 +37,8 @@ func main() {
 	logger := log.New(os.Stderr, log.WarnLevel, log.AddCaller(), log.AddCallerSkip(2))
 	log.ReplaceDefault(logger)
 	log.Warn("sunweiming")
+	dmysql.InitMysql()
+
 }
 
 // 封装出 access.log error.log info.log
