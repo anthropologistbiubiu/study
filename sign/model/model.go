@@ -7,18 +7,18 @@ import (
 // 为了逻辑更清晰吧  实现对持久化层的中转
 
 func CreateTable() error {
-	return dmysql.Orm.CreateTable()
+	return dmysql.Orms.CreateTable()
 }
 
 func FindSecretKey(kind string) (string, error) {
-	return dmysql.Orm.FindSecretKey(kind)
+	return dmysql.Orms.FindSecretKey(kind)
 }
 func UpdateSecretKey(kind string) (string, error) {
-	return dmysql.Orm.UpdateSecretKey(kind)
+	return dmysql.Orms.UpdateSecretKey(kind)
 }
 func DeleteSecretKey(kind string) (string, error) {
-	return dmysql.Orm.DeleteSecretKey()
+	return dmysql.Orms.DeleteSecretKey(kind)
 }
 func InsertSecretKey(kind string) (int64, error) {
-	return dmysql.Orm.InsertSecretKey(kind)
+	return dmysql.Orms.InsertSecretKey(kind)
 }

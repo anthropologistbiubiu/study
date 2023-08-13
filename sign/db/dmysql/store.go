@@ -2,9 +2,6 @@ package dmysql
 
 // 完成orm 的数据的持久化层操
 
-type SignTable struct {
-}
-
 // 在这里完成所有的增删改查的过程
 func (g *Orm) CreateTable() error {
 	return nil
