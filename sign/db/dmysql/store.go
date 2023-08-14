@@ -11,6 +11,9 @@ func (g *Orm) InsertSecretKey(kind string) (int64, error) {
 	return 0, nil
 }
 func (g *Orm) FindSecretKey(kind string) (string, error) {
+	if len(kind) == 0 {
+		return "", nil
+	}
 	return "", nil
 }
 

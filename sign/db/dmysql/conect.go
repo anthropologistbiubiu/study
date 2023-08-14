@@ -16,7 +16,7 @@ import (
 var (
 	Orms     = &Orm{}
 	err      error
-	userName = "sunweiming"
+	userName = ""
 	dbName   = ""
 	passWord = ""
 )
