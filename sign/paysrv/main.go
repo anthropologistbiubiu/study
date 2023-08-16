@@ -38,17 +38,14 @@ func main() {
 		log.Fatalln("Failed to start Sarama producer:", err)
 	}
 	defer producer.Close()
-
 	// 主题名称
 	topic := "test-topic"
-
 	// 要发送的消息
 	message := &sarama.ProducerMessage{
 		Topic: topic,
 		Key:   sarama.StringEncoder("key"),
 		Value: sarama.StringEncoder("Hello, Kafka!"),
 	}
-
 	// 发送消息
 	partition, offset, err := producer.SendMessage(message)
 	if err != nil {
