@@ -45,16 +45,13 @@ func main1() {
 func main() {
 	config := sarama.NewConfig()
 	config.Consumer.Return.Errors = true
-
 	brokers := []string{"127.0.0.1:9092"} // Kafka brokers
-
 	consumer, err := sarama.NewConsumer(brokers, config)
 	if err != nil {
 		fmt.Println("errrrr", err)
 	}
 	defer consumer.Close()
-
-	topic := "test-topic"
+	topic := "order-topic"
 	partitionConsumer, err := consumer.ConsumePartition(topic, 0, sarama.OffsetNewest)
 	if err != nil {
 		fmt.Println("NNNNNNNNNNN", err)

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/Shopify/sarama"
 	"github.com/gin-gonic/gin"
-	"log"
 )
 
 // 这里主要是暴露一个服务
@@ -35,7 +34,7 @@ func main() {
 	// 创建生产者
 	producer, err := sarama.NewSyncProducer(brokerList, config)
 	if err != nil {
-		log.Fatalln("Failed to start Sarama producer:", err)
+		fmt.Printf("Failed to start Sarama producer:%s\n", err)
 	}
 	defer producer.Close()
 	// 主题名称
@@ -49,7 +48,7 @@ func main() {
 	// 发送消息
 	partition, offset, err := producer.SendMessage(message)
 	if err != nil {
-		log.Printf("Failed to send message: %v\n", err)
+		fmt.Printf("Failed to send message: %v\n", err)
 	} else {
 		fmt.Printf("Message sent to partition %d at offset %d\n", partition, offset)
 	}
