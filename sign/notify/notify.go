@@ -2,74 +2,73 @@ package main
 
 import (
 	"fmt"
-	"github.com/Shopify/sarama"
 	"os"
 	"os/signal"
-	"sync"
+	"time"
+
+	"context"
+	"github.com/Shopify/sarama"
 )
 
-func consumer() {
-	var wg sync.WaitGroup
-	consumer, err := sarama.NewConsumer([]string{"172.20.3.13:30901"}, nil)
-	if err != nil {
-		fmt.Println("Failed to start consumer: %s", err)
-		return
-	}
-	partitionList, err := consumer.Partitions("test0") //获得该topic所有的分区
-	if err != nil {
-		fmt.Println("Failed to get the list of partition:, ", err)
-		return
-	}
-
-	for partition := range partitionList {
-		pc, err := consumer.ConsumePartition("test0", int32(partition), sarama.OffsetNewest)
-		if err != nil {
-			fmt.Println("Failed to start consumer for partition %d: %s\n", partition, err)
-			return
-		}
-		wg.Add(1)
-		go func(sarama.PartitionConsumer) { //为每个分区开一个go协程去取值
-			for msg := range pc.Messages() { //阻塞直到有值发送过来，然后再继续等待
-				fmt.Printf("Partition:%d, Offset:%d, key:%s, value:%s\n", msg.Partition, msg.Offset, string(msg.Key), string(msg.Value))
-			}
-			defer pc.AsyncClose()
-			wg.Done()
-		}(pc)
-	}
-	wg.Wait()
-}
-func main1() {
-	consumer()
-}
+var signals = make(chan os.Signal, 1)
 
 func main() {
 	config := sarama.NewConfig()
 	config.Consumer.Return.Errors = true
-	brokers := []string{"127.0.0.1:9092"} // Kafka brokers
-	consumer, err := sarama.NewConsumer(brokers, config)
-	if err != nil {
-		fmt.Println("errrrr", err)
-	}
-	defer consumer.Close()
-	topic := "order-topic"
-	partitionConsumer, err := consumer.ConsumePartition(topic, 0, sarama.OffsetNewest)
-	if err != nil {
-		fmt.Println("NNNNNNNNNNN", err)
-	}
-	defer partitionConsumer.Close()
+	config.Consumer.Offsets.AutoCommit.Enable = false
+	config.Version = sarama.V2_3_0_0 // 指定 Kafka 版本
 
-	signals := make(chan os.Signal, 1)
+	// 创建消费者组
+	consumerGroup, err := sarama.NewConsumerGroup([]string{"localhost:9092"}, "test-group", config)
+	if err != nil {
+		panic(err)
+	}
+
+	// 定义消费者组处理函数
+	handler := ConsumerGroupHandler{}
+
+	// 开始消费
+	go func() {
+		for {
+			if err := consumerGroup.Consume(context.Background(), []string{"test-topic"}, handler); err != nil {
+				panic(err)
+			}
+		}
+	}()
+
+	// 处理退出信号
 	signal.Notify(signals, os.Interrupt)
+	<-signals
 
-ConsumerLoop:
-	for {
+	// 关闭消费者组
+	consumerGroup.Close()
+}
+
+// 定义消费者组处理函数
+type ConsumerGroupHandler struct{}
+
+func (h ConsumerGroupHandler) Setup(_ sarama.ConsumerGroupSession) error {
+	return nil
+}
+
+func (h ConsumerGroupHandler) Cleanup(_ sarama.ConsumerGroupSession) error {
+	return nil
+}
+
+func (h ConsumerGroupHandler) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.ConsumerGroupClaim) error {
+	for message := range claim.Messages() {
 		select {
-		case msg := <-partitionConsumer.Messages():
-			fmt.Printf("Received message: %s\n", string(msg.Value))
-		case err := <-partitionConsumer.Errors():
-			fmt.Println("Error:", err.Err)
 		case <-signals:
-			break ConsumerLoop
+			time.Sleep(10 * time.Second)
+			fmt.Println("shut down!")
+		default:
+			go func() {
+				fmt.Printf("Message topic:%q partition:%d offset:%d value:%s\n",
+					message.Topic, message.Partition, message.Offset, string(message.Value))
+				time.Sleep(10 * time.Second)
+				session.MarkMessage(message, "")
+			}()
 		}
 	}
+	return nil
 }
