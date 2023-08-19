@@ -38,18 +38,22 @@ func main() {
 	}
 	defer producer.Close()
 	// 主题名称
-	topic := "test-topic"
-	// 要发送的消息
-	message := &sarama.ProducerMessage{
-		Topic: topic,
-		Key:   sarama.StringEncoder("key"),
-		Value: sarama.StringEncoder("Hello, Kafka!"),
-	}
 	// 发送消息
-	partition, offset, err := producer.SendMessage(message)
-	if err != nil {
-		fmt.Printf("Failed to send message: %v\n", err)
-	} else {
-		fmt.Printf("Message sent to partition %d at offset %d\n", partition, offset)
+	for i := 10; i < 2000; i++ {
+		topic := "test-topic"
+		// 要发送的消息
+		msg := fmt.Sprintf("%d", i)
+		message := &sarama.ProducerMessage{
+			Topic: topic,
+			Key:   sarama.StringEncoder("key"),
+			Value: sarama.StringEncoder(msg),
+		}
+		partition, offset, err := producer.SendMessage(message)
+		if err != nil {
+			fmt.Printf("Failed to send message: %v\n", err)
+		} else {
+			fmt.Printf("Message sent to partition %d at offset %d\n", partition, offset)
+		}
+		fmt.Println("send messsage success")
 	}
 }
