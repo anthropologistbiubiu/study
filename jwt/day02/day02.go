@@ -24,6 +24,7 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 	token := jwt.New(jwt.SigningMethodHS256)
 	claims := token.Claims.(jwt.MapClaims)
 	claims["username"] = username
+	claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
 	tokenString, err := token.SignedString(jwtKey)
 	if err != nil {
 		http.Error(w, "Failed to generate token", http.StatusInternalServerError)
