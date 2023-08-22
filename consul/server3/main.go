@@ -46,7 +46,7 @@ func (c *consul) RegisterService(serviceName string, ip string, port int) error 
 	srv := &api.AgentServiceRegistration{
 		ID:      fmt.Sprintf("%s-%s-%d", serviceName, ip, port), // 服务唯一ID
 		Name:    serviceName,                                    // 服务名称
-		Tags:    []string{"q1mi", "hello"},                      // 为服务打标签
+		Tags:    []string{"hello"},                              // 为服务打标签
 		Address: ip,
 		Port:    port,
 		Check:   check,
