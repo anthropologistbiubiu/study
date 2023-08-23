@@ -72,6 +72,4 @@ func main() {
 	})
 
 	r.Run(":8081")
-	// 注册http 服务
-	// gin框架
 }
