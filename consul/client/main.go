@@ -14,7 +14,13 @@ func main() {
 	}
 	// 返回的是一个 map[string]*api.AgentService
 	// 其中key是服务ID，值是注册的服务信息
-	//
+	services, _, err := cc.Catalog().Services(nil)
+	if err != nil {
+		fmt.Println(err)
+	}
+	for serviceName := range services {
+		fmt.Println("Service:", serviceName)
+	}
 	serviceMap, err := cc.Agent().ServicesWithFilter("Service==`hello`")
 	if err != nil {
 		fmt.Printf("query service from consul failed, err:%v\n", err)
