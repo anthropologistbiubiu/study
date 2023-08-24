@@ -70,6 +70,5 @@ func main() {
 		fmt.Println("NNNNNNNNNNNN run8081")
 		c.String(200, "success!")
 	})
-
 	r.Run(":8081")
 }
