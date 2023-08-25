@@ -51,7 +51,7 @@ func (c *jobServicevRequestClient) GetJobService(ctx context.Context, in *Reques
 // for forward compatibility
 type JobServicevRequestServer interface {
 	GetJobService(context.Context, *Request) (*Response, error)
-	mustEmbedUnimplementedJobServicevRequestServer()
+	//mustEmbedUnimplementedJobServicevRequestServer()
 }
 
 // UnimplementedJobServicevRequestServer must be embedded to have forward compatible implementations.
