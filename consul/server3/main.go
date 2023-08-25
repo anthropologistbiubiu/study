@@ -1,9 +1,12 @@
 package main
 
 import (
+	"consul/pb"
+	"context"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/hashicorp/consul/api"
+	"google.golang.org/grpc"
 	"net"
 )
 
@@ -73,4 +76,29 @@ func main() {
 		})
 	})
 	r.Run(":8083")
+}
+
+type jobServiceServer struct {
+}
+
+func (job *jobServiceServer) GetJobService(ctx context.Context, request *pb.Request) (*pb.Response, error) {
+
+	reposne := &pb.Response{
+		Reply: request.Name + ":" + request.Job,
+	}
+	return reposne, nil
+}
+func grpc_main() {
+
+	// 写一个grpc 服务注册到
+	address := ":8081"
+	listener, err := net.Listen("tcp", address)
+	if err != nil {
+		fmt.Print("wwww", err)
+	}
+	server := grpc.NewServer()
+	pb.RegisterJobServicevRequestServer(server, &jobServiceServer{})
+	if err := server.Serve(listener); err != nil {
+		fmt.Println("NNN", err)
+	}
 }

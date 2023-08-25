@@ -92,9 +92,15 @@ func grpc_main() {
 	address := ":8081"
 	listener, err := net.Listen("tcp", address)
 	if err != nil {
-
+		fmt.Print("wwww", err)
 	}
 	server := grpc.NewServer()
 	pb.RegisterJobServicevRequestServer(server, &jobServiceServer{})
+	if err := server.Serve(listener); err != nil {
+		fmt.Println("NNN", err)
+	}
+}
 
+func main() {
+	grpc_main()
 }
