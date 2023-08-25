@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"github.com/hashicorp/consul/api"
 	"google.golang.org/grpc"
+	"math/rand"
 	"strconv"
+	"time"
 )
 
 func http_main() {
@@ -67,11 +69,16 @@ func main() {
 	}
 	// 选一个服务机（这里选最后一个）
 	var addr string
+	adds := []string{}
 	for k, v := range serviceMap {
 		fmt.Printf("%s:%#v\n", k, v)
 		addr = v.Address + ":" + strconv.Itoa(v.Port)
+		adds = append(adds, addr)
 	}
-	fmt.Println("address", addr)
+
+	rand.Seed(time.Now().UnixMilli())
+	index := rand.Intn(100) % len(adds)
+	addr = adds[index]
 	conn, err := grpc.Dial(addr, grpc.WithInsecure())
 	if err != nil {
 		fmt.Println("failed to connect: %v", err)
