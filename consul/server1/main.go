@@ -84,6 +84,7 @@ func (job *jobServiceServer) GetJobService(ctx context.Context, request *pb.Requ
 	reposne := &pb.Response{
 		Reply: request.Name + ":" + request.Job,
 	}
+	fmt.Println("run......8081")
 	return reposne, nil
 }
 func grpc_main() {

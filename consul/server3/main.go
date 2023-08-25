@@ -61,7 +61,7 @@ func (c *consul) RegisterService(serviceName string, ip string, port int) error 
 func (c *consul) Deregister(serviceID string) error {
 	return c.client.Agent().ServiceDeregister(serviceID)
 }
-func main() {
+func http_main() {
 
 	consul, err := NewConsul("127.0.0.1:8500")
 	if err != nil {
@@ -86,12 +86,13 @@ func (job *jobServiceServer) GetJobService(ctx context.Context, request *pb.Requ
 	reposne := &pb.Response{
 		Reply: request.Name + ":" + request.Job,
 	}
+	fmt.Println("run......8083")
 	return reposne, nil
 }
 func grpc_main() {
 
 	// 写一个grpc 服务注册到
-	address := ":8081"
+	address := ":8083"
 	listener, err := net.Listen("tcp", address)
 	if err != nil {
 		fmt.Print("wwww", err)
@@ -101,4 +102,8 @@ func grpc_main() {
 	if err := server.Serve(listener); err != nil {
 		fmt.Println("NNN", err)
 	}
+}
+
+func main() {
+	grpc_main()
 }

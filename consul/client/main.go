@@ -1,12 +1,15 @@
 package main
 
 import (
+	"consul/pb"
 	"fmt"
 	"github.com/hashicorp/consul/api"
+	"google.golang.org/grpc"
+	"sign/proto"
 	"strconv"
 )
 
-func main() {
+func http_main() {
 	cc, err := api.NewClient(api.DefaultConfig())
 	if err != nil {
 		fmt.Printf("api.NewClient failed, err:%v\n", err)
@@ -34,4 +37,27 @@ func main() {
 		addr = v.Address + ":" + strconv.Itoa(v.Port)
 	}
 	fmt.Println("result", addr)
+}
+
+func main() {
+
+	conn, err := grpc.Dial("localhost:55001", grpc.WithInsecure())
+	if err != nil {
+		fmt.Println("failed to connect: %v", err)
+	}
+	defer conn.Close()
+	client := pb.JobServicevRequestClient(conn)
+	req := &proto.SignRequest{
+		Name:   "sunweiming",
+		Email:  "1319847967@qq.com",
+		Phone:  "1319847957",
+		Amount: 500,
+		Type:   "md5",
+	}
+	// 遍历服务列表并打印
+	response, err := client.GetSign(context.Background(), req)
+	if err != nil {
+		fmt.Println("GetSign Err", err)
+	}
+	fmt.Printf("response %v\n", response)
 }

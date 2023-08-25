@@ -87,12 +87,13 @@ func (job *jobServiceServer) GetJobService(ctx context.Context, request *pb.Requ
 	reposne := &pb.Response{
 		Reply: request.Name + ":" + request.Job,
 	}
+	fmt.Println("run......8082")
 	return reposne, nil
 }
 func grpc_main() {
 
 	// 写一个grpc 服务注册到
-	address := ":8081"
+	address := ":8082"
 	listener, err := net.Listen("tcp", address)
 	if err != nil {
 		fmt.Print("wwww", err)
