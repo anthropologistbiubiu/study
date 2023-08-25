@@ -90,6 +90,11 @@ func (job *jobServiceServer) GetJobService(ctx context.Context, request *pb.Requ
 func grpc_main() {
 
 	// 写一个grpc 服务注册到
+	consul, err := NewConsul("127.0.0.1:8500")
+	if err != nil {
+		fmt.Println(err)
+	}
+	consul.RegisterService("jobservice", "127.0.0.1", 8081)
 	address := ":8081"
 	listener, err := net.Listen("tcp", address)
 	if err != nil {

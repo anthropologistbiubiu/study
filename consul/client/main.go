@@ -2,10 +2,10 @@ package main
 
 import (
 	"consul/pb"
+	"context"
 	"fmt"
 	"github.com/hashicorp/consul/api"
 	"google.golang.org/grpc"
-	"sign/proto"
 	"strconv"
 )
 
@@ -46,18 +46,14 @@ func main() {
 		fmt.Println("failed to connect: %v", err)
 	}
 	defer conn.Close()
-	client := pb.JobServicevRequestClient(conn)
-	req := &proto.SignRequest{
-		Name:   "sunweiming",
-		Email:  "1319847967@qq.com",
-		Phone:  "1319847957",
-		Amount: 500,
-		Type:   "md5",
+	client := pb.NewJobServicevRequestClient(conn)
+	req := &pb.Request{
+		Name: "sunweiming",
+		Job:  "doctor",
 	}
-	// 遍历服务列表并打印
-	response, err := client.GetSign(context.Background(), req)
+	response, err := client.GetJobService(context.Background(), req)
 	if err != nil {
-		fmt.Println("GetSign Err", err)
+		fmt.Println("GetJobService Err", err)
 	}
 	fmt.Printf("response %v\n", response)
 }
