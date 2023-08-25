@@ -58,7 +58,7 @@ func (c *consul) RegisterService(serviceName string, ip string, port int) error 
 func (c *consul) Deregister(serviceID string) error {
 	return c.client.Agent().ServiceDeregister(serviceID)
 }
-func main() {
+func httpmain() {
 
 	consul, err := NewConsul("127.0.0.1:8500")
 	if err != nil {
@@ -72,3 +72,9 @@ func main() {
 	})
 	r.Run(":8081")
 }
+
+func grpc_main() {
+
+	// 写一个grpc 服务注册到
+}
+
