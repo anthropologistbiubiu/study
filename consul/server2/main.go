@@ -40,8 +40,8 @@ func (c *consul) RegisterService(serviceName string, ip string, port int) error 
 	// 健康检查
 	check := &api.AgentServiceCheck{
 		GRPC:     fmt.Sprintf("%s:%d", ip, port), // 这里一定是外部可以访问的地址
-		Timeout:  "10s",                          // 超时时间
-		Interval: "10s",                          // 运行检查的频率
+		Timeout:  "1000s",                        // 超时时间
+		Interval: "1000s",                        // 运行检查的频率
 		// 指定时间后自动注销不健康的服务节点
 		// 最小超时时间为1分钟，收获不健康服务的进程每30秒运行一次，因此触发注销的时间可能略长于配置的超时时间。
 		DeregisterCriticalServiceAfter: "1m",
@@ -49,7 +49,7 @@ func (c *consul) RegisterService(serviceName string, ip string, port int) error 
 	srv := &api.AgentServiceRegistration{
 		ID:      fmt.Sprintf("%s-%s-%d", serviceName, ip, port), // 服务唯一ID
 		Name:    serviceName,                                    // 服务名称
-		Tags:    []string{"hello"},                              // 为服务打标签
+		Tags:    []string{"jobservice"},                         // 为服务打标签
 		Address: ip,
 		Port:    port,
 		Check:   check,
@@ -105,6 +105,7 @@ func grpc_main() {
 	}
 	server := grpc.NewServer()
 	pb.RegisterJobServicevRequestServer(server, &jobServiceServer{})
+	fmt.Println("server2 start")
 	if err := server.Serve(listener); err != nil {
 		fmt.Println("NNN", err)
 	}

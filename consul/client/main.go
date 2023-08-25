@@ -30,7 +30,6 @@ func http_main() {
 		return
 	}
 	// 选一个服务机（这里选最后一个）
-	fmt.Println("WWWWWWWWWWC", serviceMap)
 	var addr string
 	for k, v := range serviceMap {
 		fmt.Printf("%s:%#v\n", k, v)
@@ -41,7 +40,39 @@ func http_main() {
 
 func main() {
 
-	conn, err := grpc.Dial("localhost:55001", grpc.WithInsecure())
+	cc, err := api.NewClient(api.DefaultConfig())
+	if err != nil {
+		fmt.Printf("api.NewClient failed, err:%v\n", err)
+		return
+	}
+	serviceName := "jobservice"
+
+	// 创建一个新的Catalog服务查询实例
+	catalog := cc.Catalog()
+
+	// 查询指定服务的实例
+	serviceEntries, _, err := catalog.Service(serviceName, "", nil)
+	if err != nil {
+		fmt.Println("UUU", err)
+	}
+	// 打印服务实例的信息
+	for _, entry := range serviceEntries {
+		fmt.Printf("Service: %s, Address: %s, Port: %d\n", entry.ServiceName, entry.Address, entry.ServicePort)
+	}
+	serviceMap, err := cc.Agent().ServicesWithFilter("Service==`jobservice`")
+	fmt.Println("WWWWWWWWWWC", serviceMap)
+	if err != nil {
+		fmt.Printf("query service from consul failed, err:%v\n", err)
+		return
+	}
+	// 选一个服务机（这里选最后一个）
+	var addr string
+	for k, v := range serviceMap {
+		fmt.Printf("%s:%#v\n", k, v)
+		addr = v.Address + ":" + strconv.Itoa(v.Port)
+	}
+	fmt.Println("address", addr)
+	conn, err := grpc.Dial(addr, grpc.WithInsecure())
 	if err != nil {
 		fmt.Println("failed to connect: %v", err)
 	}
@@ -56,4 +87,5 @@ func main() {
 		fmt.Println("GetJobService Err", err)
 	}
 	fmt.Printf("response %v\n", response)
+
 }
