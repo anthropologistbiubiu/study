@@ -76,5 +76,10 @@ func httpmain() {
 func grpc_main() {
 
 	// 写一个grpc 服务注册到
-}
+	address := ":8081"
+	listener, err := net.Listen("tcp", address)
+	if err != nil {
 
+	}
+
+}
