@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/hashicorp/consul/api"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"strconv"
 )
 
@@ -46,6 +47,11 @@ func main() {
 		return
 	}
 	serviceName := "jobservice"
+	// consul服务
+	"consul://127.0.0.1:8500/hello?healthy=true",
+	// 指定round_robin策略
+	grpc.WithDefaultServiceConfig(`{"loadBalancingPolicy": "round_robin"}`),
+	grpc.WithTransportCredentials(insecure.NewCredentials()),
 	// 定义一个grpc 负载均衡器
 
 	// 创建一个新的Catalog服务查询实例
