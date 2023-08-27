@@ -1,4 +1,4 @@
-package main
+package utils
 
 import (
 	"context"
@@ -7,7 +7,23 @@ import (
 	"time"
 )
 
-// 在这里定义一个全局的token bucket 限流算法 实现对服务的限流保护
+var Limiter *rate.Limiter
+
+func init() {
+	Limiter = rate.NewLimiter(1000, 1500)
+}
+
+func GetToken() {
+
+}
+
+func Allow() {
+
+}
+
+func BlockWait() {
+
+}
 
 func test_tokenBucket() {
 	// 创建一个令牌桶，每秒产生5个令牌
