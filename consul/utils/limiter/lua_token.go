@@ -34,14 +34,14 @@ local elapsed_time = current_timestamp - last_timestamp
 local tokens_to_add = elapsed_time / refill_interval
 tokens = math.min(tokens + tokens_to_add, max_tokens)
 
-local allowed = tokens >= 1
-if allowed then
+local allowed = tokens >= 1 and 1 or 0
+if allowed then 
     tokens = tokens - 1
     redis.call("SET", tokens_key, tokens)
     redis.call("SET", timestamp_key, current_timestamp)
 end
-
-return allowed,tokens
+-- 在 Lua 脚本中，返回 false 时，Go 的 github.com/go-redis/redis/v8 包会将其解释为 nil。
+return allowed
 `
 	luaScriptSHA := client.ScriptLoad(ctx, luaScript).Val()
 	// 模拟请求
@@ -52,7 +52,7 @@ return allowed,tokens
 		result, err := client.EvalSha(ctx, luaScriptSHA, []string{"limiter_tokens", "limiter_timestamp"},
 			maxTokens, refillInterval.Seconds(), currentTimestamp).Result()
 		if err != nil {
-			fmt.Println("Lua script:", err)
+			fmt.Printf("Lua script: %s,%v\n", err, result)
 			return
 		}
 		allowed, ok := result.(int64)
@@ -62,9 +62,11 @@ return allowed,tokens
 		}
 		if allowed == 1 {
 			fmt.Printf("Request %d allowed at %s\n", i, time.Now().Format(time.RFC3339))
-		} else {
+		} else if allowed == 0 {
 			fmt.Printf("Request %d denied at %s\n", i, time.Now().Format(time.RFC3339))
+		} else {
+			fmt.Printf("Invalid Request  i;%d , at:%s\n", i, time.Now().Format(time.RFC3339))
 		}
-		time.Sleep(100 * time.Millisecond)
+		time.Sleep(500 * time.Millisecond)
 	}
 }
