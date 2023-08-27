@@ -25,6 +25,12 @@ func BlockWait() {
 
 }
 
+// 是需要写一个限流中间件的
+
+// 在限流中间件中使用redis 存储当前限流器状态
+
+// 并且使用ridis 分布式锁去完成对并发的控制
+
 func test_tokenBucket() {
 	// 创建一个令牌桶，每秒产生5个令牌
 	limiter := rate.NewLimiter(5, 3)

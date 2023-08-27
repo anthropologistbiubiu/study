@@ -109,5 +109,6 @@ func grpc_main() {
 }
 
 func main() {
+	// 在这里对服务实现一个分布式令牌桶的限流的过程
 	grpc_main()
 }
