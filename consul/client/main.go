@@ -69,23 +69,12 @@ func (r *consulResolver) start() {
 	// 解析服务名
 	serviceName := r.target.Endpoint()
 	fmt.Printf("开始解析服务 ：%+v\n", serviceName)
-
 	// 初始化 Consul 客户端
 	consulClient, err := api.NewClient(api.DefaultConfig())
 	if err != nil {
 		fmt.Printf("创建 Consul 客户端失败：%v\n", err)
 		return
 	}
-	/*
-		serviceEntries, _, err := catalog.Service(serviceName, "", nil)
-		if err != nil {
-			fmt.Println("UUU", err)
-		}
-		// 打印服务实例的信息
-		for _, entry := range serviceEntries {
-			fmt.Printf("Service: %s, Address: %s, Port: %d\n", entry.ServiceName, entry.Address, entry.ServicePort)
-		}
-	*/
 	// 查询服务实例
 	instances, _, err := consulClient.Catalog().Service(serviceName, "", nil)
 	if err != nil {
@@ -196,5 +185,4 @@ func main() {
 		fmt.Println("GetJobService Err", err)
 	}
 	fmt.Printf("response %v\n", response)
-
 }
