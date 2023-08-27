@@ -1,7 +1,8 @@
-package utils
+package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"golang.org/x/time/rate"
 	"time"
@@ -37,6 +38,10 @@ func test_tokenBucket() {
 	// 模拟一些请求
 	for i := 0; i < 10; i++ {
 		if limiter.Allow() {
+			data, err := json.Marshal(limiter)
+			if err != nil {
+				fmt.Println("limiter", string(data))
+			}
 			fmt.Printf("Request %d processed\n", i+1)
 		} else {
 			fmt.Printf("Request %d dropped\n", i+1)
@@ -64,4 +69,8 @@ func test_tokenBucket() {
 		}
 		time.Sleep(200 * time.Millisecond)
 	}
+}
+
+func main() {
+	test_tokenBucket()
 }
