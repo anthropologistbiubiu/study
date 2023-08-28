@@ -113,7 +113,7 @@ func (r *consulResolver) Scheme() string {
 func (r *consulResolver) watch() {
 	// 在此处可以监听 Consul 服务变化，并更新服务实例列表
 }
-func main() {
+func grpc_main() {
 
 	/*
 		cc, err := api.NewClient(api.DefaultConfig())
@@ -185,4 +185,10 @@ func main() {
 		fmt.Println("GetJobService Err", err)
 	}
 	fmt.Printf("response %v\n", response)
+}
+
+func main() {
+	for i := 0; i < 20; i++ {
+		grpc_main()
+	}
 }
