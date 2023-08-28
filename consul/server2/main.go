@@ -2,6 +2,7 @@ package main
 
 import (
 	"consul/pb"
+	utils "consul/utils/limiter"
 	"context"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -103,7 +104,7 @@ func grpc_main() {
 	if err != nil {
 		fmt.Print("wwww", err)
 	}
-	server := grpc.NewServer()
+	server := grpc.NewServer(grpc.UnaryInterceptor(utils.LimiterInterceptor))
 	pb.RegisterJobServicevRequestServer(server, &jobServiceServer{})
 	fmt.Println("server2 start")
 	if err := server.Serve(listener); err != nil {
