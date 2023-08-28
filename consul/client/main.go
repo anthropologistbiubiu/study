@@ -68,7 +68,6 @@ type consulResolver struct {
 func (r *consulResolver) start() {
 	// 解析服务名
 	serviceName := r.target.Endpoint()
-	fmt.Printf("开始解析服务 ：%+v\n", serviceName)
 	// 初始化 Consul 客户端
 	consulClient, err := api.NewClient(api.DefaultConfig())
 	if err != nil {
@@ -89,7 +88,6 @@ func (r *consulResolver) start() {
 		})
 	}
 	// 更新解析器状态
-	fmt.Println("wwwww 查看解析出来的地址", addresses)
 	r.cc.UpdateState(resolver.State{
 		Addresses: addresses,
 	})
