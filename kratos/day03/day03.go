@@ -1,18 +1,8 @@
 package main
 
-/*
 import (
 	"fmt"
 	"github.com/envoyproxy/go-control-plane/pkg/server/v3"
-	"net/http"
-)
-
-import (
-	"context"
-	"fmt"
-	"github.com/go-kratos/kratos/v2/transport/http/balancer"
-	"github.com/go-kratos/kratos/v2/transport/http/client"
-	"github.com/go-kratos/kratos/v2/transport/http/server"
 	"net/http"
 )
 
@@ -42,4 +32,3 @@ func main() {
 		fmt.Println(err)
 	}
 }
-*/
