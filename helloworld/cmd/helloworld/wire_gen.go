@@ -7,11 +7,11 @@
 package main
 
 import (
-	"kafka/internal/biz"
-	"kafka/internal/conf"
-	"kafka/internal/data"
-	"kafka/internal/server"
-	"kafka/internal/service"
+	"helloworld/internal/biz"
+	"helloworld/internal/conf"
+	"helloworld/internal/data"
+	"helloworld/internal/server"
+	"helloworld/internal/service"
 
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"

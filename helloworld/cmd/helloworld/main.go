@@ -4,7 +4,7 @@ import (
 	"flag"
 	"os"
 
-	"kafka/internal/conf"
+	"helloworld/internal/conf"
 
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/config"
