@@ -99,7 +99,11 @@ func _Greeter_OrderGet_HTTP_Handler(srv GreeterHTTPServer) func(ctx http.Context
 			return err
 		}
 		//reply := out.(*HelloReply)
-		reply := "hello world!"
+		//reply := "hello world!"
+		reply := map[string]interface{}{
+			"name":"sunweiming",
+			"age":10,
+		}
 		return ctx.Result(200, reply)
 	}
 }
