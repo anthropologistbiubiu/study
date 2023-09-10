@@ -8,6 +8,7 @@ package v1
 
 import (
 	context "context"
+	"fmt"
 	http "github.com/go-kratos/kratos/v2/transport/http"
 	binding "github.com/go-kratos/kratos/v2/transport/http/binding"
 )
@@ -29,6 +30,8 @@ type GreeterHTTPServer interface {
 func RegisterGreeterHTTPServer(s *http.Server, srv GreeterHTTPServer) {
 	r := s.Route("/")
 	r.GET("/helloworld/{name}", _Greeter_SayHello0_HTTP_Handler(srv))
+	r.GET("/hello", _Greeter_SayHello1_HTTP_Handler(srv))
+	r.POST("/order/get", _Greeter_OrderGet_HTTP_Handler(srv))
 }
 
 func _Greeter_SayHello0_HTTP_Handler(srv GreeterHTTPServer) func(ctx http.Context) error {
@@ -53,9 +56,57 @@ func _Greeter_SayHello0_HTTP_Handler(srv GreeterHTTPServer) func(ctx http.Contex
 	}
 }
 
+func _Greeter_SayHello1_HTTP_Handler(srv GreeterHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in HelloRequest
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		fmt.Printf("@@@@ %+v\n",in)
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationGreeterSayHello)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.SayHello(ctx, req.(*HelloRequest))
+		})
+		_, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		//reply := out.(*HelloReply)
+		reply := "hello world!"
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Greeter_OrderGet_HTTP_Handler(srv GreeterHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in HelloRequest
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		fmt.Printf("@@@@ %+v\n",in)
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationGreeterSayHello)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.SayHello(ctx, req.(*HelloRequest))
+		})
+		_, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		//reply := out.(*HelloReply)
+		reply := "hello world!"
+		return ctx.Result(200, reply)
+	}
+}
 type GreeterHTTPClient interface {
 	SayHello(ctx context.Context, req *HelloRequest, opts ...http.CallOption) (rsp *HelloReply, err error)
 }
+
 
 type GreeterHTTPClientImpl struct {
 	cc *http.Client
