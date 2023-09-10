@@ -73,13 +73,11 @@ func main() {
 	if err := c.Scan(&bc); err != nil {
 		panic(err)
 	}
-
 	app, cleanup, err := wireApp(bc.Server, bc.Data, logger)
 	if err != nil {
 		panic(err)
 	}
 	defer cleanup()
-
 	// start and wait for stop signal
 	if err := app.Run(); err != nil {
 		panic(err)
