@@ -62,7 +62,6 @@ func _Greeter_SayHello1_HTTP_Handler(srv GreeterHTTPServer) func(ctx http.Contex
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		fmt.Printf("@@@@ %+v\n",in)
 		if err := ctx.BindVars(&in); err != nil {
 			return err
 		}
@@ -86,7 +85,6 @@ func _Greeter_OrderGet_HTTP_Handler(srv GreeterHTTPServer) func(ctx http.Context
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		fmt.Printf("@@@@ %+v\n",in)
 		if err := ctx.BindVars(&in); err != nil {
 			return err
 		}
