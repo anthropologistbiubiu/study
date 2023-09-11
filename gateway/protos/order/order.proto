@@ -8,7 +8,7 @@ import "google/api/annotations.proto";
 
 service Order{
   rpc GetOrderInfo(GetOrderReq) returns (GetOrderRsp) {
-    option (googel.api.http) = {
+    option (google.api.http) = {
       post:"/v1/order/get"
       body:"*"
     };
