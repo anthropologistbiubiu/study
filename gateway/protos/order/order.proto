@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+
+package order;
+
+import "google/api/annotations.proto";
+
+
+service Order{
+  rpc GetOrderInfo(GetOrderReq) returns (GetOrderRsp) {
+    option (googel.api.http) = {
+      post:"/v1/order/get"
+      body:"*"
+    };
+  }
+}
+
+message GetOrderReq{
+  string id = 1;
+  string OrderId = 2;
+  string name = 3;
+}
+
+message GetOrderRsp {
+  string orderId = 1;
+  string orderInfo = 2;
+}
