@@ -1,7 +1,6 @@
 syntax = "proto3";
 package order;
 import "google/api/annotations.proto";
-
 service Order{
   rpc GetOrderInfo(GetOrderReq) returns (GetOrderRsp) {
     option (google.api.http) = {
@@ -13,7 +12,7 @@ service Order{
 
 message GetOrderReq{
   string id = 1;
-  string OrderId = 2;
+  string orderId = 2;
   string name = 3;
 }
 
