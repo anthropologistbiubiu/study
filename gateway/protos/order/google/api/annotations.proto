@@ -1,5 +1,2 @@
 syntax = "proto3";
 
-package google.api;
-
-import "google/api/http.proto";
