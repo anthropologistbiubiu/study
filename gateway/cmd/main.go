@@ -2,13 +2,16 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"gateway/protos"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime" // 注意v2版本
+	"golang.org/x/net/http2"
+	"golang.org/x/net/http2/h2c"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 	"log"
 	"net"
 	"net/http"
+	"strings"
 )
 
 type server struct {
@@ -20,7 +23,12 @@ func NewServer() *server {
 }
 
 func (s *server) GetOrderInfo(ctx context.Context, in *protos.GetOrderReq) (*protos.GetOrderRsp, error) {
-	return nil, nil
+	fmt.Println("NNNNNN")
+	out := &protos.GetOrderRsp{
+		OrderId:   in.OrderId,
+		OrderInfo: "hello order" + in.Name,
+	}
+	return out, nil
 }
 
 func main() {
@@ -33,9 +41,10 @@ func main() {
 	// 创建一个gRPC server对象
 	s := grpc.NewServer()
 	// 注册Greeter service到server
-	protos.RegisterOrderServer(s, &server{})
+	srv := NewServer()
+	protos.RegisterOrderServer(s, srv)
 	// 8080端口启动gRPC Server
-	log.Println("Serving gRPC on 0.0.0.0:8080")
+	fmt.Println("Serving gRPC on 0.0.0.0:8080")
 	go func() {
 		log.Fatalln(s.Serve(lis))
 	}()
@@ -45,27 +54,35 @@ func main() {
 	conn, err := grpc.DialContext(
 		context.Background(),
 		"0.0.0.0:8080",
-		grpc.WithBlock(),
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		//grpc.WithBlock(),
+		grpc.WithInsecure(),
 	)
 	if err != nil {
-		log.Fatalln("Failed to dial server:", err)
+		fmt.Println("Failed to dial server:", err)
 	}
-
 	gwmux := runtime.NewServeMux()
-	// 注册Greeter
+	// 注册OrderReq
 	err = protos.RegisterOrderHandler(context.Background(), gwmux, conn)
 	if err != nil {
 		log.Fatalln("Failed to register gateway:", err)
 	}
-
 	gwServer := &http.Server{
 		Addr:    ":8090",
 		Handler: gwmux,
 	}
 	// 8090端口提供gRPC-Gateway服务
-	log.Println("Serving gRPC-Gateway on http://0.0.0.0:8090")
-	log.Fatalln(gwServer.ListenAndServe())
+	fmt.Println("Serving gRPC-Gateway on http://0.0.0.0:8090")
+	fmt.Println(gwServer.ListenAndServe())
+}
+
+func grpcHandlerFunc(grpcServer *grpc.Server, otherHandler http.Handler) http.Handler {
+	return h2c.NewHandler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.ProtoMajor == 2 && strings.Contains(r.Header.Get("Content-Type"), "application/grpc") {
+			grpcServer.ServeHTTP(w, r)
+		} else {
+			otherHandler.ServeHTTP(w, r)
+		}
+	}), &http2.Server{})
 }
 
 // 在这里启动一个服务，通过http 的rest请求来完整对grpc 服务的调用

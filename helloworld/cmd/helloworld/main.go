@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"os"
 
 	"helloworld/internal/conf"
@@ -64,7 +63,6 @@ func main() {
 			file.NewSource(flagconf),
 		),
 	)
-	fmt.Printf("WWWWWW  %+v\n", c)
 	defer c.Close()
 	if err := c.Load(); err != nil {
 		panic(err)
