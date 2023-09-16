@@ -1,5 +1,5 @@
 syntax = "proto3";
-package order;
+package protos;
 import "google/api/annotations.proto";
 service Order{
   rpc GetOrderInfo(GetOrderReq) returns (GetOrderRsp) {
