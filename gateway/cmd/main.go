@@ -23,7 +23,6 @@ func NewServer() *server {
 }
 
 func (s *server) GetOrderInfo(ctx context.Context, in *protos.GetOrderReq) (*protos.GetOrderRsp, error) {
-	fmt.Println("NNNNNN")
 	out := &protos.GetOrderRsp{
 		OrderId:   in.OrderId,
 		OrderInfo: "hello order" + in.Name,
@@ -33,7 +32,7 @@ func (s *server) GetOrderInfo(ctx context.Context, in *protos.GetOrderReq) (*pro
 
 func main() {
 	// Create a listener on TCP port
-	lis, err := net.Listen("tcp", ":8088")
+	lis, err := net.Listen("tcp", ":8080")
 	if err != nil {
 		log.Fatalln("Failed to listen:", err)
 	}
@@ -67,11 +66,11 @@ func main() {
 		log.Fatalln("Failed to register gateway:", err)
 	}
 	gwServer := &http.Server{
-		Addr:    ":8099",
+		Addr:    ":8090",
 		Handler: gwmux,
 	}
 	// 8090端口提供gRPC-Gateway服务
-	fmt.Println("Serving gRPC-Gateway on http://0.0.0.0:8099")
+	fmt.Println("Serving gRPC-Gateway on http://0.0.0.0:8090")
 	fmt.Println(gwServer.ListenAndServe())
 }
 
