@@ -47,7 +47,6 @@ func main() {
 	go func() {
 		log.Fatalln(s.Serve(lis))
 	}()
-
 	// 创建一个连接到我们刚刚启动的 gRPC 服务器的客户端连接
 	// gRPC-Gateway 就是通过它来代理请求（将HTTP请求转为RPC请求）
 	conn, err := grpc.DialContext(

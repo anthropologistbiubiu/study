@@ -4,10 +4,10 @@ import (
 	"context"
 	"fmt"
 	"gateway/protos"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime" // 注意v2版本
 	"google.golang.org/grpc"
 	"log"
 	"net"
-	"net/http"
 )
 
 type orderServer struct {
@@ -56,11 +56,9 @@ func main() {
 		fmt.Println("Failed to dial server:", err)
 	}
 	// 注册OrderReq
-	//mux := http.NewServeMux()
-	httpsrv := &http.Server{
-		Addr: ":8090",
-	}
-	protos.RegisterOrderHTTPServer(httpsrv, srv)
+	// 注册OrderReq
+	mux := runtime.NewServeMux()
+	protos.RegisterOrderHandlerServer(context.Background(), mux)
 	// 8090端口提供gRPC-Gateway服务
 	fmt.Println("Serving gRPC-Gateway on http://0.0.0.0:8090")
 	fmt.Println(gwServer.ListenAndServe())
