@@ -1,5 +1,6 @@
 package main
 
+/*
 import (
 	"context"
 	"fmt"
@@ -68,3 +69,5 @@ func main() {
 // 1.如果gw.pb.go文件可以完成，先通过这种方式来完成
 // 2.再通过http.pb.go文件或者两个文件来共同完成http->grpc 的服务。
 // 3.其次通过这个服务过渡到 kratos 服务，来完成启动es 服务和数据库配置，并通过 orm 来完成数据库的操作过程。
+
+*/
