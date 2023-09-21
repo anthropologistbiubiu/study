@@ -13,3 +13,6 @@ data:
     addr: 127.0.0.1:6379
     read_timeout: 0.2s
     write_timeout: 0.2s
+elasticsearch:
+  host: localhost                # Elasticsearch主机
+  port: 9200                     # Elasticsearch端口

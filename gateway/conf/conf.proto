@@ -1,0 +1,14 @@
+syntax="proto3";
+
+option go_package="conf";
+
+
+message server {
+  string address = 1;
+  int32  port = 2;
+}
+
+message elastic {
+  string address = 1;
+  int32  port = 2;
+}
