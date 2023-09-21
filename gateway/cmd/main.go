@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"gateway/conf"
 	"gateway/protos"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime" // 注意v2版本
 	"golang.org/x/net/http2"
@@ -31,6 +32,7 @@ func (s *server) GetOrderInfo(ctx context.Context, in *protos.GetOrderReq) (*pro
 }
 
 func main() {
+	conf.LoadConfig()
 	// Create a listener on TCP port
 	lis, err := net.Listen("tcp", ":8080")
 	if err != nil {
