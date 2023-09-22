@@ -18,7 +18,6 @@ func LoadConfig() {
 		panic(err)
 	}
 	// 解析 YAML 配置并序列化到配置结构体
-	fmt.Println("NNNNNNNN", string(configData))
 	if err := yaml.Unmarshal(configData, ConfigData); err != nil {
 		panic(err)
 	}
