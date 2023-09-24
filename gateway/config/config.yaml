@@ -1,5 +1,6 @@
 server:
-    addr: 0.0.0.0:8000
+    address: 0.0.0.0:8000
+    port: 8080
     timeout: 1s
 elasticsearch:
   host: localhost                # Elasticsearch主机
