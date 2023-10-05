@@ -1,12 +1,10 @@
 package main
 
-
-
-
-
-
-fun main() {
+func main() {
 
 }
-// 问题描述
-//给定一个包含非负整数的 m x n 网格，请找出一条从左上角到右下角的路径，使得路径上的数字总和为最小。
+
+// 编辑距离
+func minDistance(word1 string, word2 string) int {
+	return 0
+}
