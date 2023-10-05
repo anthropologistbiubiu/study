@@ -1,8 +1,11 @@
 package main
 
+import "fmt"
+
 // 不同路径
 func main() {
 
+	fmt.Println(uniquePaths(3, 7))
 }
 
 func uniquePaths(m int, n int) int {
