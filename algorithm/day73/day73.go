@@ -1,7 +1,10 @@
 package main
 
-func main() {
+import "fmt"
 
+func main() {
+	height := []int{0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1}
+	fmt.Println(trap(height))
 }
 
 // height = [0,1,0,2,1,0,1,3,2,1,2,1]
@@ -10,23 +13,25 @@ func main() {
 
 func trap(height []int) int {
 
-	length := len(height) + 1
+	length := len(height)
+	var totalWater int
 	var leftMax = make([]int, length)
 	var rightMax = make([]int, length)
 	leftMax[0] = height[0]
-	rightMax[0] = height[0]
-	for i := 0; i < len(height); i++ {
+	for i := 1; i < len(height); i++ {
 		leftMax[i] = max(leftMax[i-1], height[i])
 	}
-	rightMax[len(height)-1] = height[len(height)-1]
-	for i := len(height) - 1; i >= 0; i-- {
-		rightMax[i] = max(rightMax[i], height[i])
+	rightMax[length-1] = height[length-1]
+	for i := length - 2; i >= 0; i-- {
+		rightMax[i] = max(rightMax[i+1], height[i])
 	}
 	for i := 0; i < length; i++ {
-		// water := min()
+		water := min(leftMax[i], rightMax[i]) - height[i]
+		totalWater += water
 	}
-	return 0
+	return totalWater
 }
+
 func max(a, b int) int {
 	if a > b {
 		return a
