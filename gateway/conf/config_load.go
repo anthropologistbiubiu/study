@@ -1,8 +1,8 @@
 package conf
 
 import (
+	"encoding/json"
 	"fmt"
-	"github.com/golang/protobuf/proto"
 	"io/ioutil"
 )
 
@@ -19,7 +19,8 @@ func LoadConfig() {
 		panic(err)
 	}
 	// 解析 YAML 配置并序列化到配置结构体
-	if err := proto.Unmarshal(configData, server); err != nil {
+	fmt.Println("string string(configData", string(configData))
+	if err := json.Unmarshal(configData, server); err != nil {
 		fmt.Println("UUU", err)
 	}
 	// 现在我把这个配置怎么序列化位对应的结构体，使用的protobuf 协议
