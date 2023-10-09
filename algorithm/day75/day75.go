@@ -15,9 +15,20 @@ func minPathSum(grid [][]int) int {
 	for i := 1; i < len(grid); i++ {
 		dp[i][0] = dp[i-1][0] + grid[i][0]
 	}
-	return 0
+	for i := 1; i < len(grid); i++ {
+		for j := 1; j < len(grid[0]); j++ {
+			dp[i][j] = min(dp[i-1][j], dp[i][j-1]) + grid[i][j]
+		}
+	}
+	return dp[len(grid)-1][len(grid[0])-1]
 }
 
+func min(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
+}
 func main() {
 
 }
