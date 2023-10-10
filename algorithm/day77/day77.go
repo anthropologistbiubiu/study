@@ -1,5 +1,7 @@
 package day77
 
+import "fmt"
+
 /*
 给定一个三角形 triangle ，找出自顶向下的最小路径和。
 
@@ -20,7 +22,18 @@ func minimumTotal(triangle [][]int) int {
 	for i := 1; i < m; i++ {
 		dp[i][0] = dp[i-1][0] + triangle[i][0]
 	}
-	return 0
+	for i := 2; i < m; i++ {
+		for j := 1; j < i; j++ {
+			dp[i][j] = min(dp[i-1][j-1], dp[i-1][j]) + triangle[i][j]
+		}
+	}
+	return dp[m-1][m-1]
+}
+func min(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
 }
 
 // triangle = [[2],[3,4],[6,5,7],[4,1,8,3]]
@@ -28,4 +41,6 @@ func minimumTotal(triangle [][]int) int {
 
 func main() {
 
+	triangle := [][]int{{2}, {3, 4}, {6, 5, 7}, {4, 1, 8, 3}}
+	fmt.Println(minimumTotal(triangle))
 }
