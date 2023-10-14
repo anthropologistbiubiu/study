@@ -17,7 +17,6 @@ func coinChange(coins []int, amount int) int {
 		}
 		dp[i] = min
 	}
-	fmt.Println(dp)
 	if amount > 0 && dp[amount] == 0 {
 		return -1
 	}
