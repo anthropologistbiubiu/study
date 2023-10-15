@@ -2,22 +2,44 @@ package main
 
 import "fmt"
 
+// dp[i] = nums[i]
 func maxProduct(nums []int) int {
 	if len(nums) == 0 {
 		return 0
 	}
+	var mindp []int = make([]int, len(nums))
+	var maxdp []int = make([]int, len(nums))
 	var ans int
-	var dp []int = make([]int, len(nums))
 	for i := 0; i < len(nums); i++ {
 		if i == 0 {
-			dp[i] = nums[i]
+			mindp[i] = nums[i]
+			maxdp[i] = nums[i]
 		} else {
-			dp[i] = max(dp[i-1], dp[i-1]*nums[i])
+			var min, max int
+			tem1 := mindp[i-1] * nums[i]
+			tem2 := maxdp[i-1] * nums[i]
+			if tem1 > tem2 {
+				max = tem1
+				min = tem2
+			} else {
+				max = tem2
+				min = tem1
+			}
+			if max <= nums[i] {
+				max = nums[i]
+			}
+			if min >= nums[i] {
+				min = nums[i]
+			}
+			maxdp[i] = max
+			mindp[i] = min
 		}
-		if dp[i] > ans {
-			ans = dp[i]
+		if ans < maxdp[i] || ans == 0 {
+			ans = maxdp[i]
 		}
 	}
+	fmt.Println("maxdp", maxdp)
+	fmt.Println("mindp", mindp)
 	return ans
 }
 func max(a, b int) int {
@@ -43,5 +65,5 @@ func max(a, b int) int {
 //解释: 结果不能为 2, 因为 [-2,-1] 不是子数组。
 
 func main() {
-	fmt.Println(maxProduct([]int{-2, 0, -1}))
+	fmt.Println(maxProduct([]int{-2, 3, 1, 0}))
 }
