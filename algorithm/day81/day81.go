@@ -38,8 +38,6 @@ func maxProduct(nums []int) int {
 			ans = maxdp[i]
 		}
 	}
-	fmt.Println("maxdp", maxdp)
-	fmt.Println("mindp", mindp)
 	return ans
 }
 func max(a, b int) int {
