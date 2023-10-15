@@ -59,3 +59,5 @@ func maxProduct(nums []int) int {
 func main() {
 	fmt.Println(maxProduct([]int{-2, 3, 1, 0}))
 }
+
+// 比如我随机在main 包当中写了一个函数，怎么写一个单元测试函数来完成单元测试过程。
