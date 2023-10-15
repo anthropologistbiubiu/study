@@ -16,7 +16,6 @@ func singleNumber(nums []int) int {
 }
 
 func main() {
-
 	var nums1 = []int{2, 2, 1}
 	fmt.Println(singleNumber(nums1))
 	var nums2 = []int{4, 1, 2, 1, 2}
