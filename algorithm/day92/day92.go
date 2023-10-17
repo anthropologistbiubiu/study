@@ -9,7 +9,19 @@ func main() {
 
 func singleNumber(nums []int) int {
 
-	return 0
+	var dp = make([]int, len(nums))
+	for _, v := range nums {
+		for i := 1; i <= 32; i++ {
+			dp[i] = (v >> i) & 1
+		}
+	}
+	var result int
+	for _, item := range dp {
+		if item%3 != 0 {
+			result = item
+		}
+	}
+	return result
 }
 
 // 示例 1：
