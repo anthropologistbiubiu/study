@@ -13,10 +13,40 @@ func singleNumber(nums []int) int {
 		}
 	}
 	var result int
-	fmt.Println(dp)
 	for i, _ := range dp {
-		fmt.Println(i)
-		result |= (dp[i] % 3 << i)
+		if dp[i]%3 != 0 {
+			result |= (dp[i] % 3 << i)
+		}
+	}
+	return result // 解决一下负数的问题
+}
+
+func singleNumber1(nums []int) int {
+
+	//var dp = make([]int, 32)
+	var result int
+	for i := 0; i < 32; i++ {
+		var total int
+		for _, num := range nums {
+			total += (num >> i) & 1
+		}
+		if total%3 != 0 {
+			result |= (1 << i)
+		}
+	}
+	return result
+}
+
+func singleNumber2(nums []int) int {
+	result := 0
+	for i := 0; i < 31; i++ {
+		total := 0
+		for _, num := range nums {
+			total += (num >> (i)) & 1
+		}
+		if total%3 != 0 {
+			result |= (1 << (i))
+		}
 	}
 	return result
 }
@@ -33,6 +63,8 @@ func main() {
 	//fmt.Println(singleNumber([]int{2, 2, 3, 2}))
 	//fmt.Println(singleNumber([]int{0, 1, 0, 1, 0, 1, 99})) //输入：nums = [0,1,0,1,0,1,99]
 	fmt.Println(singleNumber([]int{-2, -2, 1, 1, 4, 1, 4, 4, -4, -2}))
+	fmt.Println(singleNumber1([]int{-2, -2, 1, 1, 4, 1, 4, 4, -4, -2}))
+	fmt.Println(singleNumber2([]int{-2, -2, 1, 1, 4, 1, 4, 4, -4, -2}))
 	// 对负数的处理是错误的
 	/*
 		var nums = []int{0, 1, 0, 1, 0}
