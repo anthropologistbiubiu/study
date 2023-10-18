@@ -13,16 +13,10 @@ func singleNumber(nums []int) int {
 		}
 	}
 	var result int
-	var tem int = 1
-	for i, item := range dp {
-		if i == 0 {
-			tem *= 1
-		} else {
-			tem *= 2
-		}
-		if item%3&1 == 1 {
-			result += tem
-		}
+	fmt.Println(dp)
+	for i, _ := range dp {
+		fmt.Println(i)
+		result |= (dp[i] % 3 << i)
 	}
 	return result
 }
@@ -36,8 +30,8 @@ func singleNumber(nums []int) int {
 //输出：99
 
 func main() {
-	fmt.Println(singleNumber([]int{2, 2, 3, 2}))
-	fmt.Println(singleNumber([]int{0, 1, 0, 1, 0, 1, 99})) //输入：nums = [0,1,0,1,0,1,99]
+	//fmt.Println(singleNumber([]int{2, 2, 3, 2}))
+	//fmt.Println(singleNumber([]int{0, 1, 0, 1, 0, 1, 99})) //输入：nums = [0,1,0,1,0,1,99]
 	fmt.Println(singleNumber([]int{-2, -2, 1, 1, 4, 1, 4, 4, -4, -2}))
 	// 对负数的处理是错误的
 	/*
@@ -55,4 +49,5 @@ func main() {
 			}
 		}
 	*/
+	//var dp = []int{-2, -2, 1, 1, 4, 1, 4, 4, -4, -2}
 }
