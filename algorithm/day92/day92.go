@@ -22,7 +22,6 @@ func singleNumber(nums []int) int {
 }
 
 func singleNumber1(nums []int) int {
-
 	//var dp = make([]int, 32)
 	var result int
 	for i := 0; i < 32; i++ {
