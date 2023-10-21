@@ -12,13 +12,13 @@ func singleNumber(nums []int) int {
 			dp[j] += (v >> j) & 1
 		}
 	}
-	var result int
+	var result int32
 	for i, _ := range dp {
 		if dp[i]%3 != 0 {
-			result |= (dp[i] % 3 << i)
+			result |= (int32(dp[i] % 3 << i))
 		}
 	}
-	return result // 解决一下负数的问题
+	return int(result) // 解决一下负数的问题
 }
 
 func singleNumber1(nums []int) int {
@@ -58,28 +58,12 @@ func singleNumber2(nums []int) int {
 //输入：nums = [0,1,0,1,0,1,99]
 //输出：99
 
-func singleNumber_1(nums []int) int {
-	var dp = make([]int, 32)
-	for _, v := range nums {
-		for j := 0; j < 32; j++ {
-			// 清除符号位并进行右移操作
-			dp[j] += (v & (1 << uint(j))) >> uint(j)
-		}
-	}
-
-	var result int
-	for i, _ := range dp {
-		result |= (dp[i] % 3 << uint(i))
-	}
-	return result
-}
-
 func singleNumber_2(nums []int) int {
 	ans := int32(0)
 	for i := 0; i < 32; i++ {
-		total := int32(0)
+		var total int
 		for _, num := range nums {
-			total += int32(num) >> i & 1
+			total += (num) >> i & 1
 		}
 		if total%3 > 0 {
 			ans |= 1 << i
@@ -88,34 +72,27 @@ func singleNumber_2(nums []int) int {
 	return int(ans)
 }
 
-func singleNumber_3(nums []int) int {
-	var dp = make([]int, 32)
-	for _, v := range nums {
-		for j := 0; j < 32; j++ {
-			if v < 0 {
-				dp[j] += (1 - (v >> uint(j) & 1))
-			} else {
-				dp[j] += (v >> uint(j) & 1)
-			}
-		}
-	}
-
+func singleNumber4(nums []int) int {
 	var result int
-	for i, _ := range dp {
-		result |= (dp[i] % 3 << uint(i))
+	for i := 0; i < 32; i++ {
+		var total int
+		for _, num := range nums {
+			// 使用无符号右移操作清除符号位
+			total += (int(uint32(num)>>i) & 1)
+		}
+		if total%3 != 0 {
+			result |= (1 << i)
+		}
 	}
 	return result
 }
 
 func main() {
-	//fmt.Println(singleNumber([]int{2, 2, 3, 2}))
-	//fmt.Println(singleNumber([]int{0, 1, 0, 1, 0, 1, 99})) //输入：nums = [0,1,0,1,0,1,99]
 	fmt.Println(singleNumber([]int{-2, -2, 1, 1, 4, 1, 4, 4, -4, -2}))
 	fmt.Println(singleNumber1([]int{-2, -2, 1, 1, 4, 1, 4, 4, -4, -2}))
 	fmt.Println(singleNumber2([]int{-2, -2, 1, 1, 4, 1, 4, 4, -4, -2}))
-	fmt.Println(singleNumber_1([]int{-2, -2, 1, 1, 4, 1, 4, 4, -4, -2}))
 	fmt.Println(singleNumber_2([]int{-2, -2, 1, 1, 4, 1, 4, 4, -4, -2}))
-	fmt.Println(singleNumber_3([]int{-2, -2, 1, 1, 4, 1, 4, 4, -4, -2}))
+	fmt.Println(singleNumber4([]int{-2, -2, 1, 1, 4, 1, 4, 4, -4, -2}))
 	// 对负数的处理是错误的
 	/*
 		var nums = []int{0, 1, 0, 1, 0}
