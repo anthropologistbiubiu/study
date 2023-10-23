@@ -10,5 +10,16 @@ func main() {
 
 func nthUglyNumber(n int) int {
 
+	//
+	var dp = make([]int, n)
+	dp[0] = 1
+	for i := 1; i < n; i++ {
+		dp[i] = min(dp[i-1]*2, dp[i-1]*3, dp[i-1]*5)
+	}
+
+	return dp[n-1]
+}
+
+func min(a, b, c int) int {
 	return 0
 }
