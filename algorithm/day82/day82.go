@@ -13,8 +13,9 @@ func nthUglyNumber(n int) int {
 	//
 	var dp = make([]int, n)
 	dp[0] = 1
+	var p2, p3, p5 = dp[0], dp[0], dp[0]
 	for i := 1; i < n; i++ {
-		dp[i] = min(dp[i-1]*2, dp[i-1]*3, dp[i-1]*5)
+		dp[i] = min(p2*2, p3*3, p5*5)
 	}
 
 	return dp[n-1]
