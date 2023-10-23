@@ -1,7 +1,10 @@
 package main
 
+import "fmt"
+
 func main() {
 
+	fmt.Println(nthUglyNumber(3))
 }
 
 //给你一个整数 n ，请你找出并返回第 n 个 丑数 。
@@ -10,17 +13,33 @@ func main() {
 
 func nthUglyNumber(n int) int {
 
-	//
 	var dp = make([]int, n)
 	dp[0] = 1
-	var p2, p3, p5 = dp[0], dp[0], dp[0]
+	var next int
+	var p2, p3, p5 = 0, 0, 0
 	for i := 1; i < n; i++ {
-		dp[i] = min(p2*2, p3*3, p5*5)
+		dp[i], next = min(p2, p3, p5, dp)
+		if next == p2 {
+			p2++
+		} else if next == p3 {
+			p3++
+		} else if next == p5 {
+			p5++
+		}
 	}
-
 	return dp[n-1]
 }
 
-func min(a, b, c int) int {
-	return 0
+func min(p2, p3, p5 int, dp []int) (int, int) {
+	m := dp[p2] * 2
+	next := p2
+	if m > dp[p3]*3 {
+		m = dp[p3] * 3
+		next = p3
+	}
+	if m > dp[p5]*5 {
+		m = dp[p5] * 5
+		next = p5
+	}
+	return m, next
 }
