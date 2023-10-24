@@ -30,15 +30,14 @@ func nthUglyNumber(n int) int {
 }
 
 func min(p2, p3, p5 int, dp []int) (int, int) {
-	fmt.Println("dp", dp)
 	ans := dp[p2] * 2
 	next := p2
 	if ans > dp[p3]*3 {
 		ans = dp[p3] * 3
-		next = p2
+		next = p3
 	}
-	if ans > dp[p5]*p5 {
-		ans = dp[p5] * p5
+	if ans > dp[p5]*5 {
+		ans = dp[p5] * 5
 		next = p5
 	}
 	return ans, next
