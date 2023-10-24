@@ -32,18 +32,34 @@ func nthUglyNumber(n int) int {
 func min(p2, p3, p5 int, dp []int, mp map[int]struct{}) (int, int) {
 	fmt.Println("dp", dp, p2, p3, p5)
 	m := dp[p2] * 2
+	var result int
 	next := p2
+	var next2 int
+	var next3 int
 	if m > dp[p3]*3 {
-		if _, ok := mp[dp[p3]*3]; !ok {
-			m = dp[p3] * 3
-			next = p3
-		}
+		m = dp[p3] * 3
+		next = p3
+		next2 = p2
+	} else {
+		next2 = p3
 	}
 	if m > dp[p5]*5 {
-		if _, ok := mp[dp[p5]*5]; !ok {
-			m = dp[p5] * 5
-			next = p5
+		m = dp[p5] * 5
+		next = p5
+	} else {
+		if dp[p5]*5 < dp[next2]*next2 {
+			next3 = next2
+			next2 = p5
+		} else {
+			next3 = p5
 		}
 	}
-	return m, next
+	for _, v := range []int{next, next2, next3} {
+		if _, ok := mp[v]; ok {
+			continue
+		} else {
+			result = v
+		}
+	}
+	return dp[result] * result, result
 }
