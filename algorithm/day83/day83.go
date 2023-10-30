@@ -14,7 +14,9 @@ func numSubmat(mat [][]int) int {
 		dp[i] = make([]int, long)
 	}
 	for i, _ := range dp {
+		for j, _ := range dp[i] {
 
+		}
 	}
 	return 0
 }
