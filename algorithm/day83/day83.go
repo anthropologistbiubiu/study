@@ -15,7 +15,11 @@ func numSubmat(mat [][]int) int {
 	}
 	for i, _ := range dp {
 		for j, _ := range dp[i] {
+			if i == 0 {
+				if mat[i][j] == 1 {
 
+				}
+			}
 		}
 	}
 	return 0
