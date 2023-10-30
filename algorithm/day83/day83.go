@@ -7,5 +7,14 @@ func main() {
 }
 
 func numSubmat(mat [][]int) int {
+	width := len(mat)
+	long := len(mat[0])
+	var dp = make([][]int, width)
+	for i, _ := range dp {
+		dp[i] = make([]int, long)
+	}
+	for i, _ := range dp {
+
+	}
 	return 0
 }
