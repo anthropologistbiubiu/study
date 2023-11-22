@@ -26,11 +26,20 @@ func (s Set) Read(c *sync.Cond, reader string) {
 	}
 }
 
+func (s Set) Add(name string) {
+	s[name] = struct{}{}
+}
+func (s Set) Has(name string) bool {
+	_, ok := s[name]
+	return ok
+}
 func (s Set) Write(c *sync.Cond, nameArr ...string) {
 	c.L.Lock()
 	log.Print("starting writing")
 	for _, name := range nameArr {
-		s[name] = struct{}{}
+		if !s.Has(name) {
+			s.Add(name)
+		}
 	}
 	c.L.Unlock()
 	c.Broadcast()
