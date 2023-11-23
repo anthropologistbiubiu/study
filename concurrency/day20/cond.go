@@ -20,7 +20,9 @@ func NewSet() Set {
 func (s Set) Read(c *sync.Cond, reader string) {
 	c.L.Lock()
 	defer c.L.Unlock()
-	c.Wait()
+	for !Done {
+		c.Wait()
+	}
 	for k, v := range s {
 		fmt.Println(reader, k, v)
 	}
@@ -36,6 +38,7 @@ func (s Set) Has(name string) bool {
 func (s Set) Write(c *sync.Cond, nameArr ...string) {
 	c.L.Lock()
 	log.Print("starting writing")
+	Done = true
 	for _, name := range nameArr {
 		if !s.Has(name) {
 			s.Add(name)
