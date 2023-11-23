@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 	"sync"
+	"time"
 )
 
 type AppConfig struct {
@@ -12,23 +13,29 @@ type AppConfig struct {
 	port     int
 }
 
+func init() {
+
+	_ = os.Setenv("version", "1.0")
+}
+
 var (
-	config = new(AppConfig)
-	once   = sync.Once{}
+	//config = new(AppConfig)
+	once = sync.Once{}
 )
 
 func ReadConfig() {
 	once.Do(func() {
-		conig = &AppConfig{
+		conig := &AppConfig{
 			version:  os.Getenv("version"),
 			serverIp: "localhost",
 			port:     8080,
 		}
+		log.Println(conig)
 	})
 }
 func main() {
 	for i := 0; i < 10; i++ {
 		go ReadConfig()
 	}
-	log.Println(config)
+	time.Sleep(time.Second * 10)
 }
