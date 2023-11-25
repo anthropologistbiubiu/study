@@ -4,9 +4,6 @@ import "github.com/redis/go-redis/v9"
 
 // 直接在这里写一个回调服务算了，通过发布与订阅模式来完成。
 // 写一个阻塞的服务来完成读消息队列的数据，不提供接口，但是要实现对服务的优雅退出和重启。不能丢失消费的数据。
-// 通过redis 集群来搭建。
-// 这里需要并发的对消息队列的回调数据进行处理。
-
 /*
 
 根据之前的服务对kafka服务写一个优雅退出过程的服务。
@@ -28,10 +25,36 @@ import "github.com/redis/go-redis/v9"
 */
 // 上面记录的是对消息队列使用存在的疑惑,我这里来一步一步解决,后期来搭建为docker版本的集群模式
 
+var (
+	messageQueue = new(MessageQueue)
+)
+
 type MessageQueue struct {
-	client redis.Client
+	client *redis.Client
 }
 
+func init() {
+	messageQueue.client = redis.NewClient(&redis.Options{
+		Addr:     "127.0.0.1:6379",
+		Password: "",
+		DB:       0,
+	})
+}
+
+func (m *MessageQueue) read() {
+
+}
+func (m *MessageQueue) write() {
+
+}
+
+func Producer() {
+
+}
+
+func Consumer() {
+
+}
 func main() {
 
 }
