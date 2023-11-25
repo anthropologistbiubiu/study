@@ -71,8 +71,12 @@ func Producer(queue *MessageQueue, messages []string, ctx context.Context) {
 	}
 }
 
-func Consumer() {
+func Consumer(queue *MessageQueue, ctx context.Context) {
 
+	msgChan := queue.read(ctx)
+	for msg := range msgChan {
+		log.Printf("receiv msg %s \n", msg)
+	}
 }
 func main() {
 
