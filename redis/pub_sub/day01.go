@@ -1,6 +1,11 @@
 package main
 
-import "github.com/redis/go-redis/v9"
+import (
+	"context"
+	"github.com/redis/go-redis/v9"
+	"log"
+	"time"
+)
 
 // 直接在这里写一个回调服务算了，通过发布与订阅模式来完成。
 // 写一个阻塞的服务来完成读消息队列的数据，不提供接口，但是要实现对服务的优雅退出和重启。不能丢失消费的数据。
@@ -41,15 +46,29 @@ func init() {
 	})
 }
 
-func (m *MessageQueue) read() {
-
+func (m *MessageQueue) read(ctx context.Context) <-chan *redis.Message {
+	pubsub := messageQueue.client.Subscribe(ctx, "my_channel")
+	_, err := pubsub.Receive(ctx)
+	if err != nil {
+		log.Println("Receive", err)
+	}
+	msgChan := pubsub.Channel()
+	return msgChan
 }
-func (m *MessageQueue) write() {
-
+func (m *MessageQueue) write(ctx context.Context, message string) error {
+	err := m.client.Publish(ctx, "my_channel", message).Err()
+	if err != nil {
+		log.Println("Publish", err)
+	}
+	return err
 }
 
-func Producer() {
-
+func Producer(queue *MessageQueue, messages []string, ctx context.Context) {
+	for _, msg := range messages {
+		queue.write(ctx, msg)
+		log.Printf("msg %s\n", msg)
+		time.Sleep(time.Second * 1)
+	}
 }
 
 func Consumer() {
