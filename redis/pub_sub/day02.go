@@ -14,7 +14,6 @@ import (
 // 直接在这里写一个回调服务算了，通过发布与订阅模式来完成。
 // 写一个阻塞的服务来完成读消息队列的数据，不提供接口，但是要实现对服务的优雅退出和重启。不能丢失消费的数据。
 /*
-
 根据之前的服务对kafka服务写一个优雅退出过程的服务。
 第一 实现对订单状态的数据库修改，第二对回调订单使用协程发送请求。第三，对修改状态后的订单标记offset.
 如果标记后从管道读取下一个数据那么并发也就是失去了意义。 第四 加上并发控制。
@@ -38,6 +37,8 @@ var (
 	messageQueue = new(MessageQueue)
 	signalChan   = make(chan os.Signal, 1)
 	wg, ctx      = sync.WaitGroup{}, context.Background()
+	helper       = make(chan struct{})
+	Done         = false
 )
 
 type MessageQueue struct {
@@ -72,10 +73,23 @@ func (m *MessageQueue) write(ctx context.Context, message string) error {
 func Producer(queue *MessageQueue, messages []string, ctx context.Context) {
 	defer wg.Done()
 	for _, msg := range messages {
-		queue.write(ctx, msg)
-		log.Printf("msg %s\n", msg)
-		time.Sleep(time.Second * 2)
-		// 2 每两秒钟写进去一条消息
+		if Done {
+			return
+		}
+		for {
+			select {
+			case <-helper:
+				log.Println("Producer quit")
+				Done = true
+				return
+			default:
+				queue.write(ctx, msg)
+				log.Printf("Produce msg %s\n", msg)
+				time.Sleep(time.Second * 1)
+				// 2 每两秒钟写进去一条消息
+			}
+
+		}
 	}
 }
 
@@ -84,14 +98,15 @@ func Consumer(queue *MessageQueue, ctx context.Context) {
 	msgChan := queue.read(ctx)
 	for {
 		select {
-		case <-signalChan:
-			return
-		default:
-			msg := <-msgChan
-			log.Printf("Consumer msg:%s\n", msg)
+		case msg := <-msgChan:
+			wg.Add(1)
+			go func() {
+				defer wg.Done()
+				time.Sleep(2 * time.Second)
+				log.Printf("Consumer:%s\n", msg.Payload)
+			}()
 		}
 	}
-	log.Println("quit safely")
 }
 
 func cleanWork() {
@@ -99,18 +114,17 @@ func cleanWork() {
 }
 func main() {
 
-	messages := []string{"nihao", "chilema", "zaiganma", "今天天气不错", "good idea", "831", "mayday"}
+	messages := []string{"message1", "message2", "message3", "message4", "message5"}
 	wg.Add(3)
 	go Consumer(messageQueue, ctx)
 	go Producer(messageQueue, messages, ctx)
 	go func() {
-		for {
-			signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
-			time.Sleep(3 * time.Second)
-			//os.Exit(1)
-		}
+		defer wg.Done()
+		signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
+		<-signalChan
+		close(helper)
+		time.Sleep(5 * time.Second)
+		log.Println("clearn success!")
 	}()
 	wg.Wait()
-	// 整体应该是这样的一个效果，信号量管道监听当前的信号，然后主程序一直在运行当中，执行协程中的程序，然后
-	// 一边监听信号量,当监听到信号量的时候，程序应该退出，退出的时候应该考虑并发的协程有没有被执行完毕。
 }
