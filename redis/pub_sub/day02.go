@@ -38,7 +38,6 @@ var (
 	signalChan   = make(chan os.Signal, 1)
 	wg, ctx      = sync.WaitGroup{}, context.Background()
 	helper       = make(chan struct{})
-	Done         = false
 )
 
 type MessageQueue struct {
@@ -73,22 +72,14 @@ func (m *MessageQueue) write(ctx context.Context, message string) error {
 func Producer(queue *MessageQueue, messages []string, ctx context.Context) {
 	defer wg.Done()
 	for _, msg := range messages {
-		if Done {
+		select {
+		case <-helper:
+			log.Println("Producer quit")
 			return
-		}
-		for {
-			select {
-			case <-helper:
-				log.Println("Producer quit")
-				Done = true
-				return
-			default:
-				queue.write(ctx, msg)
-				log.Printf("Produce msg %s\n", msg)
-				time.Sleep(time.Second * 1)
-				// 2 每两秒钟写进去一条消息
-			}
-
+		default:
+			queue.write(ctx, msg)
+			log.Printf("Produce msg %s\n", msg)
+			time.Sleep(1 * time.Second)
 		}
 	}
 }
@@ -96,22 +87,25 @@ func Producer(queue *MessageQueue, messages []string, ctx context.Context) {
 func Consumer(queue *MessageQueue, ctx context.Context) {
 	defer wg.Done()
 	msgChan := queue.read(ctx)
+	wg := sync.WaitGroup{} // 用来区分是否是同一级别的协程序
 	for {
 		select {
+		case <-helper:
+			log.Println("Consumer quit!")
+			time.Sleep(time.Second * 2)
+			log.Println("wati for  clean success!")
+			return
 		case msg := <-msgChan:
 			wg.Add(1)
 			go func() {
 				defer wg.Done()
-				time.Sleep(2 * time.Second)
-				log.Printf("Consumer:%s\n", msg.Payload)
+				time.Sleep(time.Second * 3)
+				log.Printf("after two minutes ,consumer msg:%s\n", msg.Payload)
 			}()
 		}
 	}
 }
 
-func cleanWork() {
-
-}
 func main() {
 
 	messages := []string{"message1", "message2", "message3", "message4", "message5"}
@@ -122,9 +116,8 @@ func main() {
 		defer wg.Done()
 		signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
 		<-signalChan
+		log.Println("收到信号量")
 		close(helper)
-		time.Sleep(5 * time.Second)
-		log.Println("clearn success!")
 	}()
 	wg.Wait()
 }
