@@ -4,6 +4,10 @@ import (
 	"context"
 	"github.com/redis/go-redis/v9"
 	"log"
+	"os"
+	"os/signal"
+	"sync"
+	"syscall"
 	"time"
 )
 
@@ -72,7 +76,6 @@ func Producer(queue *MessageQueue, messages []string, ctx context.Context) {
 }
 
 func Consumer(queue *MessageQueue, ctx context.Context) {
-
 	msgChan := queue.read(ctx)
 	for msg := range msgChan {
 		log.Printf("receiv msg %s \n", msg)
@@ -80,4 +83,13 @@ func Consumer(queue *MessageQueue, ctx context.Context) {
 }
 func main() {
 
+	var wg, ctx = sync.WaitGroup{}, context.Background()
+	messages := []string{"nihao", "chilema?", "zaiganma"}
+	wg.Add(2)
+	go Consumer(messageQueue, ctx)
+	go Producer(messageQueue, messages, ctx)
+	signalChan := make(chan os.Signal, 1)
+	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
+	<-signalChan
+	wg.Wait()
 }
