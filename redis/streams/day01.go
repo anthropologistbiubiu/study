@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"github.com/redis/go-redis/v9"
 	"log"
 	"time"
@@ -48,10 +49,13 @@ func consumer(client *redis.Client, ctx context.Context, groupName string, consu
 }
 
 func producer(client *redis.Client, ctx context.Context, streamkey string) {
-	client.XAdd(ctx, &redis.XAddArgs{
-		Stream: streamkey,
-		Values: "我和你都约好了",
-	})
+	for {
+		client.XAdd(ctx, &redis.XAddArgs{
+			Stream: streamkey,
+			Values: "我和你都约好了",
+		})
+		time.Sleep(time.Second * 1)
+	}
 }
 
 func main() {
@@ -59,8 +63,14 @@ func main() {
 	ctx := context.Background()
 	groupName := "mygroup"
 	consumerName := "myconsumer"
+	_, err := client.XGroupCreateMkStream(ctx, streamKey, groupName, "$").Result()
+	if err != nil && err.Error() != "BUSY Consumer Group name already exists" {
+		// 如果出错并且不是因为已存在，则打印错误信息
+		fmt.Println("Error creating consumer group:", err)
+		return
+	}
 	go consumer(client, ctx, groupName, consumerName, streamKey)
 	go producer(client, ctx, streamKey)
-	time.Sleep(5 * time.Second)
+	time.Sleep(10 * time.Second)
 
 }
