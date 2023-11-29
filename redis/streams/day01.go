@@ -16,6 +16,7 @@ import (
 
 var (
 	streamKey = "my_stream"
+	helper    = make(chan struct{})
 )
 
 func NewRedisClient() *redis.Client {
@@ -43,12 +44,18 @@ func consumer(client *redis.Client, ctx context.Context, groupName string, consu
 			for _, x := range message.Messages {
 				for _, msg := range x.Values {
 					//log.Printf("consumer %s\n", msg)
-					go func() {
-						log.Printf("consumer %s\n", msg)
-						client.XAck(ctx, streamkey, groupName, x.ID)
-					}()
+					select {
+					case <-helper:
+						log.Println("consumer quit")
+						return
+					default:
+						go func() {
+							time.Sleep(time.Second * 2)
+							log.Printf("consumer %s\n", msg)
+							client.XAck(ctx, streamKey, groupName, x.ID)
+						}()
+					}
 				}
-				time.Sleep(time.Second * 2)
 			}
 
 		}
@@ -58,14 +65,20 @@ func consumer(client *redis.Client, ctx context.Context, groupName string, consu
 func producer(client *redis.Client, ctx context.Context, streamkey string) {
 	var i int
 	for {
-		message := fmt.Sprintf(" message %d", i)
-		client.XAdd(ctx, &redis.XAddArgs{
-			Stream: streamkey,
-			Values: map[string]interface{}{"message": message},
-		})
-		i++
-		log.Printf("producer message%s\n", message)
-		time.Sleep(time.Second * 1)
+		select {
+		case <-helper:
+			log.Println("producer quit")
+			return
+		default:
+			message := fmt.Sprintf(" message %d", i)
+			client.XAdd(ctx, &redis.XAddArgs{
+				Stream: streamkey,
+				Values: map[string]interface{}{"message": message},
+			})
+			i++
+			log.Printf("producer message%s\n", message)
+			time.Sleep(time.Second * 1)
+		}
 	}
 }
 
@@ -80,21 +93,16 @@ func main() {
 	ctx := context.Background()
 	groupName := "mygroup"
 	consumerName := "myconsumer"
-	/*
-		_, err := client.XGroupCreateMkStream(ctx, streamKey, groupName, "$").Result()
-		if err != nil && err.Error() != "BUSY Consumer Group name already exists" {
-			// 如果出错并且不是因为已存在，则打印错误信息
-			fmt.Println("Error creating consumer group:", err)
-			return
-		}
-	*/
+	_, err := client.XGroupCreateMkStream(ctx, streamKey, groupName, "$").Result()
+	if err != nil && err.Error() != "BUSY Consumer Group name already exists" {
+		// 如果出错并且不是因为已存在，则打印错误信息
+		fmt.Println("Error creating consumer group:", err)
+		return
+	}
 	go consumer(client, ctx, groupName, consumerName, streamKey)
 	go producer(client, ctx, streamKey)
 	<-signalChan
-
+	close(helper)
+	time.Sleep(5 * time.Second)
+	// 实践证明，只有主进程结束,协程序才结束。
 }
-
-// 1。 当遇到信号量，生产者停止写。
-// 2。消费者停止读，但是消费者当前的协程数据需要等待被消费完成。
-// 3。释放整个主进程。
-// 4.开始消息队列的过程
