@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"github.com/redis/go-redis/v9"
 	"log"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 )
 
@@ -39,9 +42,13 @@ func consumer(client *redis.Client, ctx context.Context, groupName string, consu
 		for _, message := range result {
 			for _, x := range message.Messages {
 				for _, msg := range x.Values {
-					log.Printf("consumer %s\n", msg)
+					//log.Printf("consumer %s\n", msg)
+					go func() {
+						log.Printf("consumer %s\n", msg)
+						client.XAck(ctx, streamkey, groupName, x.ID)
+					}()
 				}
-				client.XAck(ctx, streamkey, groupName, x.ID)
+				time.Sleep(time.Second * 2)
 			}
 
 		}
@@ -62,7 +69,13 @@ func producer(client *redis.Client, ctx context.Context, streamkey string) {
 	}
 }
 
+func SiganlInit() {
+
+}
 func main() {
+	signalChan := make(chan os.Signal, 0)
+	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
+
 	client := NewRedisClient()
 	ctx := context.Background()
 	groupName := "mygroup"
@@ -77,12 +90,11 @@ func main() {
 	*/
 	go consumer(client, ctx, groupName, consumerName, streamKey)
 	go producer(client, ctx, streamKey)
-	time.Sleep(10 * time.Second)
+	<-signalChan
 
 }
-
-// 现在最重要的开始了，就是对消费者和生产者的协程序控制
 
 // 1。 当遇到信号量，生产者停止写。
 // 2。消费者停止读，但是消费者当前的协程数据需要等待被消费完成。
 // 3。释放整个主进程。
+// 4.开始消息队列的过程
