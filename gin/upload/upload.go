@@ -45,3 +45,8 @@ func UploadFileControl(c *gin.Context) {
 	}
 	c.String(http.StatusOK, "OK")
 }
+
+func DownLoadFile(c *gin.Context) {
+	distination := "./upload/test.txt"
+	c.File(distination)
+}

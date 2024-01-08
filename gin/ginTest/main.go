@@ -11,6 +11,7 @@ func setupRouter() *gin.Engine {
 		c.String(200, "pong")
 	})
 	r.POST("/upload", upload.UploadFileControl)
+	r.GET("/download", upload.DownLoadFile)
 	return r
 }
 
