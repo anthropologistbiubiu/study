@@ -30,6 +30,6 @@ func main() {
 	go read()
 	signal.Notify(sigchan, syscall.SIGTERM, syscall.SIGINT)
 	<-sigchan
-	time.Sleep(5 * time.Second)
+	//time.Sleep(5 * time.Second)
 
 }

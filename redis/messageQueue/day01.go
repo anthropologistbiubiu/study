@@ -78,5 +78,5 @@ func main() {
 	<-sigCh
 
 	// 等待所有 goroutine 完成
-	wg.Wait()
+	//wg.Wait()
 }

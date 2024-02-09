@@ -87,19 +87,19 @@ func Producer(queue *MessageQueue, messages []string, ctx context.Context) {
 func Consumer(queue *MessageQueue, ctx context.Context) {
 	defer wg.Done()
 	msgChan := queue.read(ctx)
-	wg := sync.WaitGroup{} // 用来区分是否是同一级别的协程序
+	//wg := sync.WaitGroup{} // 用来区分是否是同一级别的协程序
 	for {
 		select {
 		case <-helper:
 			log.Println("Consumer quit!")
-			time.Sleep(time.Second * 2)
+			time.Sleep(time.Second * 5)
 			log.Println("wati for  clean success!")
 			return
 		case msg := <-msgChan:
-			wg.Add(1)
+			//wg.Add(1)
 			go func() {
-				defer wg.Done()
-				time.Sleep(time.Second * 3)
+				//defer wg.Done()
+				time.Sleep(time.Second * 2)
 				log.Printf("after two minutes ,consumer msg:%s\n", msg.Payload)
 			}()
 		}
