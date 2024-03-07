@@ -11,7 +11,7 @@ func main() {
 		Addr: ":9090",
 		//Handler: http.HandleFunc("http", httpRequest),
 	}
-	http.HandleFunc("/fetch1", handleRequest)
+	http.HandleFunc("/fetch", handleRequest)
 	server.ListenAndServe()
 }
 
