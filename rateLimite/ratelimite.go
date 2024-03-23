@@ -50,7 +50,7 @@ func IsActionAllow(userId, actionKey string, period, maxCount int) bool {
 
 // 这段程序应该走那段路径才是对的
 
-func main() {
+func main1() {
 	fillInterval := 10 * time.Microsecond        //添加令牌的时间间隔
 	capacity := 100                              //令牌桶的容量
 	tokenBucket := make(chan struct{}, capacity) //初始化一个令牌桶
