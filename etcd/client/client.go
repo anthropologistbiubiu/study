@@ -17,13 +17,11 @@ const registerDialPrefix = "register://localhost:2379/"
 func main() {
 	// 解析命令行参数
 	//flag.Parse()
-	fmt.Println(">>>>>>>>>>>>>>>>>>>")
 	service, err := register.NewLocalDefNamingService("my1")
 	if err != nil {
 		fmt.Println("Create naming service error: %v", err)
 	}
 	fmt.Println(err)
-	fmt.Println("____________")
 	resolver, err := service.NewEtcdResolver()
 	if err != nil {
 		fmt.Println("Create register resolver error: %v", err)
@@ -62,7 +60,6 @@ func main() {
 		}
 		log.Printf("请求结果: %s", res.GetMessage())
 	}
-
 	// 睡眠一会再结束
 	log.Println("3秒后结束，客户端自动断开连接")
 	time.Sleep(time.Second * 3)

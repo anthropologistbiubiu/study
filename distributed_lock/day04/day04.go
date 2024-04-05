@@ -1,5 +1,6 @@
 package main
 
+/*
 import (
 	"log"
 
@@ -28,3 +29,4 @@ func main() {
 		log.Printf("etcdsync.Unlock OK")
 	}
 }
+*/
