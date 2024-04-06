@@ -1,0 +1,17 @@
+go 1.19
+
+use (
+	./algorithm/day02
+	./etcd
+	./grpc/day02
+	./grpc/day03
+	./gin
+	./mongodb
+	./sign
+	./consul
+	./wire
+	./gateway
+	./helloworld
+	./whitelist
+	./semaphore
+)
