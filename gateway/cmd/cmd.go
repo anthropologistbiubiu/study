@@ -1,6 +1,5 @@
 package main
 
-/*
 import (
 	"context"
 	"fmt"
@@ -9,10 +8,11 @@ import (
 	"google.golang.org/grpc"
 	"log"
 	"net"
+	"net/http"
 )
 
 type orderServer struct {
-	//protos.UnimplementedOrderServer
+	protos.UnimplementedOrderServer
 }
 
 func NewOrderServer() *orderServer {
@@ -22,7 +22,7 @@ func NewOrderServer() *orderServer {
 func (s *orderServer) GetOrderInfo(ctx context.Context, in *protos.GetOrderReq) (*protos.GetOrderRsp, error) {
 	out := &protos.GetOrderRsp{
 		OrderId:   in.OrderId,
-		OrderInfo: "hello order" + in.Name,
+		OrderInfo: "hello order;sunweiming" + in.Name,
 	}
 	return out, nil
 }
@@ -37,7 +37,7 @@ func main() {
 	// 创建一个gRPC server对象
 	s := grpc.NewServer()
 	// 注册Greeter service到server
-	srv := NewServer()
+	srv := NewOrderServer()
 	protos.RegisterOrderServer(s, srv)
 	// 8080端口启动gRPC Server
 	fmt.Println("Serving gRPC on 0.0.0.0:8080")
@@ -56,10 +56,12 @@ func main() {
 	if err != nil {
 		fmt.Println("Failed to dial server:", err)
 	}
-	// 注册OrderReq
-	// 注册OrderReq
 	mux := runtime.NewServeMux()
-	protos.RegisterOrderHandlerServer(context.Background(), mux)
+	protos.RegisterOrderHandler(context.Background(), mux, conn)
+	gwServer := &http.Server{
+		Addr:    ":8090",
+		Handler: mux,
+	}
 	// 8090端口提供gRPC-Gateway服务
 	fmt.Println("Serving gRPC-Gateway on http://0.0.0.0:8090")
 	fmt.Println(gwServer.ListenAndServe())
@@ -69,5 +71,3 @@ func main() {
 // 1.如果gw.pb.go文件可以完成，先通过这种方式来完成
 // 2.再通过http.pb.go文件或者两个文件来共同完成http->grpc 的服务。
 // 3.其次通过这个服务过渡到 kratos 服务，来完成启动es 服务和数据库配置，并通过 orm 来完成数据库的操作过程。
-
-*/

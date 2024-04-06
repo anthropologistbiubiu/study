@@ -22,7 +22,7 @@ func LoadConfig() {
 	//fmt.Println("string string(configData", string(configData))
 	var configs = map[string]interface{}{}
 	if err := yaml.Unmarshal(configData, configs); err != nil {
-		fmt.Println("UUU", err)
+		fmt.Println("Unmarshal", err)
 	}
 	serverKV, _ := configs["server"].(map[interface{}]interface{})
 	//elasticsearchKV, _ := configs["elasticsearch"].(map[string]interface{})

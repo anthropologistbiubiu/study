@@ -38,10 +38,9 @@ func main() {
 	if err != nil {
 		log.Fatalln("Failed to listen:", err)
 	}
-
 	// 创建一个gRPC server对象
 	s := grpc.NewServer()
-	// 注册Greeter service到server
+	// 注册service到server
 	srv := NewServer()
 	protos.RegisterOrderServer(s, srv)
 	// 8080端口启动gRPC Server
