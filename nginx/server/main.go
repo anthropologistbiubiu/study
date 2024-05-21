@@ -14,13 +14,13 @@ func main() {
 	http.HandleFunc("/api/hello", helloHandler)
 	// 设置服务器配置
 	server := &http.Server{
-		Addr:         ":8080",
+		Addr:         ":8081",
 		Handler:      nil,
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
 		IdleTimeout:  60 * time.Second,
 	}
-	fmt.Println("Starting server on :8080")
+	fmt.Println("Starting server on :8081")
 	log.Fatal(server.ListenAndServe())
 }
 
