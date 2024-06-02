@@ -62,27 +62,28 @@ func sendRequest(conn net.Conn, reqType byte, data []byte) {
 		fmt.Println("Error packing request:", err)
 		return
 	}
-
 	_, err = conn.Write(reqData)
 	if err != nil {
 		fmt.Println("Error sending request:", err)
 		return
 	}
+	/*
+		buffer := make([]byte, 1024)
+		n, err := conn.Read(buffer)
+		if err != nil {
+			fmt.Println("Error reading response:", err)
+			return
+		}
 
-	buffer := make([]byte, 1024)
-	n, err := conn.Read(buffer)
-	if err != nil {
-		fmt.Println("Error reading response:", err)
-		return
-	}
+		resp, err := UnpackResponse(buffer[:n])
+		if err != nil {
+			fmt.Println("Error unpacking response:", err)
+			return
+		}
 
-	resp, err := UnpackResponse(buffer[:n])
-	if err != nil {
-		fmt.Println("Error unpacking response:", err)
-		return
-	}
+		fmt.Printf("Received response: Code=%d, Data=%s\n", resp.Code, resp.Data)
 
-	fmt.Printf("Received response: Code=%d, Data=%s\n", resp.Code, resp.Data)
+	*/
 }
 
 func main() {
