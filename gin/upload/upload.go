@@ -1,5 +1,6 @@
 package upload
 
+/*
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -50,3 +51,4 @@ func DownLoadFile(c *gin.Context) {
 	distination := "./upload/test.txt"
 	c.File(distination)
 }
+*/

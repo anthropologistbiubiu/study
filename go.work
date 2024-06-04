@@ -15,4 +15,5 @@ use (
 	./whitelist
 	./semaphore
 	./redis
+	./epoll
 )
