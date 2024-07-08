@@ -11,7 +11,7 @@ use (
 	./consul
 	./wire
 	./gateway
-	./helloworld
+	./payhub
 	./whitelist
 	./semaphore
 	./redis

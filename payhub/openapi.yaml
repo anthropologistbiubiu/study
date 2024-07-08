@@ -1,0 +1,73 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+    title: ""
+    version: 0.0.1
+paths:
+    /helloworld/{name}:
+        get:
+            tags:
+                - Greeter
+            description: Sends a greeting
+            operationId: Greeter_SayHello
+            parameters:
+                - name: name
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/helloworld.v1.HelloReply'
+    /payment/create:
+        post:
+            tags:
+                - PaymentSerivce
+            operationId: PaymentSerivce_CreatePaymentOrder
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/helloworld.v1.PaymentCreateRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/helloworld.v1.PaymentCreateReply'
+components:
+    schemas:
+        helloworld.v1.HelloReply:
+            type: object
+            properties:
+                message:
+                    type: string
+            description: The response message containing the greetings
+        helloworld.v1.PaymentCreateReply:
+            type: object
+            properties:
+                status:
+                    type: integer
+                    format: int32
+                payUrl:
+                    type: string
+            description: The request message containing the user's name.
+        helloworld.v1.PaymentCreateRequest:
+            type: object
+            properties:
+                merchantid:
+                    type: string
+                amount:
+                    type: string
+tags:
+    - name: Greeter
+      description: The greeting service definition.
+    - name: PaymentSerivce
