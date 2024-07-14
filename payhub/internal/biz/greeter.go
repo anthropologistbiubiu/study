@@ -24,7 +24,6 @@ type GreeterRepo interface {
 	Save(context.Context, *Greeter) (*Greeter, error)
 	Update(context.Context, *Greeter) (*Greeter, error)
 	FindByID(context.Context, int64) (*Greeter, error)
-	ListByHello(context.Context, string) ([]*Greeter, error)
 	ListAll(context.Context) ([]*Greeter, error)
 }
 
@@ -46,14 +45,13 @@ func (uc *GreeterUsecase) CreateGreeter(ctx context.Context, g *Greeter) (*Greet
 }
 
 type PaymentOrder struct {
-	Merchantid string
-	Amount     string
+	ID         int    `gorm:"primaryKey;autoIncrement"`
+	MerchantID string `gorm:"column:merchantId;size:64;not null"`
+	Amount     string `gorm:"size:64;not null"`
 }
 type PaymentRepo interface {
 	Save(context.Context, *PaymentOrder) error
-	//Update(context.Context, *PaymentOrder) error
-	//FindByID(context.Context, int64) (*PaymentOrder, error)
-	//ListAll(context.Context) ([]*PaymentOrder, error)
+	CachePaymentOrder(context.Context, *PaymentOrder) error
 }
 
 type PaymentOrderUsecase struct {
@@ -66,6 +64,9 @@ func NewPaymentOrderUsecase(repo PaymentRepo, logger log.Logger) *PaymentOrderUs
 }
 func (uc *PaymentOrderUsecase) CreatePaymentOrder(ctx context.Context, g *PaymentOrder) error {
 	uc.log.WithContext(ctx).Infof("CreatePaymentOrder,MerchantId: %v,Amount:%v",
-		g.Merchantid, g.Amount)
-	return uc.repo.Save(ctx, g)
+		g.MerchantID, g.Amount)
+	if err := uc.repo.Save(ctx, g); err != nil {
+		return err
+	}
+	return uc.repo.CachePaymentOrder(ctx, g)
 }

@@ -2,6 +2,9 @@ package data
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
+	"time"
 
 	"payhub/internal/biz"
 
@@ -33,10 +36,6 @@ func (r *greeterRepo) FindByID(context.Context, int64) (*biz.Greeter, error) {
 	return nil, nil
 }
 
-func (r *greeterRepo) ListByHello(context.Context, string) ([]*biz.Greeter, error) {
-	return nil, nil
-}
-
 func (r *greeterRepo) ListAll(context.Context) ([]*biz.Greeter, error) {
 	return nil, nil
 }
@@ -54,6 +53,14 @@ func NewPaymentRepo(data *Data, logger log.Logger) biz.PaymentRepo {
 }
 
 func (r *PaymentOrderRepo) Save(ctx context.Context, g *biz.PaymentOrder) error {
-	// 数据库操作
 	return r.data.Mysql.Create(g).Error
+}
+
+func (r *PaymentOrderRepo) CachePaymentOrder(ctx context.Context, g *biz.PaymentOrder) error {
+
+	data, err := json.Marshal(g)
+	if err != nil {
+		return err
+	}
+	return r.data.Redis.Set(ctx, fmt.Sprintf("%d", g.ID), string(data), 10*time.Minute).Err()
 }

@@ -36,8 +36,8 @@ func NewPaymentOrderService(uc *biz.PaymentOrderUsecase) *PaymentOrderService {
 }
 
 func (s *PaymentOrderService) CreatePaymentOrder(ctx context.Context, in *v1.PaymentCreateRequest) (*v1.PaymentCreateReply, error) {
-	if err := s.uc.CreatePaymentOrder(ctx, &biz.PaymentOrder{Merchantid: in.Merchantid, Amount: in.Amount}); err != nil {
-		return &v1.PaymentCreateReply{Status: 401, PayUrl: ""}, nil
+	if err := s.uc.CreatePaymentOrder(ctx, &biz.PaymentOrder{MerchantID: in.Merchantid, Amount: in.Amount}); err != nil {
+		return &v1.PaymentCreateReply{Status: 401, PayUrl: ""}, err
 	}
 	return &v1.PaymentCreateReply{Status: 200, PayUrl: "www.baidu.com"}, nil
 }
