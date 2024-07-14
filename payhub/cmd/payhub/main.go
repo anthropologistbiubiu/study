@@ -8,7 +8,6 @@ import (
 	"github.com/go-kratos/kratos/v2/config"
 	"github.com/go-kratos/kratos/v2/config/file"
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	"payhub/internal/conf"
@@ -48,15 +47,39 @@ func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server) *kratos.App {
 
 func main() {
 	flag.Parse()
-	logger := log.With(log.NewStdLogger(os.Stdout),
+	/*
+		logger := log.With(log.NewStdLogger(os.Stdout),
+			"ts", log.DefaultTimestamp,
+			"caller", log.DefaultCaller,
+			"service.id", id,
+			"service.name", Name,
+			"service.version", Version,
+			"trace.id", tracing.TraceID(),
+			"span.id", tracing.SpanID(),
+		)
+	*/
+	infoFile, err := os.OpenFile("info.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	if err != nil {
+		panic(err)
+	}
+	errorFile, err := os.OpenFile("error.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	if err != nil {
+		panic(err)
+	}
+	defer infoFile.Close()
+	defer errorFile.Close()
+
+	// 创建不同级别的日志处理器
+	infoLogger := log.With(log.NewStdLogger(infoFile),
 		"ts", log.DefaultTimestamp,
 		"caller", log.DefaultCaller,
-		"service.id", id,
-		"service.name", Name,
-		"service.version", Version,
-		"trace.id", tracing.TraceID(),
-		"span.id", tracing.SpanID(),
-	)
+		"level", log.LevelInfo)
+	/*
+		errorLogger := log.With(log.NewStdLogger(errorFile),
+			"ts", log.DefaultTimestamp,
+			"caller", log.DefaultCaller,
+			"level", log.LevelError)
+	*/
 	c := config.New(
 		config.WithSource(
 			file.NewSource(flagconf),
@@ -73,7 +96,7 @@ func main() {
 		panic(err)
 	}
 
-	app, cleanup, err := wireApp(bc.Server, bc.Data, logger)
+	app, cleanup, err := wireApp(bc.Server, bc.Data, infoLogger)
 	if err != nil {
 		panic(err)
 	}

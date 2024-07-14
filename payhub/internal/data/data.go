@@ -1,6 +1,7 @@
 package data
 
 import (
+	"github.com/redis/go-redis/v9"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"payhub/internal/conf"
@@ -16,6 +17,7 @@ var ProviderSet = wire.NewSet(NewData, NewGreeterRepo, NewPaymentRepo)
 type Data struct {
 	// TODO wrapped database client
 	Mysql *gorm.DB
+	Redis *redis.Client
 }
 
 // NewData .
@@ -28,5 +30,11 @@ func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
 	if err != nil {
 		log.Fatalf("failed to connect database: %v", err)
 	}
-	return &Data{Mysql: db}, cleanup, nil
+	cache := redis.NewClient(&redis.Options{
+		Addr: c.Redis.Addr,
+	})
+	if err != nil {
+		log.Fatalf("failed to connect database: %v", err)
+	}
+	return &Data{Mysql: db, Redis: cache}, cleanup, nil
 }
