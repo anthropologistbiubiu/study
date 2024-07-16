@@ -1,7 +1,6 @@
 package server
 
 import (
-	"github.com/go-kratos/kratos/v2/middleware/auth/jwt"
 	v1 "payhub/api/helloworld/v1"
 	"payhub/internal/conf"
 	"payhub/internal/service"
@@ -28,10 +27,6 @@ func NewHTTPServer(c *conf.Server, pay *service.PaymentOrderService, logger log.
 		opts = append(opts, http.Timeout(c.Http.Timeout.AsDuration()))
 	}
 	srv := http.NewServer(opts...)
-	http.Middleware(
-		jwt.Server(func(ctx, token string) (interface{}, error) {
-			return []byte("testkey"), nil
-		}))
 	v1.RegisterPaymentSerivceHTTPServer(srv, pay)
 	return srv
 }
