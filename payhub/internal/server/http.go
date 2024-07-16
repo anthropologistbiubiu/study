@@ -29,7 +29,9 @@ func NewHTTPServer(c *conf.Server, pay *service.PaymentOrderService, logger log.
 	}
 	srv := http.NewServer(opts...)
 	http.Middleware(
-		jwt.Server(func(token * jwtv4.Token)(interface{},error)))
+		jwt.Server(func(ctx, token string) (interface{}, error) {
+			return []byte("testkey"), nil
+		}))
 	v1.RegisterPaymentSerivceHTTPServer(srv, pay)
 	return srv
 }
