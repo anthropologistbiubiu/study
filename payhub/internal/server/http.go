@@ -1,6 +1,7 @@
 package server
 
 import (
+	"github.com/go-kratos/aegis/ratelimit/bbr"
 	"github.com/go-kratos/kratos/v2/middleware/auth/jwt"
 	"github.com/go-kratos/kratos/v2/middleware/ratelimit"
 	jwt2 "github.com/golang-jwt/jwt/v5"
@@ -13,12 +14,12 @@ import (
 )
 
 type MyLimiter struct {
-
 }
 
-func (l MyLimiter) Allow ()(ratelimit.DoneFunc,error) {
-		return nil,nil
+func (l MyLimiter) Allow() (ratelimit.DoneFunc, error) {
+	return nil, nil
 }
+
 // NewHTTPServer new an HTTP server.
 func NewHTTPServer(c *conf.Server, pay *service.PaymentOrderService, logger log.Logger) *http.Server {
 	/// type Handler func(ctx context.Context, req interface{}) (interface{}, error)
@@ -29,10 +30,7 @@ func NewHTTPServer(c *conf.Server, pay *service.PaymentOrderService, logger log.
 			}),
 		),
 		http.Middleware(
-			ratelimit.Server((ratelimit.WithLimiter(MyLimiter{
-
-			})){
-			}),
+			ratelimit.Server((ratelimit.WithLimiter(bbr.NewLimiter()))),
 		),
 	}
 	if c.Http.Network != "" {
