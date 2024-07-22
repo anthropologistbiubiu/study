@@ -8,6 +8,7 @@ package v1
 
 import (
 	context "context"
+	"fmt"
 	http "github.com/go-kratos/kratos/v2/transport/http"
 	binding "github.com/go-kratos/kratos/v2/transport/http/binding"
 )
@@ -104,6 +105,7 @@ func _PaymentSerivce_CreatePaymentOrder0_HTTP_Handler(srv PaymentSerivceHTTPServ
 		})
 		out, err := h(ctx, &in)
 		if err != nil {
+			fmt.Println("||||||",err)
 			return err
 		}
 		reply := out.(*PaymentCreateReply)

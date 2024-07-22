@@ -2,6 +2,7 @@ package server
 
 import (
 	"github.com/go-kratos/kratos/v2/middleware/auth/jwt"
+	"github.com/go-kratos/kratos/v2/middleware/ratelimit"
 	jwt2 "github.com/golang-jwt/jwt/v5"
 	v1 "payhub/api/helloworld/v1"
 	"payhub/internal/conf"
@@ -17,7 +18,11 @@ func NewHTTPServer(c *conf.Server, pay *service.PaymentOrderService, logger log.
 	var opts = []http.ServerOption{
 		http.Middleware(
 			jwt.Server(func(token *jwt2.Token) (interface{}, error) {
-				return token, nil
+				return []byte("testKey"), nil
+			}),
+		),
+		http.Middleware(
+			ratelimit.Server(func() {
 			}),
 		),
 	}
