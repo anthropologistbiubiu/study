@@ -8,17 +8,11 @@ import (
 	v1 "payhub/api/helloworld/v1"
 	"payhub/internal/conf"
 	"payhub/internal/service"
+	"time"
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/transport/http"
 )
-
-type MyLimiter struct {
-}
-
-func (l MyLimiter) Allow() (ratelimit.DoneFunc, error) {
-	return nil, nil
-}
 
 // NewHTTPServer new an HTTP server.
 func NewHTTPServer(c *conf.Server, pay *service.PaymentOrderService, logger log.Logger) *http.Server {
@@ -26,11 +20,11 @@ func NewHTTPServer(c *conf.Server, pay *service.PaymentOrderService, logger log.
 	var opts = []http.ServerOption{
 		http.Middleware(
 			jwt.Server(func(token *jwt2.Token) (interface{}, error) {
-				return []byte("testKey"), nil
+				return []byte("estKey"), nil
 			}),
 		),
 		http.Middleware(
-			ratelimit.Server((ratelimit.WithLimiter(bbr.NewLimiter()))),
+			ratelimit.Server(ratelimit.WithLimiter(bbr.NewLimiter(bbr.WithWindow(1*time.Hour), bbr.WithBucket(1)))),
 		),
 	}
 	if c.Http.Network != "" {
