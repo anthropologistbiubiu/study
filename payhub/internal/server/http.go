@@ -17,6 +17,8 @@ import (
 // NewHTTPServer new an HTTP server.
 func NewHTTPServer(c *conf.Server, pay *service.PaymentOrderService, logger log.Logger) *http.Server {
 	/// type Handler func(ctx context.Context, req interface{}) (interface{}, error)
+
+	mylimiter := bbr.NewLimiter(bbr.WithWindow(1*time.Hour), bbr.WithBucket(1))
 	var opts = []http.ServerOption{
 		http.Middleware(
 			jwt.Server(func(token *jwt2.Token) (interface{}, error) {
@@ -24,7 +26,7 @@ func NewHTTPServer(c *conf.Server, pay *service.PaymentOrderService, logger log.
 			}),
 		),
 		http.Middleware(
-			ratelimit.Server(ratelimit.WithLimiter(bbr.NewLimiter(bbr.WithWindow(1*time.Hour), bbr.WithBucket(1)))),
+			ratelimit.Server(ratelimit.WithLimiter(mylimiter)),
 		),
 	}
 	if c.Http.Network != "" {
