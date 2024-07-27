@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/go-kratos/kratos/v2/middleware"
+	"github.com/go-kratos/kratos/v2/middleware/auth/jwt"
 	"github.com/go-kratos/kratos/v2/transport"
 	limiter "github.com/juju/ratelimit"
 )
@@ -37,4 +38,12 @@ func ApiAuthMiddleWare() middleware.Middleware {
 			return handler(ctx, req)
 		}
 	}
+}
+
+var jwtSecret = []byte("your-secret-key")
+
+func JWTMiddleware() middleware.Middleware {
+	return jwt.Server(func(token *jwt.Token) (interface{}, error) {
+		return jwtSecret, nil
+	}, jwt.WithSigningMethod(jwt.SigningMethodHS256))
 }
