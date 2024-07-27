@@ -24,6 +24,7 @@ func NewHTTPServer(c *conf.Server, pay *service.PaymentOrderService, logger log.
 			*/
 			//ratelimit.Server(ratelimit.WithLimiter(mylimiter)),
 			middleware.RateLimitMiddleware(),
+			middleware.ApiAuthMiddleWare(),
 		),
 		/*
 			http.Middleware(

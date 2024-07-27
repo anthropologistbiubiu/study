@@ -4,11 +4,12 @@ import (
 	"context"
 	"fmt"
 	"github.com/go-kratos/kratos/v2/middleware"
+	"github.com/go-kratos/kratos/v2/transport"
 	limiter "github.com/juju/ratelimit"
 )
 
 func RateLimitMiddleware() middleware.Middleware {
-	bucket := limiter.NewBucketWithRate(1, 1) // 每秒1个请求，最多积累5个
+	bucket := limiter.NewBucketWithRate(1, 10) // 每秒1个请求，最多积累5个
 	return func(handler middleware.Handler) middleware.Handler {
 		return func(ctx context.Context, req interface{}) (reply interface{}, err error) {
 			if bucket.TakeAvailable(1) < 1 {
@@ -19,9 +20,20 @@ func RateLimitMiddleware() middleware.Middleware {
 	}
 }
 
+const ApiKey = "sunweiming"
+
 func ApiAuthMiddleWare() middleware.Middleware {
 	return func(handler middleware.Handler) middleware.Handler {
 		return func(ctx context.Context, req interface{}) (interface{}, error) {
+			if tr, ok := transport.FromServerContext(ctx); ok {
+				apiKey := tr.RequestHeader().Get("apiKey")
+				if apiKey != ApiKey {
+					return nil, fmt.Errorf("api key error")
+				}
+				fmt.Println("apiKey is correct")
+			} else {
+				return nil, fmt.Errorf("api key error")
+			}
 			return handler(ctx, req)
 		}
 	}
