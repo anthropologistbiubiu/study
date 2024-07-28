@@ -7,8 +7,30 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/auth/jwt"
 	"github.com/go-kratos/kratos/v2/transport"
 	limiter "github.com/juju/ratelimit"
+	"strings"
 )
 
+func IpWhiteMiddleware() middleware.Middleware {
+
+	return func(handler middleware.Handler) middleware.Handler {
+		return func(ctx context.Context, req interface{}) (interface{}, error) {
+			if tr, ok := transport.FromServerContext(ctx); ok {
+				xff := tr.RequestHeader().Get("X-Forwarded-For")
+				if len(xff) > 0 {
+					ips := strings.Split(xff, ",")
+					if len(ips) > 0 {
+						fmt.Println(ips[0])
+					}
+				} else {
+					return nil, fmt.Errorf("parse protocol error")
+				}
+			} else {
+				return nil, fmt.Errorf("bad request")
+			}
+			return handler(ctx, req)
+		}
+	}
+}
 func RateLimitMiddleware() middleware.Middleware {
 	bucket := limiter.NewBucketWithRate(1, 10) // 每秒1个请求，最多积累5个
 	return func(handler middleware.Handler) middleware.Handler {
