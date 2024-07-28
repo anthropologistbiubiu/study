@@ -23,6 +23,7 @@ func NewHTTPServer(c *conf.Server, pay *service.PaymentOrderService, logger log.
 				}),
 			*/
 			//ratelimit.Server(ratelimit.WithLimiter(mylimiter)),
+			middleware.IpWhiteMiddleware(middleware.WhiteList),
 			middleware.RateLimitMiddleware(),
 			middleware.ApiAuthMiddleWare(),
 		),
