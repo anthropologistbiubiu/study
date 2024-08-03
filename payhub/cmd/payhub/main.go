@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"flag"
 	"github.com/go-kratos/kratos/v2"
 	"github.com/hashicorp/consul/api"
@@ -10,7 +9,6 @@ import (
 	"github.com/go-kratos/kratos/v2/config"
 	"github.com/go-kratos/kratos/v2/config/file"
 	"github.com/go-kratos/kratos/v2/log"
-	consulRegistry "github.com/go-kratos/kratos/v2/registry"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	"payhub/internal/conf"
@@ -43,7 +41,7 @@ func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server) *kratos.App {
 	}
 
 	// 创建 Kratos 的 Consul 注册器
-	r := consulRegistry.Registrar(context.Context(), consulClient)
+	//r := consulRegistry.Registrar(context.Context(), consulClient)
 	return kratos.New(
 		kratos.ID(id),
 		kratos.Name(Name),
