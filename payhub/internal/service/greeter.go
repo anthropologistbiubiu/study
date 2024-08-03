@@ -36,6 +36,10 @@ func NewPaymentOrderService(uc *biz.PaymentOrderUsecase) *PaymentOrderService {
 }
 
 func (s *PaymentOrderService) CreatePaymentOrder(ctx context.Context, in *v1.PaymentCreateRequest) (*v1.PaymentCreateReply, error) {
+	return &v1.PaymentCreateReply{
+		Status: 200,
+		PayUrl: "www.success.com",
+	}, nil
 	if err := s.uc.CreatePaymentOrder(ctx, &biz.PaymentOrder{MerchantID: in.Merchantid, Amount: in.Amount}); err != nil {
 		return &v1.PaymentCreateReply{Status: 401, PayUrl: ""}, err
 	}
