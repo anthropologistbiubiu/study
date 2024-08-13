@@ -1,11 +1,11 @@
 package server
 
 import (
-	prom "github.com/go-kratos/kratos/contrib/metrics/prometheus/v2"
+	//prom "github.com/go-kratos/kratos/contrib/metrics/prometheus/v2"
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/go-kratos/kratos/v2/middleware/metrics"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/prometheus/client_golang/prometheus"
+	//"net/http"
 	v1 "payhub/api/helloworld/v1"
 	"payhub/internal/conf"
 	"payhub/internal/middleware"
@@ -51,10 +51,6 @@ func NewHTTPServer(c *conf.Server, pay *service.PaymentOrderService, logger log.
 			//middleware.IpWhiteMiddleware(middleware.WhiteList),
 			middleware.RateLimitMiddleware(),
 			//middleware.ApiAuthMiddleWare(),
-			metrics.Server(
-				metrics.WithSeconds(prom.NewHistogram(_metricSeconds)),
-				metrics.WithRequests(prom.NewCounter(_metricRequests)),
-			),
 		),
 		/*
 			http.Middleware(

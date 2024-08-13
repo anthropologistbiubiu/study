@@ -3,7 +3,8 @@ package main
 import (
 	"flag"
 	"github.com/go-kratos/kratos/v2"
-	"github.com/prometheus/client_golang/api"
+
+	//"github.com/prometheus/client_golang/api"
 	"os"
 
 	consul "github.com/go-kratos/kratos/contrib/registry/consul/v2"
