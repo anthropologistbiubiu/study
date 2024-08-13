@@ -3,13 +3,16 @@ package main
 import (
 	"flag"
 	"github.com/go-kratos/kratos/v2"
+	"github.com/prometheus/client_golang/api"
 	"os"
 
+	consul "github.com/go-kratos/kratos/contrib/registry/consul/v2"
 	"github.com/go-kratos/kratos/v2/config"
 	"github.com/go-kratos/kratos/v2/config/file"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/go-kratos/kratos/v2/transport/http"
+	"github.com/hashicorp/consul/api"
 	"payhub/internal/conf"
 
 	_ "go.uber.org/automaxprocs"
@@ -33,6 +36,12 @@ func init() {
 
 func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server) *kratos.App {
 
+	client, err := api.NewClient(api.DefaultConfig())
+	if err != nil {
+		panic(err)
+	}
+	// new reg with consul client
+	reg := consul.New(client)
 	/*
 		consulConfig := api.DefaultConfig()
 		consulClient, err := api.NewClient(consulConfig)
