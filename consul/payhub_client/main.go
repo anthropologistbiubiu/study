@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/consul/api"
 	"io"
 	"log"
+	"math/rand"
 	"net/http"
 	"time"
 )
@@ -43,7 +44,7 @@ func monitorConfigChanges(client *api.Client) {
 		time.Sleep(5 * time.Second) // 每5秒检查一次配置变化
 	}
 }
-func main() {
+func main1() {
 	client, err := api.NewClient(api.DefaultConfig())
 	if err != nil {
 		log.Fatalf("Failed to create Consul client: %v", err)
@@ -52,13 +53,14 @@ func main() {
 	checkServiceHealth(client)
 	//monitorConfigChanges(client)
 }
-func main1() {
+func main() {
 	// 初始化 Consul 客户端
 	client, err := api.NewClient(api.DefaultConfig())
 	if err != nil {
 		log.Fatalf("Failed to create Consul client: %v", err)
 	}
 	// 获取服务地址
+
 	services, _, err := client.Catalog().Service("payhub", "", nil)
 	if err != nil {
 		log.Fatalf("Failed to retrieve service from Consul: %v", err)
@@ -66,8 +68,19 @@ func main1() {
 	if len(services) == 0 {
 		log.Fatalf("No service found")
 	}
-	service := services[1]
-	serviceAddress := fmt.Sprintf("http://%s:%d", service.ServiceAddress, service.ServicePort)
+	httpServices := make([]*api.CatalogService, 0)
+	for _, service := range services {
+		if service.ServicePort == 9000 {
+			continue
+		} else {
+			httpServices = append(httpServices, service)
+		}
+	}
+
+	rand.Seed(time.Now().Unix())
+	selectedService := httpServices[rand.Intn(len(httpServices))]
+	//service := services[1]
+	serviceAddress := fmt.Sprintf("http://%s:%d", selectedService.ServiceAddress, selectedService.ServicePort)
 	fmt.Println("serviceAddress", serviceAddress)
 	jsonData := []byte(`{"merchantid":"1000011","amount":"123456"}`)
 	// 发送 HTTP 请求到 Kratos 服务
