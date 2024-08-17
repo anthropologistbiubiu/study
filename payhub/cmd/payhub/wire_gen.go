@@ -32,8 +32,9 @@ func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*
 	paymentOrderUsecase := biz.NewPaymentOrderUsecase(paymentRepo, logger)
 	paymentOrderService := service.NewPaymentOrderService(paymentOrderUsecase)
 	grpcServer := server.NewGRPCServer(confServer, paymentOrderService, logger)
-	httpServer := server.NewHTTPServer(confServer, paymentOrderService, logger)
-	app := newApp(logger, grpcServer, httpServer)
+	httpServer1 := server.NewHTTPServer(confServer, paymentOrderService, logger)
+	httpServer2 := server.NewHTTPServer(confServer, paymentOrderService, logger)
+	app := newApp(logger, grpcServer, httpServer1,httpServer2)
 	return app, func() {
 		cleanup()
 	}, nil

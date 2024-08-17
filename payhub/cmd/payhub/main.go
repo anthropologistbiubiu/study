@@ -2,18 +2,18 @@ package main
 
 import (
 	"flag"
+	"github.com/go-kratos/kratos/contrib/registry/consul/v2"
 	"github.com/go-kratos/kratos/v2"
+	"github.com/hashicorp/consul/api"
 
 	//"github.com/prometheus/client_golang/api"
 	"os"
 
-	consul "github.com/go-kratos/kratos/contrib/registry/consul/v2"
 	"github.com/go-kratos/kratos/v2/config"
 	"github.com/go-kratos/kratos/v2/config/file"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/go-kratos/kratos/v2/transport/http"
-	"github.com/hashicorp/consul/api"
 	"payhub/internal/conf"
 
 	_ "go.uber.org/automaxprocs"
@@ -22,7 +22,7 @@ import (
 // go build -ldflags "-X main.Version=x.y.z"
 var (
 	// Name is the name of the compiled software.
-	Name string
+	Name = "payhub"
 	// Version is the version of the compiled software.
 	Version string
 	// flagconf is the config flag.
@@ -35,35 +35,36 @@ func init() {
 	flag.StringVar(&flagconf, "conf", "../../configs", "config path, eg: -conf config.yaml")
 }
 
-func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server) *kratos.App {
+func newApp(logger log.Logger, gs *grpc.Server, hs1 *http.Server, hs2 *http.Server) *kratos.App {
 
+	serviceRegistration := &api.AgentServiceRegistration{
+		Name:    "payhub",
+		ID:      "payhub-01",
+		Port:    8000,
+		Address: "127.0.0.1",
+		// 其他配置项
+	}
 	client, err := api.NewClient(api.DefaultConfig())
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
-	// new reg with consul client
+
+	err = client.Agent().ServiceRegister(serviceRegistration)
+	if err != nil {
+		log.Fatal(err)
+	}
 	reg := consul.New(client)
-	/*
-		consulConfig := api.DefaultConfig()
-		consulClient, err := api.NewClient(consulConfig)
-		if err != nil {
-			log.Fatalf("failed to create consul client: %v", err)
-		}
 
-		// 创建 Kratos 的 Consul 注册器
-		//r := consulRegistry.Registrar(context.Context(), consulClient)
-
-	*/
 	return kratos.New(
 		kratos.ID(id),
 		kratos.Name(Name),
 		kratos.Version(Version),
 		kratos.Metadata(map[string]string{}),
 		kratos.Logger(logger),
-		//kratos.Registrar(r),
 		kratos.Server(
 			gs,
-			hs,
+			hs1,
+			hs2,
 		),
 		kratos.Registrar(reg),
 	)
