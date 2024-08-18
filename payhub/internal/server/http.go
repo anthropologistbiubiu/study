@@ -1,12 +1,13 @@
 package server
 
 import (
+	"payhub/api/v1"
+
 	//prom "github.com/go-kratos/kratos/contrib/metrics/prometheus/v2"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/prometheus/client_golang/prometheus"
-	//"net/http"
-	v1 "payhub/api/helloworld/v1"
+
 	"payhub/internal/conf"
 	"payhub/internal/middleware"
 	"payhub/internal/service"
@@ -35,7 +36,7 @@ var (
 )
 
 // NewHTTPServer new an HTTP server.
-func NewHTTPServer(c *conf.Server, pay *service.PaymentOrderService, logger log.Logger) *http.Server {
+func NewHTTPServer1(c *conf.Server, pay *service.PaymentOrderService, logger log.Logger) *http.Server {
 	/// type Handler func(ctx context.Context, req interface{}) (interface{}, error)
 
 	//mylimiter := bbr.NewLimiter(bbr.WithWindow(1*time.Hour), bbr.WithBucket(1))
@@ -49,7 +50,7 @@ func NewHTTPServer(c *conf.Server, pay *service.PaymentOrderService, logger log.
 			*/
 			//ratelimit.Server(ratelimit.WithLimiter(mylimiter)),
 			//middleware.IpWhiteMiddleware(middleware.WhiteList),
-			middleware.RateLimitMiddleware(),
+			middleware.RateLimitMiddleware1(),
 			//middleware.ApiAuthMiddleWare(),
 		),
 		/*
@@ -57,14 +58,50 @@ func NewHTTPServer(c *conf.Server, pay *service.PaymentOrderService, logger log.
 			),
 		*/
 	}
-	if c.Http.Network != "" {
-		opts = append(opts, http.Network(c.Http.Network))
+	if c.Http1.Network != "" {
+		opts = append(opts, http.Network(c.Http1.Network))
 	}
-	if c.Http.Addr != "" {
-		opts = append(opts, http.Address(c.Http.Addr))
+	if c.Http1.Addr != "" {
+		opts = append(opts, http.Address(c.Http1.Addr))
 	}
-	if c.Http.Timeout != nil {
-		opts = append(opts, http.Timeout(c.Http.Timeout.AsDuration()))
+	if c.Http1.Timeout != nil {
+		opts = append(opts, http.Timeout(c.Http1.Timeout.AsDuration()))
+	}
+	srv := http.NewServer(opts...)
+	v1.RegisterPaymentSerivceHTTPServer(srv, pay)
+	return srv
+}
+
+func NewHTTPServer2(c *conf.Server, pay *service.PaymentOrderService, logger log.Logger) *http.Server {
+	/// type Handler func(ctx context.Context, req interface{}) (interface{}, error)
+
+	//mylimiter := bbr.NewLimiter(bbr.WithWindow(1*time.Hour), bbr.WithBucket(1))
+
+	var opts = []http.ServerOption{
+		http.Middleware(
+			/*
+				jwt.Server(func(token *jwt2.Token) (interface{}, error) {
+					return []byte("testKey"), nil
+				}),
+			*/
+			//ratelimit.Server(ratelimit.WithLimiter(mylimiter)),
+			//middleware.IpWhiteMiddleware(middleware.WhiteList),
+			middleware.RateLimitMiddleware2(),
+			//middleware.ApiAuthMiddleWare(),
+		),
+		/*
+			http.Middleware(
+			),
+		*/
+	}
+	if c.Http2.Network != "" {
+		opts = append(opts, http.Network(c.Http2.Network))
+	}
+	if c.Http2.Addr != "" {
+		opts = append(opts, http.Address(c.Http2.Addr))
+	}
+	if c.Http2.Timeout != nil {
+		opts = append(opts, http.Timeout(c.Http2.Timeout.AsDuration()))
 	}
 	srv := http.NewServer(opts...)
 	v1.RegisterPaymentSerivceHTTPServer(srv, pay)

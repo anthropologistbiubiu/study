@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.3.0
 // - protoc             v3.21.9
-// source: helloworld/v1/greeter.proto
+// source: v1/payment.proto
 
 package v1
 
@@ -19,7 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Greeter_SayHello_FullMethodName = "/helloworld.v1.Greeter/SayHello"
+	Greeter_SayHello_FullMethodName = "/v1.Greeter/SayHello"
 )
 
 // GreeterClient is the client API for Greeter service.
@@ -98,7 +98,7 @@ func _Greeter_SayHello_Handler(srv interface{}, ctx context.Context, dec func(in
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Greeter_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "helloworld.v1.Greeter",
+	ServiceName: "v1.Greeter",
 	HandlerType: (*GreeterServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -107,11 +107,12 @@ var Greeter_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "helloworld/v1/greeter.proto",
+	Metadata: "v1/payment.proto",
 }
 
 const (
-	PaymentSerivce_CreatePaymentOrder_FullMethodName = "/helloworld.v1.PaymentSerivce/CreatePaymentOrder"
+	PaymentSerivce_CreatePaymentOrder_FullMethodName = "/v1.PaymentSerivce/CreatePaymentOrder"
+	PaymentSerivce_HealthCheck_FullMethodName        = "/v1.PaymentSerivce/HealthCheck"
 )
 
 // PaymentSerivceClient is the client API for PaymentSerivce service.
@@ -119,6 +120,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PaymentSerivceClient interface {
 	CreatePaymentOrder(ctx context.Context, in *PaymentCreateRequest, opts ...grpc.CallOption) (*PaymentCreateReply, error)
+	HealthCheck(ctx context.Context, in *HealthRequest, opts ...grpc.CallOption) (*HealthReply, error)
 }
 
 type paymentSerivceClient struct {
@@ -138,11 +140,21 @@ func (c *paymentSerivceClient) CreatePaymentOrder(ctx context.Context, in *Payme
 	return out, nil
 }
 
+func (c *paymentSerivceClient) HealthCheck(ctx context.Context, in *HealthRequest, opts ...grpc.CallOption) (*HealthReply, error) {
+	out := new(HealthReply)
+	err := c.cc.Invoke(ctx, PaymentSerivce_HealthCheck_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PaymentSerivceServer is the server API for PaymentSerivce service.
 // All implementations must embed UnimplementedPaymentSerivceServer
 // for forward compatibility
 type PaymentSerivceServer interface {
 	CreatePaymentOrder(context.Context, *PaymentCreateRequest) (*PaymentCreateReply, error)
+	HealthCheck(context.Context, *HealthRequest) (*HealthReply, error)
 	mustEmbedUnimplementedPaymentSerivceServer()
 }
 
@@ -152,6 +164,9 @@ type UnimplementedPaymentSerivceServer struct {
 
 func (UnimplementedPaymentSerivceServer) CreatePaymentOrder(context.Context, *PaymentCreateRequest) (*PaymentCreateReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreatePaymentOrder not implemented")
+}
+func (UnimplementedPaymentSerivceServer) HealthCheck(context.Context, *HealthRequest) (*HealthReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method HealthCheck not implemented")
 }
 func (UnimplementedPaymentSerivceServer) mustEmbedUnimplementedPaymentSerivceServer() {}
 
@@ -184,18 +199,40 @@ func _PaymentSerivce_CreatePaymentOrder_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _PaymentSerivce_HealthCheck_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(HealthRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PaymentSerivceServer).HealthCheck(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PaymentSerivce_HealthCheck_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PaymentSerivceServer).HealthCheck(ctx, req.(*HealthRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // PaymentSerivce_ServiceDesc is the grpc.ServiceDesc for PaymentSerivce service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var PaymentSerivce_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "helloworld.v1.PaymentSerivce",
+	ServiceName: "v1.PaymentSerivce",
 	HandlerType: (*PaymentSerivceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "CreatePaymentOrder",
 			Handler:    _PaymentSerivce_CreatePaymentOrder_Handler,
 		},
+		{
+			MethodName: "HealthCheck",
+			Handler:    _PaymentSerivce_HealthCheck_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "helloworld/v1/greeter.proto",
+	Metadata: "v1/payment.proto",
 }

@@ -90,14 +90,27 @@ func IpWhiteMiddleware1() middleware.Middleware {
 	}
 }
 
-func RateLimitMiddleware() middleware.Middleware {
+func RateLimitMiddleware1() middleware.Middleware {
 	bucket := limiter.NewBucketWithRate(1, 10) // 每秒1个请求，最多积累5个
 	return func(handler middleware.Handler) middleware.Handler {
 		return func(ctx context.Context, req interface{}) (reply interface{}, err error) {
 			if bucket.TakeAvailable(1) < 1 {
 				return nil, fmt.Errorf("rate limit exceeded")
 			}
-			fmt.Printf("req rate is normal,%f \n", bucket.Rate())
+			fmt.Printf("http server1 req rate is normal,%f \n", bucket.Rate())
+			return handler(ctx, req)
+		}
+	}
+}
+
+func RateLimitMiddleware2() middleware.Middleware {
+	bucket := limiter.NewBucketWithRate(1, 10) // 每秒1个请求，最多积累5个
+	return func(handler middleware.Handler) middleware.Handler {
+		return func(ctx context.Context, req interface{}) (reply interface{}, err error) {
+			if bucket.TakeAvailable(1) < 1 {
+				return nil, fmt.Errorf("rate limit exceeded")
+			}
+			fmt.Printf("http server2 req rate is normal,%f \n", bucket.Rate())
 			return handler(ctx, req)
 		}
 	}

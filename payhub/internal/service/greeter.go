@@ -2,13 +2,14 @@ package service
 
 import (
 	"context"
-	v1 "payhub/api/helloworld/v1"
+	"fmt"
+	v12 "payhub/api/v1"
 	"payhub/internal/biz"
 )
 
 // GreeterService is a greeter service.
 type GreeterService struct {
-	v1.UnimplementedGreeterServer
+	v12.UnimplementedGreeterServer
 	uc *biz.GreeterUsecase
 }
 
@@ -18,16 +19,16 @@ func NewGreeterService(uc *biz.GreeterUsecase) *GreeterService {
 }
 
 // SayHello implements helloworld.GreeterServer.
-func (s *GreeterService) SayHello(ctx context.Context, in *v1.HelloRequest) (*v1.HelloReply, error) {
+func (s *GreeterService) SayHello(ctx context.Context, in *v12.HelloRequest) (*v12.HelloReply, error) {
 	g, err := s.uc.CreateGreeter(ctx, &biz.Greeter{Hello: in.Name})
 	if err != nil {
 		return nil, err
 	}
-	return &v1.HelloReply{Message: "Hello " + g.Hello}, nil
+	return &v12.HelloReply{Message: "Hello " + g.Hello}, nil
 }
 
 type PaymentOrderService struct {
-	v1.UnimplementedPaymentSerivceServer
+	v12.UnimplementedPaymentSerivceServer
 	uc *biz.PaymentOrderUsecase
 }
 
@@ -35,13 +36,16 @@ func NewPaymentOrderService(uc *biz.PaymentOrderUsecase) *PaymentOrderService {
 	return &PaymentOrderService{uc: uc}
 }
 
-func (s *PaymentOrderService) CreatePaymentOrder(ctx context.Context, in *v1.PaymentCreateRequest) (*v1.PaymentCreateReply, error) {
-	return &v1.PaymentCreateReply{
+func (s *PaymentOrderService) CreatePaymentOrder(ctx context.Context, in *v12.PaymentCreateRequest) (*v12.PaymentCreateReply, error) {
+	return &v12.PaymentCreateReply{
 		Status: 200,
 		PayUrl: "www.success.com",
 	}, nil
 	if err := s.uc.CreatePaymentOrder(ctx, &biz.PaymentOrder{MerchantID: in.Merchantid, Amount: in.Amount}); err != nil {
-		return &v1.PaymentCreateReply{Status: 401, PayUrl: ""}, err
+		return &v12.PaymentCreateReply{Status: 401, PayUrl: ""}, err
 	}
-	return &v1.PaymentCreateReply{Status: 200, PayUrl: "www.baidu.com"}, nil
+	return &v12.PaymentCreateReply{Status: 200, PayUrl: "www.baidu.com"}, nil
+}
+func (s *PaymentOrderService) HealthCheck(ctx context.Context, in *v12.HealthRequest) (*v12.HealthReply, error) {
+	return &v12.HealthReply{}, fmt.Errorf("error")
 }

@@ -1,13 +1,13 @@
 syntax = "proto3";
 
-package helloworld.v1;
+package v1;
 
 import "google/api/annotations.proto";
 
-option go_package = "payhub/api/helloworld/v1;v1";
+option go_package = "payhub/api/v1;v1";
 option java_multiple_files = true;
-option java_package = "dev.kratos.api.helloworld.v1";
-option java_outer_classname = "HelloworldProtoV1";
+option java_package = "dev.kratos.api.v1";
+option java_outer_classname = "ProtoV1";
 
 // The greeting service definition.
 service Greeter {
@@ -36,13 +36,24 @@ service PaymentSerivce {
       body:"*"
     };
   }
+  rpc HealthCheck (HealthRequest) returns (HealthReply) {
+    option (google.api.http) = {
+      get: "/health"
+      body:"*"
+    };
+  }
 }
 
+message HealthRequest {
 
+}
+
+message HealthReply {
+
+}
 message PaymentCreateRequest {
    string merchantid = 1;
    string amount = 2;
-
 }
 // The request message containing the user's name.
 message PaymentCreateReply {

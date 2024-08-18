@@ -6,6 +6,24 @@ info:
     title: ""
     version: 0.0.1
 paths:
+    /health:
+        get:
+            tags:
+                - PaymentSerivce
+            operationId: PaymentSerivce_HealthCheck
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/v1.HealthRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/v1.HealthReply'
     /helloworld/{name}:
         get:
             tags:
@@ -24,7 +42,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/helloworld.v1.HelloReply'
+                                $ref: '#/components/schemas/v1.HelloReply'
     /payment/create:
         post:
             tags:
@@ -34,7 +52,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/helloworld.v1.PaymentCreateRequest'
+                            $ref: '#/components/schemas/v1.PaymentCreateRequest'
                 required: true
             responses:
                 "200":
@@ -42,16 +60,22 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/helloworld.v1.PaymentCreateReply'
+                                $ref: '#/components/schemas/v1.PaymentCreateReply'
 components:
     schemas:
-        helloworld.v1.HelloReply:
+        v1.HealthReply:
+            type: object
+            properties: {}
+        v1.HealthRequest:
+            type: object
+            properties: {}
+        v1.HelloReply:
             type: object
             properties:
                 message:
                     type: string
             description: The response message containing the greetings
-        helloworld.v1.PaymentCreateReply:
+        v1.PaymentCreateReply:
             type: object
             properties:
                 status:
@@ -60,7 +84,7 @@ components:
                 payUrl:
                     type: string
             description: The request message containing the user's name.
-        helloworld.v1.PaymentCreateRequest:
+        v1.PaymentCreateRequest:
             type: object
             properties:
                 merchantid:

@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-http v2.7.0
 // - protoc             v3.21.9
-// source: helloworld/v1/greeter.proto
+// source: v1/payment.proto
 
 package v1
 
@@ -19,7 +19,7 @@ var _ = binding.EncodeURL
 
 const _ = http.SupportPackageIsVersion1
 
-const OperationGreeterSayHello = "/helloworld.v1.Greeter/SayHello"
+const OperationGreeterSayHello = "/v1.Greeter/SayHello"
 
 type GreeterHTTPServer interface {
 	// SayHello Sends a greeting
@@ -78,15 +78,18 @@ func (c *GreeterHTTPClientImpl) SayHello(ctx context.Context, in *HelloRequest, 
 	return &out, err
 }
 
-const OperationPaymentSerivceCreatePaymentOrder = "/helloworld.v1.PaymentSerivce/CreatePaymentOrder"
+const OperationPaymentSerivceCreatePaymentOrder = "/v1.PaymentSerivce/CreatePaymentOrder"
+const OperationPaymentSerivceHealthCheck = "/v1.PaymentSerivce/HealthCheck"
 
 type PaymentSerivceHTTPServer interface {
 	CreatePaymentOrder(context.Context, *PaymentCreateRequest) (*PaymentCreateReply, error)
+	HealthCheck(context.Context, *HealthRequest) (*HealthReply, error)
 }
 
 func RegisterPaymentSerivceHTTPServer(s *http.Server, srv PaymentSerivceHTTPServer) {
 	r := s.Route("/")
 	r.POST("/payment/create", _PaymentSerivce_CreatePaymentOrder0_HTTP_Handler(srv))
+	r.GET("/health", _PaymentSerivce_HealthCheck0_HTTP_Handler(srv))
 }
 
 func _PaymentSerivce_CreatePaymentOrder0_HTTP_Handler(srv PaymentSerivceHTTPServer) func(ctx http.Context) error {
@@ -111,8 +114,31 @@ func _PaymentSerivce_CreatePaymentOrder0_HTTP_Handler(srv PaymentSerivceHTTPServ
 	}
 }
 
+func _PaymentSerivce_HealthCheck0_HTTP_Handler(srv PaymentSerivceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in HealthRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationPaymentSerivceHealthCheck)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.HealthCheck(ctx, req.(*HealthRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*HealthReply)
+		return ctx.Result(200, reply)
+	}
+}
+
 type PaymentSerivceHTTPClient interface {
 	CreatePaymentOrder(ctx context.Context, req *PaymentCreateRequest, opts ...http.CallOption) (rsp *PaymentCreateReply, err error)
+	HealthCheck(ctx context.Context, req *HealthRequest, opts ...http.CallOption) (rsp *HealthReply, err error)
 }
 
 type PaymentSerivceHTTPClientImpl struct {
@@ -130,6 +156,19 @@ func (c *PaymentSerivceHTTPClientImpl) CreatePaymentOrder(ctx context.Context, i
 	opts = append(opts, http.Operation(OperationPaymentSerivceCreatePaymentOrder))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *PaymentSerivceHTTPClientImpl) HealthCheck(ctx context.Context, in *HealthRequest, opts ...http.CallOption) (*HealthReply, error) {
+	var out HealthReply
+	pattern := "/health"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationPaymentSerivceHealthCheck))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, in, &out, opts...)
 	if err != nil {
 		return nil, err
 	}

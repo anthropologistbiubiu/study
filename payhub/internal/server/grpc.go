@@ -1,7 +1,7 @@
 package server
 
 import (
-	v1 "payhub/api/helloworld/v1"
+	"payhub/api/v1"
 	"payhub/internal/conf"
 	"payhub/internal/service"
 

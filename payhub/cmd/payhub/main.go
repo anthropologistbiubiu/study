@@ -37,11 +37,28 @@ func init() {
 
 func newApp(logger log.Logger, gs *grpc.Server, hs1 *http.Server, hs2 *http.Server) *kratos.App {
 
-	serviceRegistration := &api.AgentServiceRegistration{
+	serviceRegistration1 := &api.AgentServiceRegistration{
 		Name:    "payhub",
 		ID:      "payhub-01",
 		Port:    8000,
 		Address: "127.0.0.1",
+		Check: &api.AgentServiceCheck{
+			HTTP:     "http://127.0.0.1:8000/health",
+			Interval: "10s", // 健康检查间隔时间
+			Timeout:  "5s",  // 超时时间
+		},
+		// 其他配置项
+	}
+	serviceRegistration2 := &api.AgentServiceRegistration{
+		Name:    "payhub",
+		ID:      "payhub-02",
+		Port:    8001,
+		Address: "127.0.0.1",
+		Check: &api.AgentServiceCheck{
+			HTTP:     "http://127.0.0.1:8001/health",
+			Interval: "10s", // 健康检查间隔时间
+			Timeout:  "5s",  // 超时时间
+		},
 		// 其他配置项
 	}
 	client, err := api.NewClient(api.DefaultConfig())
@@ -49,7 +66,11 @@ func newApp(logger log.Logger, gs *grpc.Server, hs1 *http.Server, hs2 *http.Serv
 		log.Fatal(err)
 	}
 
-	err = client.Agent().ServiceRegister(serviceRegistration)
+	err = client.Agent().ServiceRegister(serviceRegistration1)
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = client.Agent().ServiceRegister(serviceRegistration2)
 	if err != nil {
 		log.Fatal(err)
 	}
