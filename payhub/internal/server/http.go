@@ -104,6 +104,7 @@ func NewHTTPServer2(c *conf.Server, pay *service.PaymentOrderService, logger log
 		opts = append(opts, http.Timeout(c.Http2.Timeout.AsDuration()))
 	}
 	srv := http.NewServer(opts...)
+	return srv
 	v1.RegisterPaymentSerivceHTTPServer(srv, pay)
 	return srv
 }

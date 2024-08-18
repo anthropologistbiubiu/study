@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"fmt"
 	v12 "payhub/api/v1"
 	"payhub/internal/biz"
 )
@@ -47,5 +46,5 @@ func (s *PaymentOrderService) CreatePaymentOrder(ctx context.Context, in *v12.Pa
 	return &v12.PaymentCreateReply{Status: 200, PayUrl: "www.baidu.com"}, nil
 }
 func (s *PaymentOrderService) HealthCheck(ctx context.Context, in *v12.HealthRequest) (*v12.HealthReply, error) {
-	return &v12.HealthReply{}, fmt.Errorf("error")
+	return &v12.HealthReply{}, nil
 }
