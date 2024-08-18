@@ -65,19 +65,20 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to retrieve service from Consul: %v", err)
 	}
-	if len(services) == 0 {
-		log.Fatalf("No service found")
-	}
 	httpServices := make([]*api.CatalogService, 0)
 	for _, service := range services {
+		fmt.Println(service.Checks.AggregatedStatus())
 		if service.ServicePort == 9000 {
 			continue
 		} else {
 			httpServices = append(httpServices, service)
 		}
 	}
-
+	if len(httpServices) == 0 {
+		log.Fatalf("No service found")
+	}
 	rand.Seed(time.Now().Unix())
+	fmt.Println(len(httpServices))
 	selectedService := httpServices[rand.Intn(len(httpServices))]
 	//service := services[1]
 	serviceAddress := fmt.Sprintf("http://%s:%d", selectedService.ServiceAddress, selectedService.ServicePort)

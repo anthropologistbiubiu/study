@@ -138,7 +138,6 @@ func grpc_main() {
 			fmt.Printf("Service: %s, Address: %s, Port: %d\n", entry.ServiceName, entry.Address, entry.ServicePort)
 		}
 		serviceMap, err := cc.Agent().ServicesWithFilter("Service==`jobservice`")
-		fmt.Println("WWWWWWWWWWC", serviceMap)
 		if err != nil {
 			fmt.Printf("query service from consul failed, err:%v\n", err)
 			return
