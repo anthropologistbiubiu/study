@@ -6,7 +6,6 @@ import (
 	"github.com/go-kratos/kratos/contrib/registry/consul/v2"
 	"github.com/go-kratos/kratos/v2/selector"
 	"github.com/go-kratos/kratos/v2/selector/filter"
-	"github.com/go-kratos/kratos/v2/selector/random"
 	"github.com/go-kratos/kratos/v2/selector/wrr"
 	kratos_http "github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/hashicorp/consul/api"
@@ -25,8 +24,6 @@ func main() {
 	versionFilter := filter.Version("1.0.0")
 	// 设置全局的 Selector，使用 wrr 算法
 	selector.SetGlobalSelector(wrr.NewBuilder())
-
-	selector.SetGlobalSelector(random.NewBuilder())
 	// 创建 HTTP 客户端
 	hConn, err := kratos_http.NewClient(
 		context.Background(),
@@ -44,5 +41,5 @@ func main() {
 		Merchantid: "merchant123",
 		Amount:     "456",
 	})
-	fmt.Printf("rsp:%+v\n", rsp)
+	fmt.Printf("rsp:%+v,err:%v \n", rsp, err)
 }
