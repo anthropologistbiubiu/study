@@ -87,6 +87,7 @@ func NewHTTPServer2(c *conf.Server, pay *service.PaymentOrderService, logger log
 			//ratelimit.Server(ratelimit.WithLimiter(mylimiter)),
 			//middleware.IpWhiteMiddleware(middleware.WhiteList),
 			middleware.RateLimitMiddleware2(),
+			middleware.AccessLogMiddleware(logger),
 			//middleware.ApiAuthMiddleWare(),
 		),
 		/*
@@ -104,7 +105,6 @@ func NewHTTPServer2(c *conf.Server, pay *service.PaymentOrderService, logger log
 		opts = append(opts, http.Timeout(c.Http2.Timeout.AsDuration()))
 	}
 	srv := http.NewServer(opts...)
-	return srv
 	v1.RegisterPaymentSerivceHTTPServer(srv, pay)
 	return srv
 }

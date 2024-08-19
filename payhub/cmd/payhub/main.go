@@ -43,12 +43,16 @@ func newApp(logger log.Logger, gs *grpc.Server, hs1 *http.Server, hs2 *http.Serv
 		Port:    8000,
 		Address: "127.0.0.1",
 		Check: &api.AgentServiceCheck{
-			HTTP:                           "http://127.0.0.1:8000/health",
-			Method:                         "GET",
-			Header:                         map[string][]string{"Content-Type": []string{"application/json"}},
-			Interval:                       "5s", // 健康检查间隔时间
-			Timeout:                        "5s", // 超时时间
-			DeregisterCriticalServiceAfter: "1m", // 健康检查失败后取消注册
+			HTTP:     "http://127.0.0.1:8000/health",
+			Method:   "GET",
+			Header:   map[string][]string{"Content-Type": []string{"application/json"}},
+			Interval: "5s", // 健康检查间隔时间
+			Timeout:  "5s", // 超时时间
+			//DeregisterCriticalServiceAfter: "1m", // 健康检查失败后取消注册
+		},
+		Weights: &api.AgentWeights{
+			Passing: 10, // 设置为10
+			Warning: 1,
 		},
 		// 其他配置项
 	}
@@ -58,12 +62,16 @@ func newApp(logger log.Logger, gs *grpc.Server, hs1 *http.Server, hs2 *http.Serv
 		Port:    8001,
 		Address: "127.0.0.1",
 		Check: &api.AgentServiceCheck{
-			HTTP:                           "http://127.0.0.1:8001/health",
-			Method:                         "GET",
-			Header:                         map[string][]string{"Content-Type": []string{"application/json"}},
-			Interval:                       "5s", // 健康检查间隔时间
-			Timeout:                        "5s", // 超时时间
-			DeregisterCriticalServiceAfter: "1m", // 健康检查失败后取消注册
+			HTTP:     "http://127.0.0.1:8001/health",
+			Method:   "GET",
+			Header:   map[string][]string{"Content-Type": []string{"application/json"}},
+			Interval: "5s", // 健康检查间隔时间
+			Timeout:  "5s", // 超时时间
+			//DeregisterCriticalServiceAfter: "1m", // 健康检查失败后取消注册
+		},
+		Weights: &api.AgentWeights{
+			Passing: 10, // 设置为10
+			Warning: 1,
 		},
 		// 其他配置项
 	}

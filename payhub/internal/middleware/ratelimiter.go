@@ -3,12 +3,25 @@ package middleware
 import (
 	"context"
 	"fmt"
+	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware"
 	"github.com/go-kratos/kratos/v2/transport"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	limiter "github.com/juju/ratelimit"
 	"strings"
 )
+
+func AccessLogMiddleware(logger log.Logger) middleware.Middleware {
+	return func(handler middleware.Handler) middleware.Handler {
+		return func(ctx context.Context, req interface{}) (interface{}, error) {
+			tr, ok := transport.FromServerContext(ctx)
+			if ok {
+				logger.Log(log.LevelInfo, "method", tr.Operation(), "path", tr.Endpoint())
+			}
+			return handler(ctx, req)
+		}
+	}
+}
 
 var WhiteList = []string{
 	"192.168.1.1",
@@ -91,7 +104,7 @@ func IpWhiteMiddleware1() middleware.Middleware {
 }
 
 func RateLimitMiddleware1() middleware.Middleware {
-	bucket := limiter.NewBucketWithRate(1, 10) // 每秒1个请求，最多积累5个
+	bucket := limiter.NewBucketWithRate(10, 10) // 每秒1个请求，最多积累5个
 	return func(handler middleware.Handler) middleware.Handler {
 		return func(ctx context.Context, req interface{}) (reply interface{}, err error) {
 			if bucket.TakeAvailable(1) < 1 {
