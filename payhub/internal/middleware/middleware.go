@@ -8,10 +8,25 @@ import (
 	"github.com/go-kratos/kratos/v2/transport"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	limiter "github.com/juju/ratelimit"
+	"github.com/prometheus/client_golang/prometheus"
 	"strings"
 )
 
+func init() {
+	// 注册自定义的指标
+	prometheus.MustRegister(RequestCounter)
+}
+
 // prometheus
+var (
+	RequestCounter = prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: "business_request_count", // 统计业务请求的计数器名称
+			Help: "Total number of business requests.",
+		},
+		[]string{"method", "endpoint"}, // 使用方法和端点作为标签
+	)
+)
 
 func AccessLogMiddleware(logger log.Logger) middleware.Middleware {
 	return func(handler middleware.Handler) middleware.Handler {

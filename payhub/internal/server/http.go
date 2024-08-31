@@ -1,6 +1,7 @@
 package server
 
 import (
+	"github.com/go-kratos/kratos/v2/middleware/metrics"
 	"payhub/api/v1"
 
 	//prom "github.com/go-kratos/kratos/contrib/metrics/prometheus/v2"
@@ -88,6 +89,9 @@ func NewHTTPServer2(c *conf.Server, pay *service.PaymentOrderService, logger log
 			//middleware.IpWhiteMiddleware(middleware.WhiteList),
 			middleware.RateLimitMiddleware2(),
 			middleware.AccessLogMiddleware(logger),
+			metrics.Server(
+				metrics.WithRequests(middleware.RequestCounter), // 中间件采集业务请求数
+			),
 			//middleware.ApiAuthMiddleWare(),
 		),
 		/*
