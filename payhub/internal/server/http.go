@@ -1,10 +1,12 @@
 package server
 
 import (
+	//prom "github.com/go-kratos/kratos/contrib/metrics/prometheus/v2"
 	"github.com/go-kratos/kratos/v2/middleware/metrics"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"go.opentelemetry.io/otel"
 	"payhub/api/v1"
 
-	//prom "github.com/go-kratos/kratos/contrib/metrics/prometheus/v2"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/prometheus/client_golang/prometheus"
@@ -14,13 +16,18 @@ import (
 	"payhub/internal/service"
 )
 
+func init() {
+	//prometheus.MustRegister(_metricSeconds, _metricRequests)
+}
+
 var (
 	// Name is the name of the compiled software.
 	Name = "metrics"
 	// Version is the version of the compiled software.
 	// Version = "v1.0.0"
-
-	_metricSeconds = prometheus.NewHistogramVec(prometheus.HistogramOpts{
+	_metricRequests, _ = otel.Meter("payhub_meter").Int64Counter(metrics.DefaultServerRequestsCounterName)
+	_metricSeconds, _  = otel.Meter("payhub_meter").Float64Histogram(metrics.DefaultServerSecondsHistogramName)
+	metricSeconds      = prometheus.NewHistogramVec(prometheus.HistogramOpts{
 		Namespace: "server",
 		Subsystem: "requests",
 		Name:      "duration_sec",
@@ -28,7 +35,7 @@ var (
 		Buckets:   []float64{0.005, 0.01, 0.025, 0.05, 0.1, 0.250, 0.5, 1},
 	}, []string{"kind", "operation"})
 
-	_metricRequests = prometheus.NewCounterVec(prometheus.CounterOpts{
+	metricRequests = prometheus.NewCounterVec(prometheus.CounterOpts{
 		Namespace: "client",
 		Subsystem: "requests",
 		Name:      "code_total",
@@ -39,9 +46,7 @@ var (
 // NewHTTPServer new an HTTP server.
 func NewHTTPServer1(c *conf.Server, pay *service.PaymentOrderService, logger log.Logger) *http.Server {
 	/// type Handler func(ctx context.Context, req interface{}) (interface{}, error)
-
 	//mylimiter := bbr.NewLimiter(bbr.WithWindow(1*time.Hour), bbr.WithBucket(1))
-
 	var opts = []http.ServerOption{
 		http.Middleware(
 			/*
@@ -52,12 +57,12 @@ func NewHTTPServer1(c *conf.Server, pay *service.PaymentOrderService, logger log
 			//ratelimit.Server(ratelimit.WithLimiter(mylimiter)),
 			//middleware.IpWhiteMiddleware(middleware.WhiteList),
 			middleware.RateLimitMiddleware1(),
-			//middleware.ApiAuthMiddleWare(),
-		),
-		/*
-			http.Middleware(
+			middleware.AccessLogMiddleware(logger),
+			metrics.Server(
+				metrics.WithRequests(_metricRequests),
+				metrics.WithSeconds(_metricSeconds),
 			),
-		*/
+		),
 	}
 	if c.Http1.Network != "" {
 		opts = append(opts, http.Network(c.Http1.Network))
@@ -69,6 +74,7 @@ func NewHTTPServer1(c *conf.Server, pay *service.PaymentOrderService, logger log
 		opts = append(opts, http.Timeout(c.Http1.Timeout.AsDuration()))
 	}
 	srv := http.NewServer(opts...)
+	srv.Handle("/metrics", promhttp.Handler())
 	v1.RegisterPaymentSerivceHTTPServer(srv, pay)
 	return srv
 }
@@ -90,14 +96,10 @@ func NewHTTPServer2(c *conf.Server, pay *service.PaymentOrderService, logger log
 			middleware.RateLimitMiddleware2(),
 			middleware.AccessLogMiddleware(logger),
 			metrics.Server(
-				metrics.WithRequests(middleware.RequestCounter), // 中间件采集业务请求数
+				metrics.WithRequests(_metricRequests),
+				metrics.WithSeconds(_metricSeconds),
 			),
-			//middleware.ApiAuthMiddleWare(),
 		),
-		/*
-			http.Middleware(
-			),
-		*/
 	}
 	if c.Http2.Network != "" {
 		opts = append(opts, http.Network(c.Http2.Network))
@@ -109,6 +111,7 @@ func NewHTTPServer2(c *conf.Server, pay *service.PaymentOrderService, logger log
 		opts = append(opts, http.Timeout(c.Http2.Timeout.AsDuration()))
 	}
 	srv := http.NewServer(opts...)
+	srv.Handle("/metrics", promhttp.Handler())
 	v1.RegisterPaymentSerivceHTTPServer(srv, pay)
 	return srv
 }
