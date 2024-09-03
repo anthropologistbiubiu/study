@@ -5,7 +5,6 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/metrics"
 	"github.com/go-kratos/kratos/v2/transport/http"
-	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.opentelemetry.io/otel"
 	prom "go.opentelemetry.io/otel/exporters/prometheus"
@@ -17,28 +16,6 @@ import (
 	"payhub/internal/service"
 )
 
-// NewPrometheusCounter creates a new PrometheusCounter adapter.
-
-var (
-	// Name is the name of the compiled software.
-	Name = "metrics"
-	// Version is the version of the compiled software.
-	// Version = "v1.0.0"
-	metricSeconds = prometheus.NewHistogramVec(prometheus.HistogramOpts{
-		Namespace: "server",
-		Subsystem: "requests",
-		Name:      "duration_sec",
-		Help:      "server requests duration(sec).",
-		Buckets:   []float64{0.005, 0.01, 0.025, 0.05, 0.1, 0.250, 0.5, 1},
-	}, []string{"kind", "operation"})
-	metricRequests = prometheus.NewCounterVec(prometheus.CounterOpts{
-		Namespace: "client",
-		Subsystem: "requests",
-		Name:      "code_total",
-		Help:      "The total number of processed requests",
-	}, []string{"kind", "operation", "code", "reason"})
-)
-
 // NewHTTPServer new an HTTP server.
 func NewHTTPServer1(c *conf.Server, pay *service.PaymentOrderService, logger log.Logger) *http.Server {
 	promExporter, err := prom.New()
@@ -47,7 +24,6 @@ func NewHTTPServer1(c *conf.Server, pay *service.PaymentOrderService, logger log
 	}
 	meterProvider := metric.NewMeterProvider(metric.WithReader(promExporter))
 	otel.SetMeterProvider(meterProvider)
-	//meter := meterProvider.Meter("my-service-meter")
 	meter := otel.Meter("my-payhub1-meter")
 	if err != nil {
 		log.Fatalf("failed to create Int64Counter: %v", err)
@@ -116,7 +92,7 @@ func NewHTTPServer2(c *conf.Server, pay *service.PaymentOrderService, logger log
 		opts = append(opts, http.Timeout(c.Http2.Timeout.AsDuration()))
 	}
 	srv := http.NewServer(opts...)
-	srv.Handle("/metrics", promhttp.Handler())
+	//srv.Handle("/metrics", promhttp.Handler())
 	v1.RegisterPaymentSerivceHTTPServer(srv, pay)
 	return srv
 }
