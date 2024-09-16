@@ -1,7 +1,7 @@
 package server
 
 import (
-	_ "context"
+	"context"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/metrics"
 	"github.com/go-kratos/kratos/v2/transport/http"
@@ -14,6 +14,7 @@ import (
 	"payhub/internal/conf"
 	"payhub/internal/middleware"
 	"payhub/internal/service"
+	tracing "payhub/internal/traceing"
 )
 
 // NewHTTPServer new an HTTP server.
@@ -34,6 +35,15 @@ func NewHTTPServer1(c *conf.Server, pay *service.PaymentOrderService, logger log
 	if err != nil {
 		log.Fatalf("failed to create Int64Counter: %v", err)
 	}
+
+	tp, err := tracing.InitTracerProvider("payhub-service-01", "http://localhost:14268/api/traces")
+	if err != nil {
+		log.Fatalf("Failed to initialize tracer provider: %v", err)
+	}
+	defer func() {
+		if err := tp.Shutdown(context.Background()); err != nil {
+		}
+	}()
 	var opts = []http.ServerOption{
 		http.Middleware(
 			/*

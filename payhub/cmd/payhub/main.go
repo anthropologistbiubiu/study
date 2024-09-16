@@ -5,9 +5,6 @@ import (
 	"github.com/go-kratos/kratos/contrib/registry/consul/v2"
 	"github.com/go-kratos/kratos/v2"
 	"github.com/hashicorp/consul/api"
-	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/sdk/trace"
-
 	//"github.com/prometheus/client_golang/api"
 	"os"
 
@@ -19,9 +16,6 @@ import (
 	"payhub/internal/conf"
 
 	_ "go.uber.org/automaxprocs"
-
-	"context"
-	"go.opentelemetry.io/otel/exporters/trace/jaeger"
 )
 
 // go build -ldflags "-X main.Version=x.y.z"
@@ -110,29 +104,6 @@ func newApp(logger log.Logger, gs *grpc.Server, hs1 *http.Server, hs2 *http.Serv
 	)
 }
 
-func InitializeTracerProvider() func() {
-	// Create a new Jaeger exporter
-	exp, err := jaeger.NewRawExporter(
-		jaeger.WithCollectorEndpoint("http://localhost:14268/api/traces"),
-	)
-	if err != nil {
-		log.Fatalf("failed to create Jaeger exporter: %v", err)
-	}
-
-	// Create a new trace provider
-	tp := trace.NewTracerProvider(
-		trace.WithBatcher(exp),
-		trace.WithSampler(trace.AlwaysSample()), // Use AlwaysSample for testing
-	)
-
-	// Register the trace provider
-	otel.SetTracerProvider(tp)
-
-	// Return a cleanup function
-	return func() {
-		_ = tp.Shutdown(context.Background())
-	}
-}
 func main() {
 
 	flag.Parse()
