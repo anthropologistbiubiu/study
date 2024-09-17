@@ -1,10 +1,13 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"github.com/go-kratos/kratos/contrib/registry/consul/v2"
 	"github.com/go-kratos/kratos/v2"
 	"github.com/hashicorp/consul/api"
+	tracing "payhub/internal/traceing"
+
 	//"github.com/prometheus/client_golang/api"
 	"os"
 
@@ -105,7 +108,6 @@ func newApp(logger log.Logger, gs *grpc.Server, hs1 *http.Server, hs2 *http.Serv
 }
 
 func main() {
-
 	flag.Parse()
 	/*
 		logger := log.With(log.NewStdLogger(os.Stdout),
@@ -118,6 +120,15 @@ func main() {
 			"span.id", tracing.SpanID(),
 		)
 	*/
+	tp, err := tracing.NewTracerProvider("payhub-service-01", "http://localhost:14268/api/traces")
+	if err != nil {
+		log.Fatalf("Failed to initialize tracer provider: %v", err)
+	}
+	defer func() {
+		if err := tp.Shutdown(context.Background()); err != nil {
+			log.Errorf("Error shutting down tracer provider: %v", err)
+		}
+	}()
 	infoFile, err := os.OpenFile("info.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
 		panic(err)

@@ -39,7 +39,7 @@ func NewPaymentOrderService(uc *biz.PaymentOrderUsecase) *PaymentOrderService {
 }
 
 func (s *PaymentOrderService) CreatePaymentOrder(ctx context.Context, in *v12.PaymentCreateRequest) (*v12.PaymentCreateReply, error) {
-	tracer := otel.Tracer("payhub-service-01")
+	tracer := otel.Tracer("CreatePaymentOrder Service")
 	// Start a new span
 	ctx, span := tracer.Start(ctx, "CreatePaymentOrder")
 	defer span.End()
