@@ -2,8 +2,9 @@ package server
 
 import (
 	"context"
+	"fmt"
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/go-kratos/kratos/v2/middleware/metrics"
+	tc "github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.opentelemetry.io/otel"
@@ -12,7 +13,6 @@ import (
 	"go.opentelemetry.io/otel/sdk/metric"
 	"payhub/api/v1"
 	"payhub/internal/conf"
-	"payhub/internal/middleware"
 	"payhub/internal/service"
 	tracing "payhub/internal/traceing"
 )
@@ -25,22 +25,24 @@ func NewHTTPServer1(c *conf.Server, pay *service.PaymentOrderService, logger log
 	}
 	meterProvider := metric.NewMeterProvider(metric.WithReader(promExporter))
 	otel.SetMeterProvider(meterProvider)
+
 	meter := otel.Meter("my-payhub1-meter")
 	if err != nil {
 		log.Fatalf("failed to create Int64Counter: %v", err)
 	}
-	requestsCounter, err := meter.Int64Counter(
+	_, err = meter.Int64Counter(
 		"payhub1_http_requests_total",
 	)
 	if err != nil {
 		log.Fatalf("failed to create Int64Counter: %v", err)
 	}
 
-	tp, err := tracing.InitTracerProvider("payhub-service-01", "http://localhost:14268/api/traces")
+	tp, err := tracing.NewTracerProvider("payhub-service-01", "http://localhost:14268/api/traces")
 	if err != nil {
 		log.Fatalf("Failed to initialize tracer provider: %v", err)
 	}
 	defer func() {
+		fmt.Println("//////////////////////")
 		if err := tp.Shutdown(context.Background()); err != nil {
 		}
 	}()
@@ -53,10 +55,9 @@ func NewHTTPServer1(c *conf.Server, pay *service.PaymentOrderService, logger log
 			*/
 			//ratelimit.Server(ratelimit.WithLimiter(mylimiter)),
 			//middleware.IpWhiteMiddleware(middleware.WhiteList),
-			middleware.RateLimitMiddleware1(),
-			middleware.AccessLogMiddleware(logger),
-			metrics.Server(
-				metrics.WithRequests(requestsCounter)),
+			tc.Server(),
+			//metrics.Server(
+			//metrics.WithRequests(requestsCounter)),
 		),
 	}
 	if c.Http1.Network != "" {
@@ -75,21 +76,19 @@ func NewHTTPServer1(c *conf.Server, pay *service.PaymentOrderService, logger log
 }
 
 func NewHTTPServer2(c *conf.Server, pay *service.PaymentOrderService, logger log.Logger) *http.Server {
-	/// type Handler func(ctx context.Context, req interface{}) (interface{}, error)
 
-	//mylimiter := bbr.NewLimiter(bbr.WithWindow(1*time.Hour), bbr.WithBucket(1))
-
+	tp, err := tracing.NewTracerProvider("payhub-service-01", "http://localhost:14268/api/traces")
+	if err != nil {
+		log.Fatalf("Failed to initialize tracer provider: %v", err)
+	}
+	defer func() {
+		if err := tp.Shutdown(context.Background()); err != nil {
+		}
+	}()
 	var opts = []http.ServerOption{
 		http.Middleware(
-			/*
-				jwt.Server(func(token *jwt2.Token) (interface{}, error) {
-					return []byte("testKey"), nil
-				}),
-			*/
-			//ratelimit.Server(ratelimit.WithLimiter(mylimiter)),
-			//middleware.IpWhiteMiddleware(middleware.WhiteList),
-			middleware.RateLimitMiddleware2(),
-			middleware.AccessLogMiddleware(logger),
+			tc.Server(),
+			//middleware.AccessLogMiddleware(logger),
 		),
 	}
 	if c.Http2.Network != "" {
@@ -102,7 +101,7 @@ func NewHTTPServer2(c *conf.Server, pay *service.PaymentOrderService, logger log
 		opts = append(opts, http.Timeout(c.Http2.Timeout.AsDuration()))
 	}
 	srv := http.NewServer(opts...)
-	//srv.Handle("/metrics", promhttp.Handler())
+	srv.Handle("/metrics", promhttp.Handler())
 	v1.RegisterPaymentSerivceHTTPServer(srv, pay)
 	return srv
 }

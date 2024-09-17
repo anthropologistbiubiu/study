@@ -2,6 +2,9 @@ package service
 
 import (
 	"context"
+	"fmt"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
 	v12 "payhub/api/v1"
 	"payhub/internal/biz"
 )
@@ -36,6 +39,15 @@ func NewPaymentOrderService(uc *biz.PaymentOrderUsecase) *PaymentOrderService {
 }
 
 func (s *PaymentOrderService) CreatePaymentOrder(ctx context.Context, in *v12.PaymentCreateRequest) (*v12.PaymentCreateReply, error) {
+	tracer := otel.Tracer("payhub-service-01")
+	// Start a new span
+	ctx, span := tracer.Start(ctx, "CreatePaymentOrder")
+	defer span.End()
+	fmt.Println("#################")
+	// Add attributes to the span
+	span.SetAttributes(
+		attribute.String("parameter", in.String()),
+	)
 	return &v12.PaymentCreateReply{
 		Status: 200,
 		PayUrl: "www.success.com",
