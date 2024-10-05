@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	kratosCircuitbreaker "github.com/go-kratos/aegis/circuitbreaker"
 	"github.com/go-kratos/aegis/circuitbreaker/sre"
@@ -14,13 +15,64 @@ import (
 	"github.com/hashicorp/consul/api"
 	"log"
 	"payhub/api/v1"
+	"sync"
 	"time"
 )
 
+type customBreaker struct {
+	breaker      kratosCircuitbreaker.CircuitBreaker
+	name         string
+	resetTimeout time.Duration
+	openTime     time.Time
+	isOpen       bool
+	mu           sync.Mutex
+}
+
+func (cb *customBreaker) Allow() error {
+	cb.mu.Lock()
+	defer cb.mu.Unlock()
+
+	if cb.isOpen {
+		if time.Since(cb.openTime) >= cb.resetTimeout {
+			// 冷却时间已过，尝试关闭熔断器
+			cb.isOpen = false
+			log.Printf("Circuit breaker '%s' cooling period over, attempting to close", cb.name)
+		} else {
+			// 仍在冷却时间内，拒绝请求
+			log.Printf("Circuit breaker '%s' is OPEN,is in coding time: Request blocked", cb.name)
+			return kratosCircuitbreaker.ErrNotAllowed
+		}
+	}
+
+	err := cb.breaker.Allow()
+	if err != nil {
+		// 熔断器触发，记录打开时间
+		cb.isOpen = true
+		cb.openTime = time.Now()
+		log.Printf("Circuit breaker '%s' transitioned to OPEN state", cb.name)
+		return kratosCircuitbreaker.ErrNotAllowed
+	}
+	// 请求被允许
+	log.Printf("Circuit breaker '%s' transitioned to Closed state", cb.name)
+	return nil
+}
+
+func (cb *customBreaker) MarkSuccess() {
+	cb.breaker.MarkSuccess()
+}
+
+func (cb *customBreaker) MarkFailed() {
+	cb.breaker.MarkFailed()
+}
+
 type loggingBreaker struct {
 	kratosCircuitbreaker.CircuitBreaker
-	name string
+	name         string
+	resetTimeout time.Duration
+	openTime     time.Time
 }
+
+// 重写与自定义熔断器
 
 func (lb *loggingBreaker) Allow() error {
 	err := lb.CircuitBreaker.Allow()
@@ -29,7 +81,7 @@ func (lb *loggingBreaker) Allow() error {
 	} else {
 		log.Printf("Circuit breaker '%s' is closed, request allowed\n", lb.name)
 	}
-	return err
+	return fmt.Errorf("request is not allowed:%v", err)
 }
 
 func (lb *loggingBreaker) MarkSuccess() {
@@ -59,12 +111,15 @@ func main() {
 		// 创建一个 SRE 熔断器，可以自定义参数
 		breaker := sre.NewBreaker(
 			sre.WithWindow(time.Second*10),
-			sre.WithBucket(1),
-			sre.WithSuccess(2),
+			sre.WithBucket(10),
+			sre.WithRequest(10),
+			sre.WithSuccess(0.9),
 		)
-		return &loggingBreaker{
-			CircuitBreaker: breaker,
-			name:           "my-circuit-breaker",
+		return &customBreaker{
+			breaker:      breaker,
+			name:         "my-custom-breaker",
+			resetTimeout: time.Second * 300, // 冷却时间
+			isOpen:       false,
 		}
 	}
 	// 创建 HTTP 客户端
@@ -84,11 +139,21 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	// 使用客户端发送请求
-	client := v1.NewPaymentSerivceHTTPClient(hConn)
-	rsp, err := client.CreatePaymentOrder(context.Background(), &v1.PaymentCreateRequest{
-		Merchantid: "merchant123",
-		Amount:     "456",
-	})
-	fmt.Printf("rsp:%+v,err:%v \n", rsp, err)
+	for i := 0; i < 50; i++ {
+		client := v1.NewPaymentSerivceHTTPClient(hConn)
+		_, err := client.CreatePaymentOrder(context.Background(), &v1.PaymentCreateRequest{
+			Merchantid: "merchant123",
+			Amount:     "456",
+		})
+		if err != nil {
+			if errors.Is(err, kratosCircuitbreaker.ErrNotAllowed) {
+				log.Printf("Request %d failed: circuit breaker is open\n", i)
+			} else {
+				log.Printf("Request %d failed;err:%v", i, err)
+			}
+		} else {
+			log.Printf("Request %d succeeded\n", i)
+		}
+		time.Sleep(500 * time.Millisecond)
+	}
 }
