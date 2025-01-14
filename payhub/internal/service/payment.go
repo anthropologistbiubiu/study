@@ -43,7 +43,6 @@ func (s *PaymentOrderService) CreatePaymentOrder(ctx context.Context, in *v12.Pa
 	// Start a new span
 	ctx, span := tracer.Start(ctx, "CreatePaymentOrder")
 	defer span.End()
-	fmt.Println("#################")
 	// Add attributes to the span
 	span.SetAttributes(
 		attribute.String("parameter", in.String()),
